@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Models
 {
-	public class Account
+	public class Actor : Model
 	{
-		public Guid Id { get; set; }
-
 		public string Username { get; set; }
 
 		public string Password { get; set; }
@@ -26,6 +24,12 @@ namespace SocialGamificationAsset.Models
 		public DateTime CreatedDate { get; set; }
 
 		public DateTime LastLoginDate { get; set; }
+
+		public virtual ICollection<Achievement> Achievement { get; set; }
+
+		public virtual ICollection<CustomData> CustomData { get; set; }
+
+		public virtual ICollection<Platform> Platform { get; set; }
 
 		public virtual ICollection<Session> Sessions { get; set; }
 
@@ -101,9 +105,9 @@ namespace SocialGamificationAsset.Models
 		 * @return IList<Account> the array of accounts
 		 */
 
-		public IList<Account> Load()
+		public IList<Actor> Load()
 		{
-			IList<Account> accounts = new List<Account>();
+			IList<Actor> accounts = new List<Actor>();
 			return accounts;
 		}
 	}

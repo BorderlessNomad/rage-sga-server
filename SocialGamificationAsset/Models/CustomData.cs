@@ -6,17 +6,15 @@ using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Models
 {
-	public class Session : Model
+	public class CustomData : Model
 	{
+		public string Key { get; set; }
+
+		public string Value { get; set; }
+
 		public Guid ActorId { get; set; }
 
 		[ForeignKey("ActorId")]
 		public virtual Actor Actor { get; set; }
-
-		public DateTime LastActionDate { get; set; }
-
-		public string LastActionIP { get; set; }
-
-		public DateTime SignitureTimestamp { get; set; }
 	}
 }
