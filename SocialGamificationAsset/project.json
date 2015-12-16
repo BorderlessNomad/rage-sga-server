@@ -1,4 +1,4 @@
-﻿{
+{
 	"version": "1.0.0-*",
 	"compilationOptions": {
 		"emitEntryPoint": true
@@ -18,11 +18,14 @@
 		"Microsoft.Extensions.Logging.Debug": "1.0.0-rc1-final",
 		"Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-rc1-final",
 		"Microsoft.Framework.CodeGenerators.Mvc": "1.0.0-beta5",
+		"EntityFramework.Core": "7.0.0-rc1-final",
 		"EntityFramework.SqlServer": "7.0.0-beta8",
-		"EntityFramework.Commands": "7.0.0-rc1-final"
+		"EntityFramework.Commands": "7.0.0-rc1-final",
+		"EntityFramework.MicrosoftSqlServer": "7.0.0-rc1-final"
 	},
 	"commands": {
-		"web": "Microsoft.AspNet.Server.Kestrel"
+		"web": "Microsoft.AspNet.Server.Kestrel",
+		"ef": "EntityFramework.Commands"
 	},
 	"frameworks": {
 		"dnx451": { },
