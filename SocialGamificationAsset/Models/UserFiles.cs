@@ -1,24 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Models
 {
-    public class UserFiles
-    {
-        public Guid Id { get; set; }
+	public class UserFiles
+	{
+		public Guid Id { get; set; }
 
-        public Guid IdAccount { get; set; }
+		public Guid IdAccount { get; set; }
 
-        public string Name { get; set; }
+		public string Name { get; set; }
 
-        public string Url { get; set; }
+		public string Url { get; set; }
 
-        public string ShareType { get; set; }
+		public string ShareType { get; set; }
 
-        public int Likes { get; set; }
+		public int Likes { get; set; }
 
-        public int Views { get; set; }
-    }
+		public int Views { get; set; }
+	}
 }
