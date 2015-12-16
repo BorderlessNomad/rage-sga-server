@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SocialGamificationAsset.Controllers
 {
 	[Route("api/[controller]")]
-	public class UsersController : Controller
+	public class ActorsController : Controller
 	{
 		// GET: api/values
 		[HttpGet]

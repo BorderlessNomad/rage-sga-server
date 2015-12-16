@@ -1,6 +1,6 @@
 ﻿namespace SocialGamificationAsset.Models
 {
-	public class ServerSettings
+	public class ServerSettings : Model
 	{
 		public string DataKey { get; set; }
 

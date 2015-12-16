@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Models
 {
@@ -25,11 +23,17 @@ namespace SocialGamificationAsset.Models
 
 		public DateTime LastLoginDate { get; set; }
 
-		public virtual ICollection<Achievement> Achievement { get; set; }
+		public virtual ICollection<Achievement> Achievements { get; set; }
 
 		public virtual ICollection<CustomData> CustomData { get; set; }
 
-		public virtual ICollection<Platform> Platform { get; set; }
+		public virtual ICollection<Group> Groups { get; set; }
+
+		public virtual ICollection<File> Files { get; set; }
+
+		public virtual ICollection<FileActivity> FileActivities { get; set; }
+
+		public virtual ICollection<Platform> Platforms { get; set; }
 
 		public virtual ICollection<Session> Sessions { get; set; }
 
