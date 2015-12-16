@@ -17,7 +17,9 @@
 		"Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
 		"Microsoft.Extensions.Logging.Debug": "1.0.0-rc1-final",
 		"Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-rc1-final",
-		"Microsoft.Framework.CodeGenerators.Mvc": "1.0.0-beta5"
+		"Microsoft.Framework.CodeGenerators.Mvc": "1.0.0-beta5",
+		"EntityFramework.SqlServer": "7.0.0-beta8",
+		"EntityFramework.Commands": "7.0.0-rc1-final"
 	},
 	"commands": {
 		"web": "Microsoft.AspNet.Server.Kestrel"
