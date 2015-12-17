@@ -23,11 +23,15 @@ namespace SocialGamificationAsset.Models
 
 		public DateTime LastLoginDate { get; set; }
 
+		public virtual ICollection<Friend> Friends { get; set; }
+
 		public virtual ICollection<Achievement> Achievements { get; set; }
 
 		public virtual ICollection<CustomData> CustomData { get; set; }
 
 		public virtual ICollection<Group> Groups { get; set; }
+
+		public virtual ICollection<Inventory> Inventories { get; set; }
 
 		public virtual ICollection<File> Files { get; set; }
 
