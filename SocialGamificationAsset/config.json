@@ -1,0 +1,10 @@
+﻿{
+	"Data": {
+		"DefaultConnection": {
+			"ConnectionString": "Server=(localdb)\\MSSQLLocalDB;Database=SocialGamificationAsset;Trusted_Connection=True;MultipleActiveResultSets=true"
+		},
+		"MySQLConnection": {
+			"ConnectionString": "Server=localhost; Database=SocialGamificationAsset; Uid=root; Pwd=;"
+		}
+	}
+}

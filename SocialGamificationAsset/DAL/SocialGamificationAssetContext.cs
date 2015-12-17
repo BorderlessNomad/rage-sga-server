@@ -1,12 +1,24 @@
-﻿using Microsoft.Data.Entity;
+﻿using Microsoft.Extensions.Configuration;
+using MySql.Data.Entity;
 using System;
+using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Models
 {
+	// [DbConfigurationType(typeof(MySQLDbConfiguration))]
+	[DbConfigurationType(typeof(MySqlEFConfiguration))]
 	public class SocialGamificationAssetContext : DbContext
 	{
+		public SocialGamificationAssetContext(IConfiguration config)
+			: base(config["Data:MySQLConnection:ConnectionString"])
+		{
+			Database.SetInitializer(new CreateDatabaseIfNotExists<SocialGamificationAssetContext>());
+		}
+
 		public virtual DbSet<Achievement> Achievements { get; set; }
 
 		public virtual DbSet<Actor> Actors { get; set; }
@@ -27,8 +39,13 @@ namespace SocialGamificationAsset.Models
 
 		public virtual DbSet<Tournament> Tournaments { get; set; }
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		public virtual DbSet<Test> Tests { get; set; }
+
+		protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{
+			modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+			modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+			modelBuilder.Conventions.Remove<ManyToManyCascadeDeleteConvention>();
 		}
 
 		protected void SaveChangesWithHooks()
@@ -95,6 +112,13 @@ namespace SocialGamificationAsset.Models
 			SaveChangesWithHooks();
 
 			return base.SaveChanges();
+		}
+
+		public override async Task<int> SaveChangesAsync()
+		{
+			SaveChangesWithHooks();
+
+			return await base.SaveChangesAsync();
 		}
 	}
 }
