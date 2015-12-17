@@ -1,0 +1,44 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace SocialGamificationAsset.Models
+{
+	public enum LeaderboardUnique
+	{
+		None,
+		Increase,
+		ReplaceHigher,
+		ReplaceAny
+	}
+
+	public enum LeaderboardOrder
+	{
+		Desc,
+		Asc
+	}
+
+	public enum LeaderboardValue
+	{
+		Int,
+		Float
+	}
+
+	public class Leaderboard : Model
+	{
+		public string Title { get; set; }
+
+		public string Description { get; set; }
+
+		public LeaderboardUnique UniqueRecords { get; set; }
+
+		public LeaderboardOrder OrderType { get; set; }
+
+		public LeaderboardValue ValueType { get; set; }
+
+		public bool AllowAnonymous { get; set; }
+
+		public virtual ICollection<LeaderboardUser> LeaderboardUsers { get; set; }
+	}
+}
