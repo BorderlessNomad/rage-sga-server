@@ -28,8 +28,10 @@ namespace SocialGamificationAsset
 		{
 			services.AddSingleton<IConfiguration>(_ => Configuration);
 
+			// Add Application Context
 			services.AddScoped<SocialGamificationAssetContext>();
 
+			// Add DB Initiliazer Service
 			services.AddTransient<SocialGamificationAssetInitializer>();
 
 			// Add framework services.
@@ -39,10 +41,9 @@ namespace SocialGamificationAsset
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, SocialGamificationAssetInitializer seeder)
 		{
+			loggerFactory.MinimumLevel = LogLevel.Information;
 			loggerFactory.AddConsole(Configuration.GetSection("Logging"));
 			loggerFactory.AddDebug();
-
-			seeder.Seed();
 
 			if (env.IsDevelopment())
 			{
@@ -64,6 +65,9 @@ namespace SocialGamificationAsset
 					name: "default",
 					template: "{controller=Home}/{action=Index}/{id?}");
 			});
+
+			// Seed the database with Test values
+			seeder.Seed();
 		}
 
 		// Entry point for the application.
