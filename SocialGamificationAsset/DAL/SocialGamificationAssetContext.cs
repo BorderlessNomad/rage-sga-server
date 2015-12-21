@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Models
 {
-	// [DbConfigurationType(typeof(MySQLDbConfiguration))]
 	[DbConfigurationType(typeof(MySqlEFConfiguration))]
 	public class SocialGamificationAssetContext : DbContext
 	{

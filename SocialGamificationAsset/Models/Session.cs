@@ -10,8 +10,6 @@ namespace SocialGamificationAsset.Models
 		[ForeignKey("ActorId")]
 		public virtual Actor Actor { get; set; }
 
-		public DateTime LastActionDate { get; set; }
-
 		public string LastActionIP { get; set; }
 
 		public DateTime SignitureTimestamp { get; set; }

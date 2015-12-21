@@ -13,8 +13,6 @@ namespace SocialGamificationAsset.Models
 
 		public int Progress { get; set; }
 
-		public DateTime LastUpdate { get; set; }
-
 		public virtual ICollection<Actor> Account { get; set; }
 	}
 }

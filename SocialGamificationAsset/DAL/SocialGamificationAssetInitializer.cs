@@ -12,7 +12,11 @@ namespace SocialGamificationAsset.Models
 
 		public SocialGamificationAssetInitializer(SocialGamificationAssetContext context)
 		{
+			// TODO: DropCreateDatabaseIfModelChanges
+
 			_context = context;
+
+			// InitializeDatabase();
 		}
 
 		public void InitializeDatabase()

@@ -8,6 +8,10 @@ namespace SocialGamificationAsset.Models
 		[DatabaseGenerated(DatabaseGeneratedOption.None)]
 		public Guid Id { get; set; }
 
+		public DateTime? UpdatedDate { get; set; }
+
+		public DateTime CreatedDate { get; set; }
+
 		public Model()
 		{
 			this.Id = Guid.NewGuid();

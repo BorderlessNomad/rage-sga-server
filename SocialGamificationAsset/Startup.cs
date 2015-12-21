@@ -13,7 +13,7 @@ namespace SocialGamificationAsset
 		public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
 		{
 			var builder = new ConfigurationBuilder()
-					.AddJsonFile("config.json")
+				.AddJsonFile("config.json")
 			;
 
 			builder.AddEnvironmentVariables();

@@ -19,10 +19,6 @@ namespace SocialGamificationAsset.Models
 
 		public string LastLoginIp { get; set; }
 
-		public DateTime CreatedDate { get; set; }
-
-		public DateTime LastLoginDate { get; set; }
-
 		public virtual ICollection<Friend> Friends { get; set; }
 
 		public virtual ICollection<Achievement> Achievements { get; set; }

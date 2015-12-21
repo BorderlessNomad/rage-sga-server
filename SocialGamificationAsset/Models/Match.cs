@@ -13,8 +13,6 @@ namespace SocialGamificationAsset.Models
 
 		public string Title { get; set; }
 
-		public DateTime CreationTime { get; set; }
-
 		public DateTime ExpirationDate { get; set; }
 
 		public int TotalRounds { get; set; }

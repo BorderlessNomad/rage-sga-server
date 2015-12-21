@@ -20,7 +20,5 @@ namespace SocialGamificationAsset.Models
 		public double ValueFloat { get; set; }
 
 		public string ValueString { get; set; }
-
-		public DateTime LastUpdated { get; set; }
 	}
 }

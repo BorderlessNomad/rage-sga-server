@@ -18,7 +18,5 @@ namespace SocialGamificationAsset.Models
 		public int Likes { get; set; }
 
 		public int Views { get; set; }
-
-		public DateTime LastActivity { get; set; }
 	}
 }

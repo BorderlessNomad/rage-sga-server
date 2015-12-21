@@ -15,8 +15,6 @@ namespace SocialGamificationAsset.Models
 
 		public bool IsFinished { get; set; }
 
-		public DateTime DateCreation { get; set; }
-
 		public DateTime DateFinished { get; set; }
 
 		public virtual ICollection<CustomData> CustomData { get; set; }
