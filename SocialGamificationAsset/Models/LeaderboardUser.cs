@@ -17,7 +17,7 @@ namespace SocialGamificationAsset.Models
 
 		public int ValueInt { get; set; }
 
-		public int ValueFloat { get; set; }
+		public double ValueFloat { get; set; }
 
 		public string ValueString { get; set; }
 

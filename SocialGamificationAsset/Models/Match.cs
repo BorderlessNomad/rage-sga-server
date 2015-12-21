@@ -17,10 +17,10 @@ namespace SocialGamificationAsset.Models
 
 		public DateTime ExpirationDate { get; set; }
 
-		public int Rounds { get; set; }
+		public int TotalRounds { get; set; }
 
 		public bool Finished { get; set; }
 
-		public ICollection<MatchRound> MatchRounds { get; set; }
+		public ICollection<MatchRound> Rounds { get; set; }
 	}
 }

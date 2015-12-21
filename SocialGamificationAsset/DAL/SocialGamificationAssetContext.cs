@@ -31,6 +31,18 @@ namespace SocialGamificationAsset.Models
 
 		public virtual DbSet<Group> Groups { get; set; }
 
+		public virtual DbSet<Inventory> Inventory { get; set; }
+
+		public virtual DbSet<Leaderboard> Leaderboards { get; set; }
+
+		public virtual DbSet<LeaderboardUser> LeaderboardUsers { get; set; }
+
+		public virtual DbSet<Match> Matches { get; set; }
+
+		public virtual DbSet<MatchActor> MatchActors { get; set; }
+
+		public virtual DbSet<MatchRound> MatchRounds { get; set; }
+
 		public virtual DbSet<Platform> Platforms { get; set; }
 
 		public virtual DbSet<ServerSetting> ServerSettings { get; set; }
