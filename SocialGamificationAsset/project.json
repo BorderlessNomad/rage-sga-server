@@ -18,13 +18,16 @@
 		"Microsoft.Extensions.Logging": "1.0.0-rc1-final",
 		"Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
 		"Microsoft.Extensions.Logging.Debug": "1.0.0-rc1-final",
-		"Microsoft.Framework.CodeGenerators.Mvc": "1.0.0-beta5",
+		"Microsoft.Framework.CodeGenerators.Mvc": "1.0.0-*",
+		"Microsoft.Framework.ConfigurationModel.Json": "1.0.0-*",
 		"Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-rc1-final",
-		"MySql.Data.Entity": "6.9.8"
+		"MySql.Data": "6.9.8",
+		"MySql.Data.Entity": "6.9.8",
+		"MySql.Web": "6.9.8"
 	},
 	"commands": {
 		"web": "Microsoft.AspNet.Server.Kestrel",
-		"ef": "EntityFramework.Commands"
+		"gen": "Microsoft.Framework.CodeGeneration"
 	},
 	"frameworks": {
 		"dnx451": {

@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using SocialGamificationAsset.Models;
+using System.Diagnostics;
 
 namespace SocialGamificationAsset
 {
@@ -14,9 +15,8 @@ namespace SocialGamificationAsset
 		{
 			var builder = new ConfigurationBuilder()
 				.AddJsonFile("config.json")
+				.AddEnvironmentVariables() //All environment variables in the process's context flow in as configuration values.
 			;
-
-			builder.AddEnvironmentVariables();
 
 			Configuration = builder.Build();
 		}
@@ -41,7 +41,8 @@ namespace SocialGamificationAsset
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, SocialGamificationAssetInitializer seeder)
 		{
-			loggerFactory.MinimumLevel = LogLevel.Information;
+			Debug.WriteLine("Starting ", Configuration["site_name"]);
+
 			loggerFactory.AddConsole(Configuration.GetSection("Logging"));
 			loggerFactory.AddDebug();
 
@@ -49,6 +50,7 @@ namespace SocialGamificationAsset
 			{
 				app.UseBrowserLink();
 				app.UseDeveloperExceptionPage();
+				app.UseRuntimeInfoPage(); // default path is /runtimeinfo
 			}
 			else
 			{
@@ -59,12 +61,7 @@ namespace SocialGamificationAsset
 
 			app.UseStaticFiles();
 
-			app.UseMvc(routes =>
-			{
-				routes.MapRoute(
-					name: "default",
-					template: "{controller=Home}/{action=Index}/{id?}");
-			});
+			app.UseMvcWithDefaultRoute();
 
 			// Seed the database with Test values
 			seeder.Seed();

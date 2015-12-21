@@ -11,7 +11,5 @@ namespace SocialGamificationAsset.Models
 		public virtual Actor Actor { get; set; }
 
 		public string LastActionIP { get; set; }
-
-		public DateTime SignitureTimestamp { get; set; }
 	}
 }
