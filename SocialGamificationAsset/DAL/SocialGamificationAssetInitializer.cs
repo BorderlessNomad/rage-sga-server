@@ -12,33 +12,7 @@ namespace SocialGamificationAsset.Models
 
 		public SocialGamificationAssetInitializer(SocialGamificationAssetContext context)
 		{
-			// TODO: DropCreateDatabaseIfModelChanges
-
 			_context = context;
-
-			// InitializeDatabase();
-		}
-
-		public void InitializeDatabase()
-		{
-			if (!_context.Database.Exists())
-			{
-				// if database did not exist before - create it
-				_context.Database.Create();
-			}
-			else
-			{
-				// query to check if MigrationHistory table is present in the database
-				var migrationHistoryTableExists = ((IObjectContextAdapter)_context).ObjectContext.ExecuteStoreQuery<int>(
-				string.Format("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '{0}' AND table_name = '__MigrationHistory'", ""));
-
-				// if MigrationHistory table is not there (which is the case first time we run) - create it
-				if (migrationHistoryTableExists.FirstOrDefault() == 0)
-				{
-					_context.Database.Delete();
-					_context.Database.Create();
-				}
-			}
 		}
 
 		public void Seed()

@@ -16,6 +16,7 @@ namespace SocialGamificationAsset.Models
 			: base(config["Data:MySQLConnection:ConnectionString"])
 		{
 			Database.SetInitializer(new CreateDatabaseIfNotExists<SocialGamificationAssetContext>());
+			Database.SetInitializer(new DropCreateDatabaseIfModelChanges<SocialGamificationAssetContext>());
 		}
 
 		public virtual DbSet<Achievement> Achievements { get; set; }
