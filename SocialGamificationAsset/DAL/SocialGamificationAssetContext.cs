@@ -29,6 +29,8 @@ namespace SocialGamificationAsset.Models
 
 		public DbSet<FileActivity> FileActivities { get; set; }
 
+		public DbSet<Friend> Friends { get; set; }
+
 		public DbSet<Group> Groups { get; set; }
 
 		public DbSet<Inventory> Inventory { get; set; }
