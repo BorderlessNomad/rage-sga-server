@@ -1,12 +1,9 @@
-﻿using SocialGamificationAsset.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNet.Mvc;
+using SocialGamificationAsset.Models;
 
 namespace SocialGamificationAsset.Controllers
 {
-	public class ApiController
+	public class ApiController : Controller
 	{
 		protected SocialGamificationAssetContext _context;
 
