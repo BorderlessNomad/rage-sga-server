@@ -39,7 +39,10 @@
 	},
 	"frameworks": {
 		"dnx451": {
-			"frameworkAssemblies": { }
+			"frameworkAssemblies": {
+				"System.Data": "4.0.0.0",
+				"System.Configuration": "4.0.0.0"
+			}
 		}
 	},
 	"exclude": [

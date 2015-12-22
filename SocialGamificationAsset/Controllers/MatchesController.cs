@@ -27,8 +27,8 @@ namespace SGAControllers.Controllers
 			return _context.Matches;
 		}
 
-		// GET: api/matches/5
-		[HttpGet("{id}", Name = "GetMatch")]
+		// GET: api/matches/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpGet("{id:Guid}", Name = "GetMatch")]
 		public async Task<IActionResult> GetMatch([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -36,7 +36,7 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Match match = await _context.Matches.SingleAsync(m => m.Id == id);
+			Match match = await _context.Matches.FindAsync(id);
 
 			if (match == null)
 			{
@@ -46,8 +46,8 @@ namespace SGAControllers.Controllers
 			return Ok(match);
 		}
 
-		// PUT: api/matches/5
-		[HttpPut("{id}")]
+		// PUT: api/matches/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpPut("{id:Guid}")]
 		public async Task<IActionResult> PutMatch([FromRoute] Guid id, [FromBody] Match match)
 		{
 			if (!ModelState.IsValid)
@@ -110,8 +110,8 @@ namespace SGAControllers.Controllers
 			return CreatedAtRoute("GetMatch", new { id = match.Id }, match);
 		}
 
-		// DELETE: api/matches/5
-		[HttpDelete("{id}")]
+		// DELETE: api/matches/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpDelete("{id:Guid}")]
 		public async Task<IActionResult> DeleteMatch([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -119,7 +119,7 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Match match = await _context.Matches.SingleAsync(m => m.Id == id);
+			Match match = await _context.Matches.FindAsync(id);
 			if (match == null)
 			{
 				return HttpNotFound();

@@ -9284,6 +9284,9 @@
       "MySql.Data.Entity >= 6.9.8",
       "MySql.Web >= 6.9.8"
     ],
-    "DNX,Version=v4.5.1": []
+    "DNX,Version=v4.5.1": [
+      "fx/System.Data >= 4.0.0",
+      "fx/System.Configuration >= 4.0.0"
+    ]
   }
 }

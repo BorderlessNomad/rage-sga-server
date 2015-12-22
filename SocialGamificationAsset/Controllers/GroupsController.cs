@@ -27,8 +27,8 @@ namespace SGAControllers.Controllers
 			return _context.Groups;
 		}
 
-		// GET: api/groups/5
-		[HttpGet("{id}", Name = "GetGroup")]
+		// GET: api/groups/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpGet("{id:Guid}", Name = "GetGroup")]
 		public async Task<IActionResult> GetGroup([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -36,7 +36,7 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Group group = await _context.Groups.SingleAsync(m => m.Id == id);
+			Group group = await _context.Groups.FindAsync(id);
 
 			if (group == null)
 			{
@@ -46,8 +46,8 @@ namespace SGAControllers.Controllers
 			return Ok(group);
 		}
 
-		// PUT: api/groups/5
-		[HttpPut("{id}")]
+		// PUT: api/groups/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpPut("{id:Guid}")]
 		public async Task<IActionResult> PutGroup([FromRoute] Guid id, [FromBody] Group group)
 		{
 			if (!ModelState.IsValid)
@@ -110,8 +110,8 @@ namespace SGAControllers.Controllers
 			return CreatedAtRoute("GetGroup", new { id = group.Id }, group);
 		}
 
-		// DELETE: api/groups/5
-		[HttpDelete("{id}")]
+		// DELETE: api/groups/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpDelete("{id:Guid}")]
 		public async Task<IActionResult> DeleteGroup([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -119,7 +119,7 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Group group = await _context.Groups.SingleAsync(m => m.Id == id);
+			Group group = await _context.Groups.FindAsync(id);
 			if (group == null)
 			{
 				return HttpNotFound();

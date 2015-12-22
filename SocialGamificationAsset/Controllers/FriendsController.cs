@@ -27,8 +27,8 @@ namespace SGAControllers.Controllers
 			return _context.Friends;
 		}
 
-		// GET: api/friends/5
-		[HttpGet("{id}", Name = "GetFriend")]
+		// GET: api/friends/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpGet("{id:Guid}", Name = "GetFriend")]
 		public async Task<IActionResult> GetFriend([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -36,7 +36,7 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Friend friend = await _context.Friends.SingleAsync(m => m.Id == id);
+			Friend friend = await _context.Friends.FindAsync(id);
 
 			if (friend == null)
 			{
@@ -46,8 +46,8 @@ namespace SGAControllers.Controllers
 			return Ok(friend);
 		}
 
-		// PUT: api/friends/5
-		[HttpPut("{id}")]
+		// PUT: api/friends/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpPut("{id:Guid}")]
 		public async Task<IActionResult> PutFriend([FromRoute] Guid id, [FromBody] Friend friend)
 		{
 			if (!ModelState.IsValid)
@@ -110,8 +110,8 @@ namespace SGAControllers.Controllers
 			return CreatedAtRoute("GetFriend", new { id = friend.Id }, friend);
 		}
 
-		// DELETE: api/friends/5
-		[HttpDelete("{id}")]
+		// DELETE: api/friends/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpDelete("{id:Guid}")]
 		public async Task<IActionResult> DeleteFriend([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -119,7 +119,7 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Friend friend = await _context.Friends.SingleAsync(m => m.Id == id);
+			Friend friend = await _context.Friends.FindAsync(id);
 			if (friend == null)
 			{
 				return HttpNotFound();

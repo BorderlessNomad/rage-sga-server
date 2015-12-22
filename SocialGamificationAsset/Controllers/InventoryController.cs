@@ -27,8 +27,8 @@ namespace SGAControllers.Controllers
 			return _context.Inventory;
 		}
 
-		// GET: api/inventory/5
-		[HttpGet("{id}", Name = "GetInventory")]
+		// GET: api/inventory/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpGet("{id:Guid}", Name = "GetInventory")]
 		public async Task<IActionResult> GetInventory([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -36,7 +36,7 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Inventory inventory = await _context.Inventory.SingleAsync(m => m.Id == id);
+			Inventory inventory = await _context.Inventory.FindAsync(id);
 
 			if (inventory == null)
 			{
@@ -46,8 +46,8 @@ namespace SGAControllers.Controllers
 			return Ok(inventory);
 		}
 
-		// PUT: api/inventory/5
-		[HttpPut("{id}")]
+		// PUT: api/inventory/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpPut("{id:Guid}")]
 		public async Task<IActionResult> PutInventory([FromRoute] Guid id, [FromBody] Inventory inventory)
 		{
 			if (!ModelState.IsValid)
@@ -110,8 +110,8 @@ namespace SGAControllers.Controllers
 			return CreatedAtRoute("GetInventory", new { id = inventory.Id }, inventory);
 		}
 
-		// DELETE: api/inventory/5
-		[HttpDelete("{id}")]
+		// DELETE: api/inventory/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpDelete("{id:Guid}")]
 		public async Task<IActionResult> DeleteInventory([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -119,7 +119,7 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Inventory inventory = await _context.Inventory.SingleAsync(m => m.Id == id);
+			Inventory inventory = await _context.Inventory.FindAsync(id);
 			if (inventory == null)
 			{
 				return HttpNotFound();

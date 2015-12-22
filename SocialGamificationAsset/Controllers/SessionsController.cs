@@ -27,8 +27,8 @@ namespace SocialGamificationAsset.Controllers
 			return _context.Sessions;
 		}
 
-		// GET: api/sessions/5
-		[HttpGet("{id}", Name = "GetSession")]
+		// GET: api/sessions/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpGet("{id:Guid}", Name = "GetSession")]
 		public async Task<IActionResult> GetSession([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -36,7 +36,7 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Session session = await _context.Sessions.SingleAsync(m => m.Id == id);
+			Session session = await _context.Sessions.FindAsync(id);
 
 			if (session == null)
 			{
@@ -46,8 +46,8 @@ namespace SocialGamificationAsset.Controllers
 			return Ok(session);
 		}
 
-		// PUT: api/sessions/5
-		[HttpPut("{id}")]
+		// PUT: api/sessions/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpPut("{id:Guid}")]
 		public async Task<IActionResult> PutSession([FromRoute] Guid id, [FromBody] Session session)
 		{
 			if (!ModelState.IsValid)
@@ -110,8 +110,8 @@ namespace SocialGamificationAsset.Controllers
 			return CreatedAtRoute("GetSession", new { id = session.Id }, session);
 		}
 
-		// DELETE: api/sessions/5
-		[HttpDelete("{id}")]
+		// DELETE: api/sessions/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpDelete("{id:Guid}")]
 		public async Task<IActionResult> DeleteSession([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -119,7 +119,7 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Session session = await _context.Sessions.SingleAsync(m => m.Id == id);
+			Session session = await _context.Sessions.FindAsync(id);
 			if (session == null)
 			{
 				return HttpNotFound();

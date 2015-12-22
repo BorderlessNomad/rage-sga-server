@@ -3,56 +3,64 @@ using Microsoft.AspNet.Mvc;
 using Microsoft.Data.Entity;
 using SocialGamificationAsset.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Controllers
 {
 	[Produces("application/json")]
-	[Route("api/actors")]
-	public class ActorsController : Controller
+	[Route("api/tests")]
+	public class TestsController : Controller
 	{
 		private SocialGamificationAssetContext _context;
 
-		public ActorsController(SocialGamificationAssetContext context)
+		public TestsController(SocialGamificationAssetContext context)
 		{
 			_context = context;
 		}
 
-		// GET: api/actors/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
-		[HttpGet("{id:Guid}", Name = "GetActor")]
-		public async Task<IActionResult> GetActor([FromRoute] Guid id)
+		// GET: api/tests
+		[HttpGet]
+		public IEnumerable<Test> GetTest()
+		{
+			return _context.Tests;
+		}
+
+		// GET: api/tests/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpGet("{id}", Name = "GetTest")]
+		public async Task<IActionResult> GetTest([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			Actor actor = await _context.Actors.FindAsync(id);
+			Test test = await _context.Tests.FindAsync(id);
 
-			if (actor == null)
+			if (test == null)
 			{
 				return HttpNotFound();
 			}
 
-			return Ok(actor);
+			return Ok(test);
 		}
 
-		// PUT: api/actors/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
-		[HttpPut("{id:Guid}")]
-		public async Task<IActionResult> PutActor([FromRoute] Guid id, [FromBody] Actor actor)
+		// PUT: api/tests/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpPut("{id}")]
+		public async Task<IActionResult> PutTest([FromRoute] Guid id, [FromBody] Test test)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			if (id != actor.Id)
+			if (id != test.Id)
 			{
 				return HttpBadRequest();
 			}
 
-			_context.Entry(actor).State = System.Data.Entity.EntityState.Modified;
+			_context.Entry(test).State = System.Data.Entity.EntityState.Modified;
 
 			try
 			{
@@ -60,7 +68,7 @@ namespace SocialGamificationAsset.Controllers
 			}
 			catch (DbUpdateConcurrencyException)
 			{
-				if (!ActorExists(id))
+				if (!TestExists(id))
 				{
 					return HttpNotFound();
 				}
@@ -73,23 +81,23 @@ namespace SocialGamificationAsset.Controllers
 			return new HttpStatusCodeResult(StatusCodes.Status204NoContent);
 		}
 
-		// POST: api/actors
+		// POST: api/tests
 		[HttpPost]
-		public async Task<IActionResult> PostActor([FromBody] Actor actor)
+		public async Task<IActionResult> PostTest([FromBody] Test test)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			_context.Actors.Add(actor);
+			_context.Tests.Add(test);
 			try
 			{
 				await _context.SaveChangesAsync();
 			}
 			catch (DbUpdateException)
 			{
-				if (ActorExists(actor.Id))
+				if (TestExists(test.Id))
 				{
 					return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
 				}
@@ -99,28 +107,28 @@ namespace SocialGamificationAsset.Controllers
 				}
 			}
 
-			return CreatedAtRoute("GetActor", new { id = actor.Id }, actor);
+			return CreatedAtRoute("GetTest", new { id = test.Id }, test);
 		}
 
-		// DELETE: api/actors/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
-		[HttpDelete("{id:Guid}")]
-		public async Task<IActionResult> DeleteActor([FromRoute] Guid id)
+		// DELETE: api/tests/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteTest([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			Actor actor = await _context.Actors.FindAsync(id);
-			if (actor == null)
+			Test test = await _context.Tests.FindAsync(id);
+			if (test == null)
 			{
 				return HttpNotFound();
 			}
 
-			_context.Actors.Remove(actor);
+			_context.Tests.Remove(test);
 			await _context.SaveChangesAsync();
 
-			return Ok(actor);
+			return Ok(test);
 		}
 
 		protected override void Dispose(bool disposing)
@@ -132,9 +140,9 @@ namespace SocialGamificationAsset.Controllers
 			base.Dispose(disposing);
 		}
 
-		private bool ActorExists(Guid id)
+		private bool TestExists(Guid id)
 		{
-			return _context.Actors.Count(e => e.Id == id) > 0;
+			return _context.Tests.Count(e => e.Id == id) > 0;
 		}
 	}
 }
