@@ -37,6 +37,12 @@ namespace SocialGamificationAsset
 			// Add framework services.
 			services.AddMvc();
 
+			// Add CORS support to the service
+			services.AddCors(options =>
+			{
+				options.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+			});
+
 			// SWASHBUCKLE SWAGGER API Documentation Generator
 			services.AddSwaggerGen();
 			services.ConfigureSwaggerDocument(options =>
@@ -75,6 +81,8 @@ namespace SocialGamificationAsset
 			app.UseStaticFiles();
 
 			app.UseMvcWithDefaultRoute();
+
+			app.UseCors("AllowAll");
 
 			// Seed the database with Test values
 			seeder.Seed();

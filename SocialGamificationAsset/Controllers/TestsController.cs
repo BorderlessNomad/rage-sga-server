@@ -2,11 +2,11 @@
 using Microsoft.AspNet.Mvc;
 using Microsoft.Data.Entity;
 using SocialGamificationAsset.Models;
-using Swashbuckle.SwaggerGen.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.Description;
 
 namespace SocialGamificationAsset.Controllers
 {
