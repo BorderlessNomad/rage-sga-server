@@ -36,6 +36,19 @@ namespace SocialGamificationAsset
 
 			// Add framework services.
 			services.AddMvc();
+
+			// SWASHBUCKLE SWAGGER API Documentation Generator
+			services.AddSwaggerGen();
+			services.ConfigureSwaggerDocument(options =>
+			{
+				options.SingleApiVersion(new Swashbuckle.SwaggerGen.Info
+				{
+					Version = "v1",
+					Title = "Social Gamification API",
+					Description = "This module allows to layer game mechanics affording game-inspired social relations and interactions on top a system to support engagement, collaboration, and learning. Two main forms of social interaction are supported: player-player interactions (such as matches) and group interactions (such as shared team goals or team vs. team competitions).",
+					TermsOfService = "GPLv3"
+				});
+			});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +78,9 @@ namespace SocialGamificationAsset
 
 			// Seed the database with Test values
 			seeder.Seed();
+
+			app.UseSwaggerGen();
+			app.UseSwaggerUi();
 		}
 
 		// Entry point for the application.

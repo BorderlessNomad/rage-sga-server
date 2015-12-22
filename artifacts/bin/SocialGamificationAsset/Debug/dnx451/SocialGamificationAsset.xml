@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SocialGamificationAsset</name>
+    </assembly>
+    <members>
+        <member name="M:SocialGamificationAsset.Controllers.TestsController.GetTest">
+            <summary>
+            This method returns all available records from Test Table
+            </summary>
+            <returns>All the test records which were found</returns>
+        </member>
+        <member name="M:SocialGamificationAsset.Controllers.TestsController.GetTest(System.Guid)">
+            <summary>
+            This method returns specific record from Test Table
+            </summary>
+            <param name="id">Guid</param>
+            <returns>Test record that was found</returns>
+        </member>
+        <member name="M:SocialGamificationAsset.Models.Actor.ExistsUsername">
+            		 * Check if the current Username already exists
+                     *
+                     * @return boolean Returns TRUE if Username exists
+        </member>
+        <member name="M:SocialGamificationAsset.Models.Actor.ExistsEmail">
+             Check if the current Email already exists
+            
+             @return boolean Returns TRUE if Username exists
+        </member>
+        <member name="M:SocialGamificationAsset.Models.Actor.IsLogged">
+             Verify if this account is logged
+            
+             @return bool Returns TRUE if the account is logged
+        </member>
+        <member name="M:SocialGamificationAsset.Models.Actor.IsOnline">
+             Verify if this account is online (with Last session being marked active)
+            
+             @return bool Returns TRUE if the account is online
+        </member>
+        <member name="M:SocialGamificationAsset.Models.Actor.GetLastActionDate">
+             Get the last session
+            
+             @return Session
+        </member>
+        <member name="M:SocialGamificationAsset.Models.Actor.GetSession">
+             Get the current session of Logged account
+            
+             @return Session
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:SocialGamificationAsset.Models.Actor.Load" -->
+    </members>
+</doc>

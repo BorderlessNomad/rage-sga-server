@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Mvc;
 using Microsoft.Data.Entity;
 using SocialGamificationAsset.Models;
+using Swashbuckle.SwaggerGen.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,10 @@ namespace SocialGamificationAsset.Controllers
 		}
 
 		// GET: api/tests
+		/// <summary>
+		/// This method returns all available records from Test Table
+		/// </summary>
+		/// <returns>All the test records which were found</returns>
 		[HttpGet]
 		public IEnumerable<Test> GetTest()
 		{
@@ -28,6 +33,11 @@ namespace SocialGamificationAsset.Controllers
 		}
 
 		// GET: api/tests/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		/// <summary>
+		/// This method returns specific record from Test Table
+		/// </summary>
+		/// <param name="id">Guid</param>
+		/// <returns>Test record that was found</returns>
 		[HttpGet("{id}", Name = "GetTest")]
 		public async Task<IActionResult> GetTest([FromRoute] Guid id)
 		{
@@ -78,11 +88,12 @@ namespace SocialGamificationAsset.Controllers
 				}
 			}
 
-			return new HttpStatusCodeResult(StatusCodes.Status204NoContent);
+			return CreatedAtRoute("GetTest", new { id = test.Id }, test);
 		}
 
 		// POST: api/tests
 		[HttpPost]
+		[ResponseType(typeof(Test))]
 		public async Task<IActionResult> PostTest([FromBody] Test test)
 		{
 			if (!ModelState.IsValid)

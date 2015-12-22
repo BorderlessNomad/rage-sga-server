@@ -36,7 +36,7 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Achievement achievement = await _context.Achievements.SingleAsync(m => m.Id == id);
+			Achievement achievement = await _context.Achievements.FindAsync(id);
 
 			if (achievement == null)
 			{
@@ -119,7 +119,7 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Achievement achievement = await _context.Achievements.SingleAsync(m => m.Id == id);
+			Achievement achievement = await _context.Achievements.FindAsync(id);
 			if (achievement == null)
 			{
 				return HttpNotFound();
