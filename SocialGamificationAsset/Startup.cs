@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using SocialGamificationAsset.Models;
+using SocialGamificationAsset.Policies;
 using System.Diagnostics;
 
 namespace SocialGamificationAsset
@@ -14,8 +15,11 @@ namespace SocialGamificationAsset
 		public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
 		{
 			var builder = new ConfigurationBuilder()
+				.SetBasePath(appEnv.ApplicationBasePath)
 				.AddJsonFile("config.json")
-				.AddEnvironmentVariables() //All environment variables in the process's context flow in as configuration values.
+
+				// All environment variables in the process's context flow in as configuration values.
+				.AddEnvironmentVariables()
 			;
 
 			Configuration = builder.Build();
@@ -34,17 +38,28 @@ namespace SocialGamificationAsset
 			// Add DB Initiliazer Service
 			services.AddTransient<SocialGamificationAssetInitializer>();
 
-			// Add framework services.
-			services.AddMvc();
+			// Add MVC services to the services container
+			services.AddMvc(options =>
+			{
+			});
 
-			services.AddCaching(); // Adds a default in-memory implementation of IDistributedCache
+			// Add memory cache services
+			services.AddCaching();
+
+			// Add session related services.
 			services.AddSession();
 
 			// Add CORS support to the service
 			services.AddCors(options =>
 			{
-				options.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+				options.AddPolicy("AllowAll", builder =>
+				{
+					builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+				});
 			});
+
+			// Configure Auth
+			services.AddSingleton<ISessionAuthorizeFilter, SessionAuthorizeFilter>();
 
 			// SWASHBUCKLE SWAGGER API Documentation Generator
 			services.AddSwaggerGen();
@@ -65,14 +80,15 @@ namespace SocialGamificationAsset
 		{
 			Debug.WriteLine("Starting ", Configuration["site_name"]);
 
-			loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+			loggerFactory.AddConsole(minLevel: LogLevel.Warning);
 			loggerFactory.AddDebug();
 
 			if (env.IsDevelopment())
 			{
 				app.UseBrowserLink();
 				app.UseDeveloperExceptionPage();
-				app.UseRuntimeInfoPage(); // default path is /runtimeinfo
+				app.UseDatabaseErrorPage();
+				app.UseRuntimeInfoPage();
 			}
 			else
 			{
@@ -81,9 +97,11 @@ namespace SocialGamificationAsset
 
 			app.UseIISPlatformHandler();
 
-			app.UseStaticFiles();
-
+			// Configure Session.
 			app.UseSession();
+
+			// Add static files to the request pipeline
+			app.UseStaticFiles();
 
 			app.UseCors("AllowAll");
 

@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNet.Http;
+﻿using Microsoft.AspNet.Authorization;
+using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Data.Entity;
 using SocialGamificationAsset.Models;
+using SocialGamificationAsset.Policies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,7 @@ namespace SocialGamificationAsset.Controllers
 {
 	[Produces("application/json")]
 	[Route("api/tests")]
+	[ServiceFilter(typeof(ISessionAuthorizeFilter))]
 	public class TestsController : Controller
 	{
 		private SocialGamificationAssetContext _context;
@@ -39,6 +42,7 @@ namespace SocialGamificationAsset.Controllers
 		/// <param name="id">Guid</param>
 		/// <returns>Test record that was found</returns>
 		[HttpGet("{id}", Name = "GetTest")]
+		[AllowAnonymous]
 		public async Task<IActionResult> GetTest([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
