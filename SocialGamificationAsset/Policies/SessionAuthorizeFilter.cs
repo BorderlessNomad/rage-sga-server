@@ -32,7 +32,6 @@ namespace SocialGamificationAsset.Policies
 			}
 
 			HttpContext httpContext = context.HttpContext;
-			SocialGamificationAssetContext db = httpContext.RequestServices.GetRequiredService<SocialGamificationAssetContext>();
 
 			StringValues header;
 			bool headerExists = httpContext.Request.Headers.TryGetValue(SessionHeaderName, out header);
@@ -60,6 +59,12 @@ namespace SocialGamificationAsset.Policies
 			if (localSession != null && localSession.Id.Equals(token))
 			{
 				return;
+			}
+
+			SocialGamificationAssetContext db = httpContext.RequestServices.GetRequiredService<SocialGamificationAssetContext>();
+			if (db == null)
+			{
+				throw new ApplicationException("Unable to find requested database service.");
 			}
 
 			Session session = await db.Sessions.FindAsync(token);
