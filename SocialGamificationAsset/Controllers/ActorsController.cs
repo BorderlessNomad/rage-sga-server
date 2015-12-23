@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Mvc;
 using Microsoft.Data.Entity;
 using SocialGamificationAsset.Models;
+using SocialGamificationAsset.Policies;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,13 +11,42 @@ namespace SocialGamificationAsset.Controllers
 {
 	[Produces("application/json")]
 	[Route("api/actors")]
+	[ServiceFilter(typeof(ISessionAuthorizeFilter))]
 	public class ActorsController : Controller
 	{
 		private SocialGamificationAssetContext _context;
 
+		private Session _session;
+
+		public Session session
+		{
+			get { return GetSession(); }
+		}
+
+		public Session GetSession()
+		{
+			if (_session == null)
+			{
+				_session = HttpContext.Session.GetObjectFromJson<Session>("__session");
+			}
+
+			return _session;
+		}
+
 		public ActorsController(SocialGamificationAssetContext context)
 		{
 			_context = context;
+		}
+
+		[HttpGet(Name = "WhoAmI")]
+		public async Task<IActionResult> GetActor()
+		{
+			if (session != null && session.Actor != null)
+			{
+				return Ok(session.Actor);
+			}
+
+			return HttpNotFound();
 		}
 
 		// GET: api/actors/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
