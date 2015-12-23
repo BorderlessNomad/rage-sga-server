@@ -37,6 +37,9 @@ namespace SocialGamificationAsset
 			// Add framework services.
 			services.AddMvc();
 
+			services.AddCaching(); // Adds a default in-memory implementation of IDistributedCache
+			services.AddSession();
+
 			// Add CORS support to the service
 			services.AddCors(options =>
 			{
@@ -58,7 +61,7 @@ namespace SocialGamificationAsset
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, SocialGamificationAssetInitializer seeder)
+		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, SocialGamificationAssetInitializer dbInitializer)
 		{
 			Debug.WriteLine("Starting ", Configuration["site_name"]);
 
@@ -80,12 +83,14 @@ namespace SocialGamificationAsset
 
 			app.UseStaticFiles();
 
-			app.UseMvcWithDefaultRoute();
+			app.UseSession();
 
 			app.UseCors("AllowAll");
 
+			app.UseMvcWithDefaultRoute();
+
 			// Seed the database with Test values
-			seeder.Seed();
+			dbInitializer.Seed();
 
 			app.UseSwaggerGen();
 			app.UseSwaggerUi();
