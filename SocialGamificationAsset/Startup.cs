@@ -108,7 +108,8 @@ namespace SocialGamificationAsset
 			app.UseMvcWithDefaultRoute();
 
 			// Seed the database with Test values
-			dbInitializer.Seed();
+			// TODO: https://github.com/aspnet/MusicStore/blob/master/src/MusicStore/Models/SampleData.cs
+			dbInitializer.Seed().Wait();
 
 			app.UseSwaggerGen();
 			app.UseSwaggerUi();

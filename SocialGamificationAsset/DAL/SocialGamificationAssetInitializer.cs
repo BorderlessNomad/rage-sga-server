@@ -2,6 +2,7 @@
 using System.Data.Entity.Validation;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Models
 {
@@ -14,7 +15,7 @@ namespace SocialGamificationAsset.Models
 			_context = context;
 		}
 
-		public void Seed()
+		public async Task Seed()
 		{
 			if (!_context.Tests.Any())
 			{
@@ -41,7 +42,7 @@ namespace SocialGamificationAsset.Models
 
 				try
 				{
-					_context.SaveChanges();
+					await _context.SaveChangesAsync();
 				}
 				catch (DbEntityValidationException e)
 				{
@@ -49,6 +50,42 @@ namespace SocialGamificationAsset.Models
 				}
 
 				Debug.WriteLine("Tests Created.");
+			}
+
+			if (!_context.Sessions.Any())
+			{
+				IList<Session> sessions = new List<Session>
+				{
+					new Session
+					{
+						Actor = new Actor
+						{
+							Username = "admin",
+							Password = "admin"
+						}
+					},
+					new Session
+					{
+						Actor = new Actor
+						{
+							Username = "mayur",
+							Password = "123456"
+						}
+					}
+				};
+
+				_context.Sessions.AddRange(sessions);
+
+				try
+				{
+					await _context.SaveChangesAsync();
+				}
+				catch (DbEntityValidationException e)
+				{
+					throw e;
+				}
+
+				Debug.WriteLine("Sessions Created.");
 			}
 		}
 	}
