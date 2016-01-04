@@ -1,159 +1,160 @@
-﻿using Boilerplate.Web.Mvc.Formatters;
-using Glimpse;
+﻿using Boilerplate.Web.Mvc;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
+using Microsoft.AspNet.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
-using Newtonsoft.Json.Serialization;
 using SocialGamificationAsset.Models;
-using SocialGamificationAsset.Policies;
-using System.Diagnostics;
 
 namespace SocialGamificationAsset
 {
-	public class Startup
+	/// <summary>
+	/// The main start-up class for the application.
+	/// </summary>
+	public partial class Startup
 	{
-		public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
+		#region Fields
+
+		/// <summary>
+		/// The location the application is running in.
+		/// </summary>
+		private readonly IApplicationEnvironment applicationEnvironment;
+
+		/// <summary>
+		/// Gets or sets the application configuration, where key value pair settings are stored. See
+		/// http://docs.asp.net/en/latest/fundamentals/configuration.html
+		/// http://weblog.west-wind.com/posts/2015/Jun/03/Strongly-typed-AppSettings-Configuration-in-ASPNET-5
+		/// </summary>
+		private readonly IConfiguration configuration;
+
+		/// <summary>
+		/// The environment the application is running under. This can be Development, Staging or Production by default.
+		/// To set the hosting environment on Windows:
+		/// 1. On your server, right click 'Computer' or 'My Computer' and click on 'Properties'.
+		/// 2. Go to 'Advanced System Settings'.
+		/// 3. Click on 'Environment Variables' in the Advanced tab.
+		/// 4. Add a new System Variable with the name 'ASPNET_ENV' and a value of Production, Staging or
+		/// whatever you want.
+		/// See http://docs.asp.net/en/latest/fundamentals/environments.html
+		/// </summary>
+		private readonly IHostingEnvironment hostingEnvironment;
+
+		#endregion Fields
+
+		#region Constructors
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Startup"/> class.
+		/// </summary>
+		/// <param name="applicationEnvironment">The location the application is running in.</param>
+		/// <param name="hostingEnvironment">The environment the application is running under. This can be Development,
+		/// Staging or Production by default.</param>
+		public Startup(
+			IApplicationEnvironment applicationEnvironment,
+			IHostingEnvironment hostingEnvironment)
 		{
-			IConfigurationBuilder builder = new ConfigurationBuilder();
-
-			// Set Base path same as Application's base path
-			builder.SetBasePath(appEnv.ApplicationBasePath);
-
-			// Add configuration from the config.json file.
-			builder.AddJsonFile("config.json");
-
-			// Add configuration from an optional config.development.json, config.staging.json or
-			// config.production.json file, depending on the environment. These settings override the ones in the
-			// config.json file.
-			builder.AddJsonFile($"config.{env.EnvironmentName}.json", optional: true);
-
-			// Add configuration specific to the Development, Staging or Production environments. This config can
-			// be stored on the machine being deployed to or if you are using Azure, in the cloud. These settings
-			// override the ones in all of the above config files.
-			builder.AddEnvironmentVariables();
-
-			Configuration = builder.Build();
+			this.applicationEnvironment = applicationEnvironment;
+			this.hostingEnvironment = hostingEnvironment;
+			this.configuration = ConfigureConfiguration(hostingEnvironment);
 		}
 
-		public IConfigurationRoot Configuration { get; set; }
+		#endregion Constructors
 
-		// This method gets called by the runtime. Use this method to add services to the container.
+		/// <summary>
+		/// Entry point for the application.
+		/// </summary>
+		public static void Main(string[] args) => WebApplication.Run<Startup>(args);
+
+		#region Public Methods
+
+		/// <summary>
+		/// Configures the services to add to the ASP.NET MVC 6 Injection of Control (IoC) container. This method gets
+		/// called by the ASP.NET runtime. See:
+		/// http://blogs.msdn.com/b/webdev/archive/2014/06/17/dependency-injection-in-asp-net-vnext.aspx
+		/// </summary>
+		/// <param name="services">The services collection or IoC container.</param>
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddSingleton<IConfiguration>(_ => Configuration);
+			ConfigureDebuggingServices(services, this.hostingEnvironment);
 
-			// Add Application Context
-			services.AddScoped<SocialGamificationAssetContext>();
+			ConfigureOptionsServices(services, this.configuration);
 
-			// Add DB Initiliazer Service
-			services.AddTransient<SocialGamificationAssetInitializer>();
+			ConfigureApplicationServices(services, this.configuration);
 
-			// Add MVC services to the services container
-			services.AddMvc(options =>
-			{
-			});
+			ConfigureCachingServices(services);
 
-			// Add memory cache services
-			services.AddCaching();
+			// Configure MVC routing. We store the route options for use by ConfigureSearchEngineOptimizationFilters.
+			RouteOptions routeOptions = null;
 
-			// Add session related services.
-			services.AddSession();
-
-			// Add CORS support to the service
-			services.AddCors(options =>
-			{
-				options.AddPolicy("AllowAll", builder =>
+			services.ConfigureRouting(
+				x =>
 				{
-					builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+					routeOptions = x;
+
+					ConfigureRouting(services, x);
 				});
-			});
 
-			// Configure Auth
-			services.AddSingleton<ISessionAuthorizeFilter, SessionAuthorizeFilter>();
-
-			// SWASHBUCKLE SWAGGER API Documentation Generator
-			services.AddSwaggerGen();
-			services.ConfigureSwaggerDocument(options =>
-			{
-				options.SingleApiVersion(new Swashbuckle.SwaggerGen.Info
+			// Add many MVC services to the services container.
+			IMvcBuilder mvcBuilder = services.AddMvc(
+				mvcOptions =>
 				{
-					Version = "v1",
-					Title = "Social Gamification API",
-					Description = "This module allows to layer game mechanics affording game-inspired social relations and interactions on top a system to support engagement, collaboration, and learning. Two main forms of social interaction are supported: player-player interactions (such as matches) and group interactions (such as shared team goals or team vs. team competitions).",
-					TermsOfService = "GPLv3"
-				});
-			});
+					ConfigureCacheProfiles(mvcOptions.CacheProfiles, this.configuration);
 
-			// Add Glimpse to help with debugging (See http://getglimpse.com/).
-			services.AddGlimpse();
+					ConfigureSearchEngineOptimizationFilters(mvcOptions.Filters, routeOptions);
+
+					ConfigureSecurityFilters(this.hostingEnvironment, mvcOptions.Filters);
+				});
+
+			ConfigureFormatters(mvcBuilder);
+
+			ConfigureSessionServices(services);
+
+			ConfigureDocumentationGeneratorServices(services);
 		}
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env, IMvcBuilder mvcBuilder, ILoggerFactory loggerFactory, SocialGamificationAssetInitializer dbInitializer)
+		/// <summary>
+		/// Configures the application and HTTP request pipeline. Configure is called after ConfigureServices is
+		/// called by the ASP.NET runtime.
+		/// </summary>
+		/// <param name="application">The application.</param>
+		/// <param name="loggerfactory">The logger factory.</param>
+		public void Configure(IApplicationBuilder application, ILoggerFactory loggerfactory, SocialGamificationAssetInitializer dbInitializer)
 		{
-			Debug.WriteLine("Starting ", Configuration["site_name"]);
+			// Give the ASP.NET MVC Boilerplate NuGet package assembly access to the HttpContext, so it can generate
+			// absolute URL's and get the current request path.
+			application.UseBoilerplate();
 
-			// Configures the JSON output formatter to use camel case property names like 'propertyName' instead of
-			// pascal case 'PropertyName' as this is the more common JavaScript/JSON style.
-			mvcBuilder.AddJsonOptions(x => x.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
+			// Add the IIS platform handler to the request pipeline.
+			application.UseIISPlatformHandler();
 
-			loggerFactory.AddConsole(minLevel: LogLevel.Warning);
-			loggerFactory.AddDebug();
+			// Add static files to the request pipeline e.g. hello.html or world.css.
+			application.UseStaticFiles();
 
-			// Add the following services only in development environment.
-			if (env.IsDevelopment())
-			{
-				// Browse to /runtimeinfo to see information about the runtime that is being used and the packages that
-				// are included in the application. See http://docs.asp.net/en/latest/fundamentals/diagnostics.html
-				app.UseRuntimeInfoPage();
+			ConfigureDebugging(application, this.hostingEnvironment);
 
-				// Allow updates to your files in Visual Studio to be shown in the browser. You can use the Refresh
-				// browser link button in the Visual Studio toolbar or Ctrl+Alt+Enter to refresh the browser.
-				app.UseBrowserLink();
+			ConfigureLogging(application, this.hostingEnvironment, loggerfactory, this.configuration);
 
-				// When an error occurs, displays a detailed error page with full diagnostic information. It is unsafe
-				// to use this in production. See http://docs.asp.net/en/latest/fundamentals/diagnostics.html
-				app.UseDeveloperExceptionPage();
+			ConfigureErrorPages(application, this.hostingEnvironment);
 
-				// When a database error occurs, displays a detailed error page with full diagnostic information. It is
-				// unsafe to use this in production.
-				app.UseDatabaseErrorPage();
+			ConfigureSecurity(application, this.hostingEnvironment);
 
-				// Add Glimpse to help with debugging (See http://getglimpse.com/).
-				app.UseGlimpse();
-			}
-			else
-			{
-				// app.UseExceptionHandler("/Home/Error");
-				app.UseStatusCodePagesWithReExecute("/error/{0}");
-			}
+			ConfigureSession(application);
 
-			app.UseIISPlatformHandler();
+			ConfigureCors(application);
 
-			// Configure Session.
-			app.UseSession();
+			// Add MVC to the request pipeline.
+			application.UseMvcWithDefaultRoute();
 
-			// Add static files to the request pipeline
-			app.UseStaticFiles();
+			// Add a 404 Not Found error page for visiting /this-resource-does-not-exist.
+			Configure404NotFoundErrorPage(application, this.hostingEnvironment);
 
-			app.UseCors("AllowAll");
+			ConfigureDocumentationGenerator(application);
 
-			app.UseMvcWithDefaultRoute();
-
-			// Seed the database with Test values
-			// TODO: https://github.com/aspnet/MusicStore/blob/master/src/MusicStore/Models/SampleData.cs
-			dbInitializer.Seed().Wait();
-
-			app.UseSwaggerGen();
-			app.UseSwaggerUi();
-
-			// TODO: HTTPS https://github.com/RehanSaeed/ASP.NET-MVC-Boilerplate/blob/master/Source/MVC6/Boilerplate.Web.Mvc6.Sample/Startup.ContentSecurityPolicy.cs
+			InitializeDatabase(dbInitializer);
 		}
 
-		// Entry point for the application.
-		public static void Main(string[] args) => WebApplication.Run<Startup>(args);
+		#endregion Public Methods
 	}
 }

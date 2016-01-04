@@ -36,6 +36,7 @@
 		"MySql.Data": "6.9.8",
 		"MySql.Data.Entity": "6.9.8",
 		"MySql.Web": "6.9.8",
+		"NWebsec.Mvc": "5.0.0-gamma-39",
 		"Swashbuckle": "6.0.0-rc1-final"
 	},
 	"commands": {

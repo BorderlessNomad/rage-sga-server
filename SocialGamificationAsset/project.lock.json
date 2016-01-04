@@ -2136,6 +2136,63 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
+      "NWebsec.Core/2.0.0-gamma-39": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Abstractions": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/NWebsec.Core.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/NWebsec.Core.dll": {}
+        }
+      },
+      "NWebsec.Middleware/1.0.0-gamma-39": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Abstractions": "1.0.0-rc1-final",
+          "NWebsec.Core": "2.0.0-gamma-39"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/NWebsec.Middleware.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/NWebsec.Middleware.dll": {}
+        }
+      },
+      "NWebsec.Mvc/5.0.0-gamma-39": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
+          "NWebsec.Core": "2.0.0-gamma-39",
+          "NWebsec.Middleware": "1.0.0-gamma-39"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/NWebsec.Mvc.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/NWebsec.Mvc.dll": {}
+        }
+      },
       "Remotion.Linq/2.0.1": {
         "type": "package",
         "compile": {
@@ -4605,6 +4662,63 @@
         },
         "runtime": {
           "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "NWebsec.Core/2.0.0-gamma-39": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Abstractions": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/NWebsec.Core.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/NWebsec.Core.dll": {}
+        }
+      },
+      "NWebsec.Middleware/1.0.0-gamma-39": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Abstractions": "1.0.0-rc1-final",
+          "NWebsec.Core": "2.0.0-gamma-39"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/NWebsec.Middleware.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/NWebsec.Middleware.dll": {}
+        }
+      },
+      "NWebsec.Mvc/5.0.0-gamma-39": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
+          "NWebsec.Core": "2.0.0-gamma-39",
+          "NWebsec.Middleware": "1.0.0-gamma-39"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/NWebsec.Mvc.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/NWebsec.Mvc.dll": {}
         }
       },
       "Remotion.Linq/2.0.1": {
@@ -7078,6 +7192,63 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
+      "NWebsec.Core/2.0.0-gamma-39": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Abstractions": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/NWebsec.Core.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/NWebsec.Core.dll": {}
+        }
+      },
+      "NWebsec.Middleware/1.0.0-gamma-39": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Abstractions": "1.0.0-rc1-final",
+          "NWebsec.Core": "2.0.0-gamma-39"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/NWebsec.Middleware.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/NWebsec.Middleware.dll": {}
+        }
+      },
+      "NWebsec.Mvc/5.0.0-gamma-39": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
+          "NWebsec.Core": "2.0.0-gamma-39",
+          "NWebsec.Middleware": "1.0.0-gamma-39"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/NWebsec.Mvc.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/NWebsec.Mvc.dll": {}
+        }
+      },
       "Remotion.Linq/2.0.1": {
         "type": "package",
         "compile": {
@@ -9222,6 +9393,51 @@
         "tools/install.ps1"
       ]
     },
+    "NWebsec.Core/2.0.0-gamma-39": {
+      "type": "package",
+      "sha512": "XeMPgnUYtYHn9ie2QquSB9oqklHsHuAMHpGp4dIk0MH9LsHfqynN8vX/2Bmw0+qTjZNXA4tb5wxiA4VMcDbUiQ==",
+      "files": [
+        "lib/dnx451/NWebsec.Core.dll",
+        "lib/dnx451/NWebsec.Core.xml",
+        "lib/dotnet5.4/NWebsec.Core.dll",
+        "lib/dotnet5.4/NWebsec.Core.xml",
+        "lib/net451/NWebsec.Core.dll",
+        "lib/net451/NWebsec.Core.xml",
+        "NWebsec.Core.2.0.0-gamma-39.nupkg",
+        "NWebsec.Core.2.0.0-gamma-39.nupkg.sha512",
+        "NWebsec.Core.nuspec"
+      ]
+    },
+    "NWebsec.Middleware/1.0.0-gamma-39": {
+      "type": "package",
+      "sha512": "n3DC2qevCYw+wN6ykJQ4iJk/CKt4WCw5PziuJkkgSnMk/gC2Ghce6Wr37V7Mh9PzzVAA0iOVxu1GgIo5MK7Wsw==",
+      "files": [
+        "lib/dnx451/NWebsec.Middleware.dll",
+        "lib/dnx451/NWebsec.Middleware.xml",
+        "lib/dotnet5.4/NWebsec.Middleware.dll",
+        "lib/dotnet5.4/NWebsec.Middleware.xml",
+        "lib/net451/NWebsec.Middleware.dll",
+        "lib/net451/NWebsec.Middleware.xml",
+        "NWebsec.Middleware.1.0.0-gamma-39.nupkg",
+        "NWebsec.Middleware.1.0.0-gamma-39.nupkg.sha512",
+        "NWebsec.Middleware.nuspec"
+      ]
+    },
+    "NWebsec.Mvc/5.0.0-gamma-39": {
+      "type": "package",
+      "sha512": "EhjbghOOHtgcYl1RPOIv8ZrIt0jIcHEqOQlwftx1kfIUL9JVeDztoyuQ5Twj9EZHuirdvhEBmlgoqaPyxP+0bg==",
+      "files": [
+        "lib/dnx451/NWebsec.Mvc.dll",
+        "lib/dnx451/NWebsec.Mvc.xml",
+        "lib/dotnet5.4/NWebsec.Mvc.dll",
+        "lib/dotnet5.4/NWebsec.Mvc.xml",
+        "lib/net451/NWebsec.Mvc.dll",
+        "lib/net451/NWebsec.Mvc.xml",
+        "NWebsec.Mvc.5.0.0-gamma-39.nupkg",
+        "NWebsec.Mvc.5.0.0-gamma-39.nupkg.sha512",
+        "NWebsec.Mvc.nuspec"
+      ]
+    },
     "Remotion.Linq/2.0.1": {
       "type": "package",
       "sha512": "SIO6HDH6CU9GC2IZGBrc6q5X5vRhfatXrg9cVavCEG9W6v5e88b+vXjmLGQEorch4sYEIImRr+ODyUMyrmrqAg==",
@@ -10251,6 +10467,7 @@
       "MySql.Data >= 6.9.8",
       "MySql.Data.Entity >= 6.9.8",
       "MySql.Web >= 6.9.8",
+      "NWebsec.Mvc >= 5.0.0-gamma-39",
       "Swashbuckle >= 6.0.0-rc1-final"
     ],
     "DNX,Version=v4.5.1": [
