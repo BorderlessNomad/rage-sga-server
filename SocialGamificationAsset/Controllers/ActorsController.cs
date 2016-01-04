@@ -23,7 +23,7 @@ namespace SocialGamificationAsset.Controllers
 			get { return GetSession(); }
 		}
 
-		public Session GetSession()
+		protected Session GetSession()
 		{
 			if (_session == null)
 			{
