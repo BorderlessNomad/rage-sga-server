@@ -18,9 +18,12 @@ namespace SocialGamificationAsset
 			CacheProfileSettings cacheProfileSettings = new CacheProfileSettings();
 			ConfigurationBinder.Bind(configurationSection, cacheProfileSettings);
 
-			foreach (KeyValuePair<string, CacheProfile> keyValuePair in cacheProfileSettings.CacheProfiles)
+			if (cacheProfileSettings.CacheProfiles != null)
 			{
-				cacheProfiles.Add(keyValuePair);
+				foreach (KeyValuePair<string, CacheProfile> keyValuePair in cacheProfileSettings.CacheProfiles)
+				{
+					cacheProfiles.Add(keyValuePair);
+				}
 			}
 		}
 	}

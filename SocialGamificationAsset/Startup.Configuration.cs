@@ -29,7 +29,7 @@ namespace SocialGamificationAsset
 			// and other sensitive settings, so you don't have to check them into your source control provider. See
 			// http://go.microsoft.com/fwlink/?LinkID=532709 and
 			// http://docs.asp.net/en/latest/security/app-secrets.html
-			configurationBuilder.AddUserSecrets();
+			// configurationBuilder.AddUserSecrets();
 
 			// Add configuration specific to the Development, Staging or Production environments. This config can
 			// be stored on the machine being deployed to or if you are using Azure, in the cloud. These settings
