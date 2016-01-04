@@ -1,19 +1,19 @@
 ﻿{
-    "site_name": "Social Gamification Asset",
-    "Data": {
-        "DefaultConnection": {
-            "ConnectionString": "Server=(localdb)\\MSSQLLocalDB;Database=SocialGamificationAsset;Trusted_Connection=True;MultipleActiveResultSets=true"
-        },
-        "MySQLConnection": {
-            "ConnectionString": "Server=localhost;Port=3306;Database=SocialGamificationAsset;Uid=root;Pwd=root;"
-        }
-    },
-    "Logging": {
-        "IncludeScopes": false,
-        "LogLevel": {
-            "Default": "Verbose",
-            "System": "Information",
-            "Microsoft": "Information"
-        }
-    }
+	"site_name": "Social Gamification Asset",
+	"Data": {
+		"DefaultConnection": {
+			"ConnectionString": "Server=(localdb)\\MSSQLLocalDB;Database=SocialGamificationAsset;Trusted_Connection=True;MultipleActiveResultSets=true"
+		},
+		"MySQLConnection": {
+			"ConnectionString": "Server=localhost;Port=3306;Database=SocialGamificationAsset;Uid=root;Pwd=root;"
+		}
+	},
+	"Logging": {
+		"IncludeScopes": false,
+		"LogLevel": {
+			"Default": "Verbose",
+			"System": "Information",
+			"Microsoft": "Information"
+		}
+	}
 }
