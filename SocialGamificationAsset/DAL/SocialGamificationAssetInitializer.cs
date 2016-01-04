@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Diagnostics;
 using System.Linq;
@@ -8,18 +10,15 @@ namespace SocialGamificationAsset.Models
 {
 	public class SocialGamificationAssetInitializer
 	{
-		private readonly SocialGamificationAssetContext _context;
-
-		public SocialGamificationAssetInitializer(SocialGamificationAssetContext context)
+		public static async Task InitializeDatabaseAsync(IServiceProvider serviceProvider)
 		{
-			_context = context;
-		}
-
-		public async Task Seed()
-		{
-			if (!_context.Tests.Any())
+			using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
 			{
-				IList<Test> tests = new List<Test>
+				var _context = serviceScope.ServiceProvider.GetService<SocialGamificationAssetContext>();
+
+				if (!_context.Tests.Any())
+				{
+					IList<Test> tests = new List<Test>
 				{
 					new Test
 					{
@@ -38,23 +37,23 @@ namespace SocialGamificationAsset.Models
 					},
 				};
 
-				_context.Tests.AddRange(tests);
+					_context.Tests.AddRange(tests);
 
-				try
-				{
-					await _context.SaveChangesAsync();
+					try
+					{
+						await _context.SaveChangesAsync();
+					}
+					catch (DbEntityValidationException e)
+					{
+						throw e;
+					}
+
+					Debug.WriteLine("Tests Created.");
 				}
-				catch (DbEntityValidationException e)
+
+				if (!_context.Sessions.Any())
 				{
-					throw e;
-				}
-
-				Debug.WriteLine("Tests Created.");
-			}
-
-			if (!_context.Sessions.Any())
-			{
-				IList<Session> sessions = new List<Session>
+					IList<Session> sessions = new List<Session>
 				{
 					new Session
 					{
@@ -74,18 +73,19 @@ namespace SocialGamificationAsset.Models
 					}
 				};
 
-				_context.Sessions.AddRange(sessions);
+					_context.Sessions.AddRange(sessions);
 
-				try
-				{
-					await _context.SaveChangesAsync();
-				}
-				catch (DbEntityValidationException e)
-				{
-					throw e;
-				}
+					try
+					{
+						await _context.SaveChangesAsync();
+					}
+					catch (DbEntityValidationException e)
+					{
+						throw e;
+					}
 
-				Debug.WriteLine("Sessions Created.");
+					Debug.WriteLine("Sessions Created.");
+				}
 			}
 		}
 	}

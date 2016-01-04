@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNet.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SocialGamificationAsset.Models;
 
@@ -15,9 +16,9 @@ namespace SocialGamificationAsset
 			services.AddTransient<SocialGamificationAssetInitializer>();
 		}
 
-		private static void InitializeDatabase(SocialGamificationAssetInitializer dbInitializer)
+		private static void ConfigureDatabaseInitialization(IApplicationBuilder application)
 		{
-			dbInitializer.Seed().Wait();
+			SocialGamificationAssetInitializer.InitializeDatabaseAsync(application.ApplicationServices).Wait();
 		}
 	}
 }

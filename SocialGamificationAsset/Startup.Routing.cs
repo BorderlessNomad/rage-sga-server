@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using SocialGamificationAsset.Policies;
 
 namespace SocialGamificationAsset
 {

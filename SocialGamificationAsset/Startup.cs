@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
-using SocialGamificationAsset.Models;
 
 namespace SocialGamificationAsset
 {
@@ -120,7 +119,7 @@ namespace SocialGamificationAsset
 		/// </summary>
 		/// <param name="application">The application.</param>
 		/// <param name="loggerfactory">The logger factory.</param>
-		public void Configure(IApplicationBuilder application, ILoggerFactory loggerfactory, SocialGamificationAssetInitializer dbInitializer)
+		public void Configure(IApplicationBuilder application, ILoggerFactory loggerfactory)
 		{
 			// Give the ASP.NET MVC Boilerplate NuGet package assembly access to the HttpContext, so it can generate
 			// absolute URL's and get the current request path.
@@ -152,7 +151,8 @@ namespace SocialGamificationAsset
 
 			ConfigureDocumentationGenerator(application);
 
-			InitializeDatabase(dbInitializer);
+			// Seed the database with Test values
+			ConfigureDatabaseInitialization(application);
 		}
 
 		#endregion Public Methods
