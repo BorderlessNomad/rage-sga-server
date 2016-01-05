@@ -21,7 +21,7 @@ namespace SocialGamificationAsset
 			if (environment.IsDevelopment())
 			{
 				// Add Glimpse to help with debugging (See http://getglimpse.com/).
-				services.AddGlimpse();
+				// services.AddGlimpse();
 			}
 		}
 
@@ -47,7 +47,7 @@ namespace SocialGamificationAsset
 				application.UseBrowserLink();
 
 				// Add Glimpse to help with debugging (See http://getglimpse.com/).
-				application.UseGlimpse();
+				// application.UseGlimpse();
 			}
 		}
 	}

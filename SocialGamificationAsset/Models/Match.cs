@@ -19,7 +19,7 @@ namespace SocialGamificationAsset.Models
 
 		public bool Finished { get; set; }
 
-		public ICollection<MatchRound> Rounds { get; set; }
+		// public virtual ICollection<MatchRound> Rounds { get; set; } // Make this Virtual method
 
 		public Match()
 		{
@@ -44,6 +44,8 @@ namespace SocialGamificationAsset.Models
 		public int Actors { get; set; }
 
 		public int Rounds { get; set; }
+
+		public Guid? Tournament { get; set; }
 
 		public QuickMatch()
 		{

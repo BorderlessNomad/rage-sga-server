@@ -116,7 +116,7 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			IList<Actor> actors = actors = session.Actor.LoadRandom(_context, quickMatch.FriendsOnly, quickMatch.Actors);
+			IList<Actor> actors = actors = session.Actor.LoadRandom(_context, quickMatch.FriendsOnly, quickMatch.Actors - 1);
 			actors.Add(session.Actor);
 
 			if (actors.Count() < quickMatch.Actors)
@@ -125,21 +125,31 @@ namespace SGAControllers.Controllers
 				return HttpNotFound("No " + verb + " available for match at this moment.");
 			}
 
-			// Create Tournament
-			Tournament tournament = new Tournament()
+			Tournament tournament;
+			if (quickMatch.Tournament.HasValue && quickMatch.Tournament != Guid.Empty)
 			{
-				OwnerId = session.Actor.Id
-			};
-
-			_context.Tournaments.Add(tournament);
-
-			try
-			{
-				await _context.SaveChangesAsync();
+				tournament = _context.Tournaments.Find(quickMatch.Tournament);
+				if (tournament == null)
+				{
+					return HttpBadRequest("Invalid Tournament.");
+				}
 			}
-			catch (DbEntityValidationException e)
-			{
-				throw e;
+			else {
+				tournament = new Tournament()
+				{
+					OwnerId = session.Actor.Id
+				};
+
+				_context.Tournaments.Add(tournament);
+
+				try
+				{
+					await _context.SaveChangesAsync();
+				}
+				catch (DbEntityValidationException e)
+				{
+					throw e;
+				}
 			}
 
 			// Create Match
@@ -167,18 +177,32 @@ namespace SGAControllers.Controllers
 				}
 			}
 
-			for (int i = 1; i <= match.TotalRounds; ++i)
+			foreach (Actor actor in actors)
 			{
-				foreach (Actor actor in actors)
+				// Add actors to this match
+				MatchActor matchActor = new MatchActor()
 				{
-					// Add Round & Assign Actors
+					MatchId = match.Id,
+					ActorId = actor.Id
+				};
+
+				_context.MatchActors.Add(matchActor);
+
+				try
+				{
+					await _context.SaveChangesAsync();
+				}
+				catch (DbEntityValidationException e)
+				{
+					throw e;
+				}
+
+				for (int i = 1; i <= match.TotalRounds; ++i)
+				{
+					// Add round(s) entry for each Actor
 					MatchRound matchRound = new MatchRound()
 					{
-						MatchActor = new MatchActor()
-						{
-							MatchId = match.Id,
-							ActorId = actor.Id
-						}
+						MatchActorId = matchActor.Id
 					};
 
 					_context.MatchRounds.Add(matchRound);

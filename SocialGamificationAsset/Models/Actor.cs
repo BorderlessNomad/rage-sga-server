@@ -48,7 +48,7 @@ namespace SocialGamificationAsset.Models
 			}
 			else
 			{
-				actors = db.Actors.ToList();
+				actors = db.Actors.Where(a => a.Id != this.Id).ToList();
 			}
 
 			Helper.Shuffle(actors, limit);
