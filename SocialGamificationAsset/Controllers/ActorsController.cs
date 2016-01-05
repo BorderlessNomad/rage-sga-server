@@ -79,25 +79,6 @@ namespace SocialGamificationAsset.Controllers
 			return Ok(actor);
 		}
 
-		// GET: api/actors/loadrandomfriends
-		[HttpGet]
-		[Route("loadrandomfriends")]
-		public async Task<IActionResult> LoadRandomFriends([FromQuery] int limit = -1)
-		{
-			if (session == null || session.Actor == null)
-			{
-				return HttpNotFound();
-			}
-
-			Actor actor = session.Actor;
-
-			List<Friend> friends = actor.Friends.Where(f => f.State.Equals(FriendState.Accepted)).ToList();
-
-			Helper.Shuffle(friends);
-
-			return Ok(friends);
-		}
-
 		// PUT: api/actors/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
 		[HttpPut("{id:Guid}")]
 		public async Task<IActionResult> PutActor([FromRoute] Guid id, [FromBody] Actor actor)
