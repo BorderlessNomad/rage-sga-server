@@ -1,8 +1,8 @@
 ﻿{
-	"site_name": "Social Gamification Asset - Dev",
-	"Data": {
-		"MySQLConnection": {
-			"ConnectionString": "Server=localhost;Port=3306;Database=SocialGamificationAsset;Uid=root;Pwd=;"
-		}
-	},
+    "site_name": "Social Gamification Asset - Dev",
+    "Data": {
+        "MySQLConnection": {
+            "ConnectionString": "Server=localhost;Port=3306;Database=SocialGamificationAsset;Uid=root;Pwd=root;"
+        }
+    },
 }
