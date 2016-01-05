@@ -24,7 +24,7 @@ namespace SGAControllers.Controllers
 		[HttpGet]
 		public IEnumerable<Group> GetGroups()
 		{
-			return _context.Groups;
+			return _context.Groups.ToList();
 		}
 
 		// GET: api/groups/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
