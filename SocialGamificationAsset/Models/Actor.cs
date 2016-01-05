@@ -42,7 +42,7 @@ namespace SocialGamificationAsset.Models
 		{
 			List<Friend> friends = this.Friends.Where(f => f.State.Equals(FriendState.Accepted)).ToList();
 
-			Helper.Shuffle(friends);
+			Helper.Shuffle(friends, limit);
 
 			return friends;
 		}
