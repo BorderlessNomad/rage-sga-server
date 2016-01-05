@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Mvc;
 using Microsoft.Data.Entity;
 using SocialGamificationAsset.Models;
+using SocialGamificationAsset.Policies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,21 @@ namespace SGAControllers.Controllers
 	{
 		private SocialGamificationAssetContext _context;
 
-		public MatchesController(SocialGamificationAssetContext context)
+		private Session _session;
+
+		public Session session
 		{
-			_context = context;
+			get { return GetSession(); }
+		}
+
+		protected Session GetSession()
+		{
+			if (_session == null)
+			{
+				_session = HttpContext.Session.GetObjectFromJson<Session>("__session");
+			}
+
+			return _session;
 		}
 
 		// GET: api/matches
@@ -81,16 +94,44 @@ namespace SGAControllers.Controllers
 			return new HttpStatusCodeResult(StatusCodes.Status204NoContent);
 		}
 
+		// Creates a Quick Match between logged account and a random user
 		// POST: api/matches
 		[HttpPost]
-		public async Task<IActionResult> PostMatch([FromBody] Match match)
+		public async Task<IActionResult> PostMatch([FromBody] QuickMatch quickMatch)
 		{
+			if (session == null || session.Actor == null)
+			{
+				return HttpNotFound();
+			}
+
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
+			List<Actor> actors = new List<Actor> { session.Actor };
+			if (quickMatch.FriendsOnly)
+			{
+				// Get one random Online Friend
+			}
+			else
+			{
+				// Get one random Online Player
+			}
+
+			if (actors.Count() < quickMatch.Actors)
+			{
+				string verb = (quickMatch.Type == MatchType.Player) ? "Players" : "Groups";
+				return HttpNotFound("No " + verb + " available for match at this moment.");
+			}
+
+			Match match = new Match()
+			{
+				TotalRounds = quickMatch.Rounds
+			};
+
 			_context.Matches.Add(match);
+
 			try
 			{
 				await _context.SaveChangesAsync();
@@ -104,6 +145,45 @@ namespace SGAControllers.Controllers
 				else
 				{
 					throw;
+				}
+			}
+
+			for (int i = 1; i <= match.TotalRounds; ++i)
+			{
+				foreach (Actor actor in actors)
+				{
+					MatchActor matchActor = new MatchActor()
+					{
+						MatchId = match.Id,
+						ActorId = actor.Id
+					};
+
+					_context.MatchActors.Add(matchActor);
+
+					try
+					{
+						await _context.SaveChangesAsync();
+					}
+					catch (DbUpdateException)
+					{
+						throw;
+					}
+
+					MatchRound matchRound = new MatchRound()
+					{
+						MatchActorId = matchActor.Id
+					};
+
+					_context.MatchRounds.Add(matchRound);
+
+					try
+					{
+						await _context.SaveChangesAsync();
+					}
+					catch (DbUpdateException)
+					{
+						throw;
+					}
 				}
 			}
 
