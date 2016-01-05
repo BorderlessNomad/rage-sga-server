@@ -66,6 +66,25 @@ namespace SGAControllers.Controllers
 			return Ok(match);
 		}
 
+		// GET: api/matches/936DA01F-9ABD-4d9d-80C7-02AF85C822A8/actors
+		[HttpGet("{id:Guid}/actors", Name = "GetMatchActors")]
+		public async Task<IActionResult> GetMatchActors([FromRoute] Guid id)
+		{
+			if (!ModelState.IsValid)
+			{
+				return HttpBadRequest(ModelState);
+			}
+
+			Match match = await _context.Matches.FindAsync(id);
+
+			if (match == null)
+			{
+				return HttpNotFound();
+			}
+
+			return Ok(match.Actors);
+		}
+
 		// PUT: api/matches/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
 		[HttpPut("{id:Guid}")]
 		public async Task<IActionResult> PutMatch([FromRoute] Guid id, [FromBody] Match match)
@@ -104,7 +123,7 @@ namespace SGAControllers.Controllers
 		// Creates a Quick Match between logged account and a random user
 		// POST: api/matches
 		[HttpPost]
-		public async Task<IActionResult> PostMatch([FromBody] QuickMatch quickMatch)
+		public async Task<IActionResult> CreateQuickMatch([FromBody] QuickMatch quickMatch)
 		{
 			if (session == null || session.Actor == null)
 			{
@@ -128,13 +147,14 @@ namespace SGAControllers.Controllers
 			Tournament tournament;
 			if (quickMatch.Tournament.HasValue && quickMatch.Tournament != Guid.Empty)
 			{
-				tournament = _context.Tournaments.Find(quickMatch.Tournament);
+				tournament = await _context.Tournaments.FindAsync(quickMatch.Tournament);
 				if (tournament == null)
 				{
 					return HttpBadRequest("Invalid Tournament.");
 				}
 			}
-			else {
+			else
+			{
 				tournament = new Tournament()
 				{
 					OwnerId = session.Actor.Id

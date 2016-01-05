@@ -19,6 +19,8 @@ namespace SocialGamificationAsset.Models
 
 		public bool Finished { get; set; }
 
+		public virtual ICollection<MatchActor> Actors { get; set; }
+
 		// public virtual ICollection<MatchRound> Rounds { get; set; } // Make this Virtual method
 
 		public Match()
