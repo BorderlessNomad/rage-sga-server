@@ -55,7 +55,7 @@ namespace SocialGamificationAsset.Controllers
 
 		// GET: api/actors
 		[HttpGet]
-		public async Task<IActionResult> GetActor()
+		public async Task<IActionResult> GetActors()
 		{
 			return Ok(_context.Actors.ToList());
 		}
