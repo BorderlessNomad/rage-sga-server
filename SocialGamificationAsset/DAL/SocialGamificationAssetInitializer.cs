@@ -10,50 +10,54 @@ namespace SocialGamificationAsset.Models
 {
 	public class SocialGamificationAssetInitializer
 	{
-		public static async Task InitializeDatabaseAsync(IServiceProvider serviceProvider)
+		public static async Task InitializeDatabase(IServiceProvider serviceProvider, bool isAsync = false)
 		{
 			using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
 			{
 				var _context = serviceScope.ServiceProvider.GetService<SocialGamificationAssetContext>();
 
-				if (!_context.Tests.Any())
-				{
-					IList<Test> tests = new List<Test>
+				await CreateTests(_context, isAsync);
+
+				await CreateActorSessions(_context, isAsync);
+			}
+		}
+
+		protected static async Task CreateTests(SocialGamificationAssetContext _context, bool isAsync = false)
+		{
+			if (!_context.Tests.Any())
+			{
+				IList<Test> tests = new List<Test>
 				{
 					new Test
 					{
-						Username = "test1",
-						Password = "test1"
+						Field1 = "test1",
+						Field2 = "test1"
 					},
 					new Test
 					{
-						Username = "test2",
-						Password = "test2"
+						Field1 = "test2",
+						Field2 = "test2"
 					},
 					new Test
 					{
-						Username = "test3",
-						Password = "test3"
+						Field1 = "test3",
+						Field2 = "test3"
 					},
 				};
 
-					_context.Tests.AddRange(tests);
+				_context.Tests.AddRange(tests);
 
-					try
-					{
-						await _context.SaveChangesAsync();
-					}
-					catch (DbEntityValidationException e)
-					{
-						throw e;
-					}
+				await SaveChanges(_context, isAsync);
 
-					Debug.WriteLine("Tests Created.");
-				}
+				Debug.WriteLine("Tests Created.");
+			}
+		}
 
-				if (!_context.Sessions.Any())
-				{
-					IList<Session> sessions = new List<Session>
+		protected static async Task CreateActorSessions(SocialGamificationAssetContext _context, bool isAsync = false)
+		{
+			if (!_context.Sessions.Any())
+			{
+				IList<Session> sessions = new List<Session>
 				{
 					new Session
 					{
@@ -73,19 +77,30 @@ namespace SocialGamificationAsset.Models
 					}
 				};
 
-					_context.Sessions.AddRange(sessions);
+				_context.Sessions.AddRange(sessions);
 
-					try
-					{
-						await _context.SaveChangesAsync();
-					}
-					catch (DbEntityValidationException e)
-					{
-						throw e;
-					}
+				await SaveChanges(_context, isAsync);
 
-					Debug.WriteLine("Sessions Created.");
+				Debug.WriteLine("Actors & Sessions Created.");
+			}
+		}
+
+		protected static async Task SaveChanges(SocialGamificationAssetContext _context, bool isAsync = false)
+		{
+			try
+			{
+				if (isAsync)
+				{
+					await _context.SaveChangesAsync();
 				}
+				else
+				{
+					_context.SaveChanges();
+				}
+			}
+			catch (DbEntityValidationException e)
+			{
+				throw e;
 			}
 		}
 	}

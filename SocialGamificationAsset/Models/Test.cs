@@ -5,8 +5,8 @@ namespace SocialGamificationAsset.Models
 	public class Test : Model
 	{
 		[Required]
-		public string Username { get; set; }
+		public string Field1 { get; set; }
 
-		public string Password { get; set; }
+		public string Field2 { get; set; }
 	}
 }

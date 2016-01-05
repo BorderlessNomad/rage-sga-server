@@ -17,8 +17,10 @@ namespace SocialGamificationAsset.Policies
 	public class SessionAuthorizeFilter : IAsyncAuthorizationFilter, ISessionAuthorizeFilter
 	{
 		public const string SessionHeaderName = "X-HTTP-SESSION";
+		public const string DocumentationApiKey = "api_key";
+		public const string DocumentationApiValue = "00000000-0000-0000-0000-000000000000";
 
-		public virtual async Task OnAuthorizationAsync(Microsoft.AspNet.Mvc.Filters.AuthorizationContext context)
+		public virtual async Task OnAuthorizationAsync(AuthorizationContext context)
 		{
 			if (context == null)
 			{
@@ -32,6 +34,21 @@ namespace SocialGamificationAsset.Policies
 			}
 
 			HttpContext httpContext = context.HttpContext;
+
+			// Check if Request is from Documentation Generator
+			String documentationApiKey = httpContext.Request.Query[DocumentationApiKey];
+			if (!String.IsNullOrEmpty(documentationApiKey))
+			{
+				if (documentationApiKey.Equals(DocumentationApiValue, StringComparison.InvariantCultureIgnoreCase))
+				{
+					return;
+				}
+				else
+				{
+					context.Result = new BadRequestObjectResult("Invalid value for " + DocumentationApiKey);
+					return;
+				}
+			}
 
 			StringValues header;
 			bool headerExists = httpContext.Request.Headers.TryGetValue(SessionHeaderName, out header);
