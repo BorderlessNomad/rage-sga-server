@@ -56,7 +56,7 @@ namespace SocialGamificationAsset.Policies
 			// Check if Session Header exists
 			if (!headerExists)
 			{
-				context.Result = new HttpNotFoundResult();
+				context.Result = new HttpNotFoundObjectResult("No " + SessionHeaderName + " found.");
 				return;
 			}
 
@@ -66,7 +66,7 @@ namespace SocialGamificationAsset.Policies
 			// Token value must be valid Guid
 			if (!isValidGuid)
 			{
-				context.Result = new HttpNotFoundResult();
+				context.Result = new HttpNotFoundObjectResult("Invalid " + SessionHeaderName + ".");
 				return;
 			}
 
@@ -89,7 +89,7 @@ namespace SocialGamificationAsset.Policies
 			// Find Session
 			if (session == null)
 			{
-				context.Result = new HttpNotFoundResult();
+				context.Result = new HttpNotFoundObjectResult("Session " + token + " is Invalid.");
 				return;
 			}
 

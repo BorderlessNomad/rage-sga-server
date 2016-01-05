@@ -13,13 +13,20 @@ namespace SocialGamificationAsset.Models
 
 		public string Title { get; set; }
 
-		public DateTime ExpirationDate { get; set; }
+		public DateTime? ExpirationDate { get; set; }
 
 		public int TotalRounds { get; set; }
 
 		public bool Finished { get; set; }
 
 		public ICollection<MatchRound> Rounds { get; set; }
+
+		public Match()
+		{
+			Title = "Test";
+			TotalRounds = 1;
+			Finished = false;
+		}
 	}
 
 	public enum MatchType

@@ -5,6 +5,7 @@ using SocialGamificationAsset.Models;
 using SocialGamificationAsset.Policies;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,9 +13,15 @@ namespace SGAControllers.Controllers
 {
 	[Produces("application/json")]
 	[Route("api/matches")]
+	[ServiceFilter(typeof(ISessionAuthorizeFilter))]
 	public class MatchesController : Controller
 	{
 		private SocialGamificationAssetContext _context;
+
+		public MatchesController(SocialGamificationAssetContext context)
+		{
+			_context = context;
+		}
 
 		private Session _session;
 
@@ -109,15 +116,8 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			List<Actor> actors = new List<Actor> { session.Actor };
-			if (quickMatch.FriendsOnly)
-			{
-				// Get one random Online Friend
-			}
-			else
-			{
-				// Get one random Online Player
-			}
+			IList<Actor> actors = actors = session.Actor.LoadRandom(_context, quickMatch.FriendsOnly, quickMatch.Actors);
+			actors.Add(session.Actor);
 
 			if (actors.Count() < quickMatch.Actors)
 			{
@@ -125,8 +125,27 @@ namespace SGAControllers.Controllers
 				return HttpNotFound("No " + verb + " available for match at this moment.");
 			}
 
+			// Create Tournament
+			Tournament tournament = new Tournament()
+			{
+				OwnerId = session.Actor.Id
+			};
+
+			_context.Tournaments.Add(tournament);
+
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbEntityValidationException e)
+			{
+				throw e;
+			}
+
+			// Create Match
 			Match match = new Match()
 			{
+				TournamentId = tournament.Id,
 				TotalRounds = quickMatch.Rounds
 			};
 
@@ -136,7 +155,7 @@ namespace SGAControllers.Controllers
 			{
 				await _context.SaveChangesAsync();
 			}
-			catch (DbUpdateException)
+			catch (DbEntityValidationException e)
 			{
 				if (MatchExists(match.Id))
 				{
@@ -144,7 +163,7 @@ namespace SGAControllers.Controllers
 				}
 				else
 				{
-					throw;
+					throw e;
 				}
 			}
 
@@ -152,26 +171,14 @@ namespace SGAControllers.Controllers
 			{
 				foreach (Actor actor in actors)
 				{
-					MatchActor matchActor = new MatchActor()
-					{
-						MatchId = match.Id,
-						ActorId = actor.Id
-					};
-
-					_context.MatchActors.Add(matchActor);
-
-					try
-					{
-						await _context.SaveChangesAsync();
-					}
-					catch (DbUpdateException)
-					{
-						throw;
-					}
-
+					// Add Round & Assign Actors
 					MatchRound matchRound = new MatchRound()
 					{
-						MatchActorId = matchActor.Id
+						MatchActor = new MatchActor()
+						{
+							MatchId = match.Id,
+							ActorId = actor.Id
+						}
 					};
 
 					_context.MatchRounds.Add(matchRound);
@@ -180,9 +187,9 @@ namespace SGAControllers.Controllers
 					{
 						await _context.SaveChangesAsync();
 					}
-					catch (DbUpdateException)
+					catch (DbEntityValidationException e)
 					{
-						throw;
+						throw e;
 					}
 				}
 			}

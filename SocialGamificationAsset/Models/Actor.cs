@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.SqlServer;
 using System.Linq;
 
 namespace SocialGamificationAsset.Models
@@ -16,7 +17,7 @@ namespace SocialGamificationAsset.Models
 
 		public bool IsEnabled { get; set; }
 
-		public AccountTypeEnum Type { get; set; }
+		public AccountType Type { get; set; }
 
 		public string LastLoginIp { get; set; }
 
@@ -37,6 +38,23 @@ namespace SocialGamificationAsset.Models
 		public virtual ICollection<Platform> Platforms { get; set; }
 
 		public virtual ICollection<Session> Sessions { get; set; }
+
+		public IList<Actor> LoadRandom(SocialGamificationAssetContext db, bool friendsOnly = false, int limit = 1)
+		{
+			IList<Actor> actors;
+			if (friendsOnly)
+			{
+				actors = this.Friends.Where(f => f.State.Equals(FriendState.Accepted)).Select(f => f.Actor).ToList();
+			}
+			else
+			{
+				actors = db.Actors.ToList();
+			}
+
+			Helper.Shuffle(actors, limit);
+
+			return actors;
+		}
 
 		public IList<Friend> LoadRandomFriends(int limit = -1)
 		{
@@ -126,10 +144,10 @@ namespace SocialGamificationAsset.Models
 		}
 	}
 
-	public enum AccountTypeEnum
+	public enum AccountType
 	{
-		Player = 0,
-		Admin = 1,
-		Group = 2
+		Admin,
+		Player,
+		Group
 	}
 }

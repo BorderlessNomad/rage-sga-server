@@ -19,41 +19,41 @@ namespace SocialGamificationAsset.Models
 			Database.SetInitializer(new DropCreateDatabaseIfModelChanges<SocialGamificationAssetContext>());
 		}
 
-		public DbSet<Achievement> Achievements { get; set; }
+		public virtual DbSet<Achievement> Achievements { get; set; }
 
-		public DbSet<Actor> Actors { get; set; }
+		public virtual DbSet<Actor> Actors { get; set; }
 
-		public DbSet<CustomData> CustomData { get; set; }
+		public virtual DbSet<CustomData> CustomData { get; set; }
 
-		public DbSet<File> Files { get; set; }
+		public virtual DbSet<File> Files { get; set; }
 
-		public DbSet<FileActivity> FileActivities { get; set; }
+		public virtual DbSet<FileActivity> FileActivities { get; set; }
 
-		public DbSet<Friend> Friends { get; set; }
+		public virtual DbSet<Friend> Friends { get; set; }
 
-		public DbSet<Group> Groups { get; set; }
+		public virtual DbSet<Group> Groups { get; set; }
 
-		public DbSet<Inventory> Inventory { get; set; }
+		public virtual DbSet<Inventory> Inventory { get; set; }
 
-		public DbSet<Leaderboard> Leaderboards { get; set; }
+		public virtual DbSet<Leaderboard> Leaderboards { get; set; }
 
-		public DbSet<LeaderboardUser> LeaderboardUsers { get; set; }
+		public virtual DbSet<LeaderboardUser> LeaderboardUsers { get; set; }
 
-		public DbSet<Match> Matches { get; set; }
+		public virtual DbSet<Match> Matches { get; set; }
 
-		public DbSet<MatchActor> MatchActors { get; set; }
+		public virtual DbSet<MatchActor> MatchActors { get; set; }
 
-		public DbSet<MatchRound> MatchRounds { get; set; }
+		public virtual DbSet<MatchRound> MatchRounds { get; set; }
 
-		public DbSet<Platform> Platforms { get; set; }
+		public virtual DbSet<Platform> Platforms { get; set; }
 
-		public DbSet<ServerSetting> ServerSettings { get; set; }
+		public virtual DbSet<ServerSetting> ServerSettings { get; set; }
 
-		public DbSet<Session> Sessions { get; set; }
+		public virtual DbSet<Session> Sessions { get; set; }
 
-		public DbSet<Tournament> Tournaments { get; set; }
+		public virtual DbSet<Tournament> Tournaments { get; set; }
 
-		public DbSet<Test> Tests { get; set; }
+		public virtual DbSet<Test> Tests { get; set; }
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{
