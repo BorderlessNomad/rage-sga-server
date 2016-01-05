@@ -4,6 +4,7 @@ using Microsoft.Data.Entity;
 using SocialGamificationAsset.Models;
 using SocialGamificationAsset.Policies;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -39,8 +40,10 @@ namespace SocialGamificationAsset.Controllers
 			_context = context;
 		}
 
-		[HttpGet(Name = "WhoAmI")]
-		public async Task<IActionResult> GetActor()
+		// GET: api/actors/whoami
+		[HttpGet]
+		[Route("whoami")]
+		public async Task<IActionResult> WhoAmI()
 		{
 			if (session != null && session.Actor != null)
 			{
@@ -48,6 +51,13 @@ namespace SocialGamificationAsset.Controllers
 			}
 
 			return HttpNotFound();
+		}
+
+		// GET: api/actors
+		[HttpGet]
+		public async Task<IActionResult> GetActor()
+		{
+			return Ok(_context.Actors.ToList());
 		}
 
 		// GET: api/actors/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
@@ -67,6 +77,25 @@ namespace SocialGamificationAsset.Controllers
 			}
 
 			return Ok(actor);
+		}
+
+		// GET: api/actors/loadrandomfriends
+		[HttpGet]
+		[Route("loadrandomfriends")]
+		public async Task<IActionResult> LoadRandomFriends([FromQuery] int limit = -1)
+		{
+			if (session == null || session.Actor == null)
+			{
+				return HttpNotFound();
+			}
+
+			Actor actor = session.Actor;
+
+			List<Friend> friends = actor.Friends.Where(f => f.State.Equals(FriendState.Accepted)).ToList();
+
+			Helper.Shuffle(friends);
+
+			return Ok(friends);
 		}
 
 		// PUT: api/actors/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
