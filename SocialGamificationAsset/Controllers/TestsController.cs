@@ -14,8 +14,7 @@ namespace SocialGamificationAsset.Controllers
 {
 	[Produces("application/json")]
 	[Route("api/tests")]
-
-	//[ServiceFilter(typeof(ISessionAuthorizeFilter))]
+	[ServiceFilter(typeof(ISessionAuthorizeFilter))]
 	public class TestsController : Controller
 	{
 		private SocialGamificationAssetContext _context;
