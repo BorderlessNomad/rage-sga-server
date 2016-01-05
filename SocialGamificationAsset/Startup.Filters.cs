@@ -16,9 +16,12 @@ namespace SocialGamificationAsset
 		/// </summary>
 		private static void ConfigureSearchEngineOptimizationFilters(ICollection<IFilterMetadata> filters, RouteOptions routeOptions)
 		{
+			/*
 			filters.Add(new RedirectToCanonicalUrlAttribute(
-				 appendTrailingSlash: routeOptions.AppendTrailingSlash,
-				 lowercaseUrls: routeOptions.LowercaseUrls));
+				appendTrailingSlash: routeOptions.AppendTrailingSlash,
+				lowercaseUrls: routeOptions.LowercaseUrls
+			));
+			*/
 		}
 
 		/// <summary>
