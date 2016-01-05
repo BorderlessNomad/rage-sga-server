@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SocialGamificationAsset.Models
 {
@@ -36,6 +37,15 @@ namespace SocialGamificationAsset.Models
 		public virtual ICollection<Platform> Platforms { get; set; }
 
 		public virtual ICollection<Session> Sessions { get; set; }
+
+		public IList<Friend> LoadRandomFriends(int limit = -1)
+		{
+			List<Friend> friends = this.Friends.Where(f => f.State.Equals(FriendState.Accepted)).ToList();
+
+			Helper.Shuffle(friends, limit);
+
+			return friends;
+		}
 
 		/**
 		 * Check if the current Username already exists
@@ -120,5 +130,6 @@ namespace SocialGamificationAsset.Models
 	{
 		Player = 0,
 		Admin = 1,
+		Group = 2
 	}
 }
