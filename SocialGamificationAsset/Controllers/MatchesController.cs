@@ -41,11 +41,29 @@ namespace SGAControllers.Controllers
 			return _session;
 		}
 
-		// GET: api/matches
-		[HttpGet]
-		public IEnumerable<Match> GetMatches()
+		// GET: api/matches/all
+		[HttpGet("all", Name = "GetAllMatches")]
+		public IEnumerable<Match> GetAllMatches()
 		{
-			return _context.Matches;
+			return _context.Matches.Include(m => m.Tournament);
+		}
+
+		// GET: api/matches
+		[HttpGet(Name = "GetMyMatches")]
+		public async Task<IActionResult> GetMyMatches()
+		{
+			IList<Match> matches = _context.MatchActors
+				.Where(a => a.ActorId.Equals(session.Actor.Id))
+				.Select(m => m.Match)
+				.Include(m => m.Tournament)
+				.ToList();
+
+			if (matches == null || matches.Count() < 1)
+			{
+				return HttpNotFound("No Match Found.");
+			}
+
+			return Ok(matches);
 		}
 
 		// GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -57,11 +75,11 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Match match = await _context.Matches.Where(m => m.Id == id).Include(m => m.Tournament).FirstAsync();
+			Match match = await _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament).FirstAsync();
 
 			if (match == null)
 			{
-				return HttpNotFound();
+				return HttpNotFound("No Match Found for ID " + id);
 			}
 
 			return Ok(match);
@@ -76,11 +94,11 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			IList<MatchActor> actors = _context.MatchActors.Where(a => a.MatchId == id).Include(a => a.Actor).ToList();
+			IList<MatchActor> actors = _context.MatchActors.Where(a => a.MatchId.Equals(id)).Include(a => a.Actor).ToList();
 
 			if (actors == null || actors.Count() < 1)
 			{
-				return HttpNotFound();
+				return HttpNotFound("No Actor Found for Match " + id);
 			}
 
 			return Ok(actors);
@@ -95,11 +113,11 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Match match = await _context.Matches.Where(m => m.Id == id).Include(m => m.Tournament.Owner).FirstAsync();
+			Match match = await _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament.Owner).FirstAsync();
 
 			if (match == null)
 			{
-				return HttpNotFound();
+				return HttpNotFound("No Match Found for ID " + id);
 			}
 
 			return Ok(match.Tournament.Owner);
@@ -116,7 +134,7 @@ namespace SGAControllers.Controllers
 
 			if (id != match.Id)
 			{
-				return HttpBadRequest();
+				return HttpBadRequest("Invalid Match Resource Identifier.");
 			}
 
 			_context.Entry(match).State = System.Data.Entity.EntityState.Modified;
@@ -129,7 +147,7 @@ namespace SGAControllers.Controllers
 			{
 				if (!MatchExists(id))
 				{
-					return HttpNotFound();
+					return HttpNotFound("No Match Found for ID " + id);
 				}
 				else
 				{
@@ -324,7 +342,7 @@ namespace SGAControllers.Controllers
 
 		private bool MatchExists(Guid id)
 		{
-			return _context.Matches.Count(e => e.Id == id) > 0;
+			return _context.Matches.Count(e => e.Id.Equals(id)) > 0;
 		}
 	}
 }
