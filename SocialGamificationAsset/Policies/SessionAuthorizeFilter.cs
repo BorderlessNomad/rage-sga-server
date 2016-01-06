@@ -74,7 +74,7 @@ namespace SocialGamificationAsset.Policies
 			Session localSession = httpContext.Session.GetObjectFromJson<Session>("__session");
 
 			// If 'active' session already exists skip DB call
-			if (localSession != null && localSession.Id.Equals(token))
+			if (localSession != null && localSession.Id.Equals(token) && localSession.Actor != null)
 			{
 				return;
 			}

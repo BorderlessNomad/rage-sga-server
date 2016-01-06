@@ -3,6 +3,7 @@ using MySql.Data.Entity;
 using System;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -18,7 +19,8 @@ namespace SocialGamificationAsset.Models
 			Database.SetInitializer(new CreateDatabaseIfNotExists<SocialGamificationAssetContext>());
 			Database.SetInitializer(new DropCreateDatabaseIfModelChanges<SocialGamificationAssetContext>());
 
-			this.Configuration.LazyLoadingEnabled = false;
+			Configuration.LazyLoadingEnabled = false;
+			Database.Log = message => Debug.WriteLine(message);
 		}
 
 		public virtual DbSet<Achievement> Achievements { get; set; }
