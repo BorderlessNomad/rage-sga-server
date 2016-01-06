@@ -155,7 +155,38 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			IList<Actor> actors = actors = session.Actor.LoadRandom(_context, quickMatch.FriendsOnly, quickMatch.Actors - 1);
+			// Build the filter by CustomData
+			IList<CustomDataBase> customData = new List<CustomDataBase>();
+			if (quickMatch.Data != null && quickMatch.Data.Count > 0)
+			{
+				// Check for allowed operators
+				List<string> allowedOperators = new List<string> { "=", "!", "%", ">", ">=", "<", "<=" };
+
+				for (int i = 0; i < quickMatch.Data.Count; i++)
+				{
+					CustomDataBase data = quickMatch.Data[i];
+
+					if (!allowedOperators.Contains(data.Operator))
+					{
+						continue;
+					}
+
+					switch (data.Operator)
+					{
+						case "!": // Unequal
+							data.Operator = "<>";
+							break;
+
+						case "%": // Like
+							data.Operator = "REGEXP";
+							break;
+					}
+
+					customData.Add(data);
+				}
+			}
+
+			IList<Actor> actors = actors = session.Actor.LoadRandom(_context, customData, quickMatch.FriendsOnly, quickMatch.Actors - 1);
 			actors.Add(session.Actor);
 
 			if (actors.Count() < quickMatch.Actors)

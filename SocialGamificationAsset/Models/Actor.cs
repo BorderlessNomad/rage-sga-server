@@ -44,28 +44,25 @@ namespace SocialGamificationAsset.Models
 			Role = AccountType.Player;
 		}
 
-		public IList<Actor> LoadRandom(SocialGamificationAssetContext db, bool friendsOnly = false, int limit = 1)
+		public IList<Actor> LoadRandom(SocialGamificationAssetContext db, IList<CustomDataBase> customData, bool friendsOnly = false, int limit = 1)
 		{
-			IList<Actor> actors;
+			IQueryable<Actor> results;
 			if (friendsOnly)
 			{
-				actors = this.Friends.Where(f => f.State.Equals(FriendState.Accepted)).Select(f => f.Actor).ToList();
+				results = (IQueryable<Actor>)Friends
+					.Where(f => f.State.Equals(FriendState.Accepted))
+					.Select(f => f.Actor)
+				;
 			}
 			else
 			{
-				actors = db.Actors.Where(a => a.Id != this.Id && a.Role == AccountType.Player).ToList();
+				results = db.Actors
+					.Where(a => a.Id != this.Id)
+					.Where(a => a.Role == AccountType.Player)
+				;
 			}
 
-			return Helper.Shuffle(actors, limit);
-		}
-
-		public IList<Friend> LoadRandomFriends(int limit = -1)
-		{
-			List<Friend> friends = this.Friends.Where(f => f.State.Equals(FriendState.Accepted)).ToList();
-
-			Helper.Shuffle(friends, limit);
-
-			return friends;
+			return Helper.Shuffle(results.ToList(), limit);
 		}
 
 		/**
