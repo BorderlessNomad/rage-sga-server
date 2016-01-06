@@ -62,6 +62,11 @@ namespace SGAControllers.Controllers
 
 			_context.Entry(group).State = System.Data.Entity.EntityState.Modified;
 
+			if (group.Actors != null && group.Actors.Count != 0)
+			{
+				group.AddActors(_context, group.Actors);
+			}
+
 			try
 			{
 				await _context.SaveChangesAsync();
@@ -90,7 +95,10 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			group.AddActors(_context, group.Actors);
+			if (group.Actors != null && group.Actors.Count != 0)
+			{
+				group.AddActors(_context, group.Actors);
+			}
 
 			_context.Groups.Add(group);
 			try
