@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
-using Microsoft.Data.Entity;
 using SocialGamificationAsset.Models;
 using SocialGamificationAsset.Policies;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,7 +48,7 @@ namespace SGAControllers.Controllers
 			return _context.Matches;
 		}
 
-		// GET: api/matches/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpGet("{id:Guid}", Name = "GetMatch")]
 		public async Task<IActionResult> GetMatch([FromRoute] Guid id)
 		{
@@ -56,7 +57,7 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Match match = await _context.Matches.FindAsync(id);
+			Match match = await _context.Matches.Where(m => m.Id == id).Include(m => m.Tournament).FirstAsync();
 
 			if (match == null)
 			{
@@ -66,7 +67,7 @@ namespace SGAControllers.Controllers
 			return Ok(match);
 		}
 
-		// GET: api/matches/936DA01F-9ABD-4d9d-80C7-02AF85C822A8/actors
+		// GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8/actors
 		[HttpGet("{id:Guid}/actors", Name = "GetMatchActors")]
 		public async Task<IActionResult> GetMatchActors([FromRoute] Guid id)
 		{
@@ -75,17 +76,36 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Match match = await _context.Matches.FindAsync(id);
+			IList<MatchActor> actors = _context.MatchActors.Where(a => a.MatchId == id).Include(a => a.Actor).ToList();
+
+			if (actors == null || actors.Count() < 1)
+			{
+				return HttpNotFound();
+			}
+
+			return Ok(actors);
+		}
+
+		// GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8/owner
+		[HttpGet("{id:Guid}/owner", Name = "GetMatchOwner")]
+		public async Task<IActionResult> GetMatchOwner([FromRoute] Guid id)
+		{
+			if (!ModelState.IsValid)
+			{
+				return HttpBadRequest(ModelState);
+			}
+
+			Match match = await _context.Matches.Where(m => m.Id == id).Include(m => m.Tournament.Owner).FirstAsync();
 
 			if (match == null)
 			{
 				return HttpNotFound();
 			}
 
-			return Ok(match.Actors);
+			return Ok(match.Tournament.Owner);
 		}
 
-		// PUT: api/matches/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// PUT: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpPut("{id:Guid}")]
 		public async Task<IActionResult> PutMatch([FromRoute] Guid id, [FromBody] Match match)
 		{
@@ -241,7 +261,7 @@ namespace SGAControllers.Controllers
 			return CreatedAtRoute("GetMatch", new { id = match.Id }, match);
 		}
 
-		// DELETE: api/matches/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// DELETE: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpDelete("{id:Guid}")]
 		public async Task<IActionResult> DeleteMatch([FromRoute] Guid id)
 		{

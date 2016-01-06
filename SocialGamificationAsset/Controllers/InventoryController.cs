@@ -27,7 +27,7 @@ namespace SGAControllers.Controllers
 			return _context.Inventory;
 		}
 
-		// GET: api/inventory/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// GET: api/inventory/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpGet("{id:Guid}", Name = "GetInventory")]
 		public async Task<IActionResult> GetInventory([FromRoute] Guid id)
 		{
@@ -46,7 +46,7 @@ namespace SGAControllers.Controllers
 			return Ok(inventory);
 		}
 
-		// PUT: api/inventory/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// PUT: api/inventory/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpPut("{id:Guid}")]
 		public async Task<IActionResult> PutInventory([FromRoute] Guid id, [FromBody] Inventory inventory)
 		{
@@ -110,7 +110,7 @@ namespace SGAControllers.Controllers
 			return CreatedAtRoute("GetInventory", new { id = inventory.Id }, inventory);
 		}
 
-		// DELETE: api/inventory/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// DELETE: api/inventory/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpDelete("{id:Guid}")]
 		public async Task<IActionResult> DeleteInventory([FromRoute] Guid id)
 		{
