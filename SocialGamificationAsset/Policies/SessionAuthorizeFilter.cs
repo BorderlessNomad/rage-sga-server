@@ -57,7 +57,7 @@ namespace SocialGamificationAsset.Policies
 			// Check if Session Header exists
 			if (!headerExists)
 			{
-				context.Result = new HttpNotFoundObjectResult("No " + SessionHeaderName + " found.");
+				context.Result = new ContentResult() { StatusCode = StatusCodes.Status401Unauthorized, Content = "No " + SessionHeaderName + " found." };
 				return;
 			}
 
@@ -67,7 +67,7 @@ namespace SocialGamificationAsset.Policies
 			// Token value must be valid Guid
 			if (!isValidGuid)
 			{
-				context.Result = new HttpNotFoundObjectResult("Invalid " + SessionHeaderName + ".");
+				context.Result = new ContentResult() { StatusCode = StatusCodes.Status401Unauthorized, Content = "Invalid " + SessionHeaderName + "." };
 				return;
 			}
 
@@ -82,7 +82,8 @@ namespace SocialGamificationAsset.Policies
 			SocialGamificationAssetContext db = httpContext.RequestServices.GetRequiredService<SocialGamificationAssetContext>();
 			if (db == null)
 			{
-				throw new ApplicationException("Unable to find requested database service.");
+				context.Result = new ContentResult() { StatusCode = StatusCodes.Status503ServiceUnavailable, Content = "Unable to find requested database service." };
+				return;
 			}
 
 			Session session = await db.Sessions.Where(s => s.Id.Equals(token)).Include(s => s.Actor).FirstAsync();
