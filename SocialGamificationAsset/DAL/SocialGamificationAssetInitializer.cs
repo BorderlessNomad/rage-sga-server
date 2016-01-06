@@ -64,7 +64,17 @@ namespace SocialGamificationAsset.Models
 						Actor = new Actor
 						{
 							Username = "admin",
-							Password = "admin"
+							Password = "admin",
+							Role = AccountType.Admin
+						}
+					},
+					new Session
+					{
+						Actor = new Actor
+						{
+							Username = "playgen",
+							Password = "playgen",
+							Role = AccountType.Admin
 						}
 					},
 					new Session
@@ -72,7 +82,39 @@ namespace SocialGamificationAsset.Models
 						Actor = new Actor
 						{
 							Username = "mayur",
-							Password = "123456"
+							Password = "mayur"
+						}
+					},
+					new Session
+					{
+						Actor = new Actor
+						{
+							Username = "jack",
+							Password = "jack"
+						}
+					},
+					new Session
+					{
+						Actor = new Actor
+						{
+							Username = "matt",
+							Password = "matt"
+						}
+					},
+					new Session
+					{
+						Actor = new Actor
+						{
+							Username = "ben",
+							Password = "ben"
+						}
+					},
+					new Session
+					{
+						Actor = new Actor
+						{
+							Username = "kam",
+							Password = "kam"
 						}
 					}
 				};

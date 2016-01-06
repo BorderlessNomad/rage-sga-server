@@ -27,7 +27,7 @@ namespace SocialGamificationAsset.Controllers
 			return _context.Sessions;
 		}
 
-		// GET: api/sessions/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// GET: api/sessions/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpGet("{id:Guid}", Name = "GetSession")]
 		public async Task<IActionResult> GetSession([FromRoute] Guid id)
 		{
@@ -46,7 +46,7 @@ namespace SocialGamificationAsset.Controllers
 			return Ok(session);
 		}
 
-		// PUT: api/sessions/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// PUT: api/sessions/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpPut("{id:Guid}")]
 		public async Task<IActionResult> PutSession([FromRoute] Guid id, [FromBody] Session session)
 		{
@@ -110,7 +110,7 @@ namespace SocialGamificationAsset.Controllers
 			return CreatedAtRoute("GetSession", new { id = session.Id }, session);
 		}
 
-		// DELETE: api/sessions/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// DELETE: api/sessions/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpDelete("{id:Guid}")]
 		public async Task<IActionResult> DeleteSession([FromRoute] Guid id)
 		{

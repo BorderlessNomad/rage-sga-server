@@ -35,7 +35,7 @@ namespace SocialGamificationAsset.Controllers
 			return _context.Tests;
 		}
 
-		// GET: api/tests/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// GET: api/tests/936da01f-9abd-4d9d-80c7-02af85c822a8
 		/// <summary>
 		/// This method returns specific record from Test Table
 		/// </summary>
@@ -60,7 +60,7 @@ namespace SocialGamificationAsset.Controllers
 			return Ok(test);
 		}
 
-		// PUT: api/tests/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// PUT: api/tests/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpPut("{id}")]
 		public async Task<IActionResult> PutTest([FromRoute] Guid id, [FromBody] Test test)
 		{
@@ -125,7 +125,7 @@ namespace SocialGamificationAsset.Controllers
 			return CreatedAtRoute("GetTest", new { id = test.Id }, test);
 		}
 
-		// DELETE: api/tests/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// DELETE: api/tests/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteTest([FromRoute] Guid id)
 		{

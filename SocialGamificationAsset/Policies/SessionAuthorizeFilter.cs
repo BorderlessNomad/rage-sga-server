@@ -7,6 +7,7 @@ using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using SocialGamificationAsset.Models;
 using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -84,7 +85,7 @@ namespace SocialGamificationAsset.Policies
 				throw new ApplicationException("Unable to find requested database service.");
 			}
 
-			Session session = await db.Sessions.FindAsync(token);
+			Session session = await db.Sessions.Where(s => s.Id.Equals(token)).Include(s => s.Actor).FirstAsync();
 
 			// Find Session
 			if (session == null)

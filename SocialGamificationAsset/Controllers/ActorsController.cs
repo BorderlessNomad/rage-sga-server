@@ -60,7 +60,7 @@ namespace SocialGamificationAsset.Controllers
 			return Ok(_context.Actors.ToList());
 		}
 
-		// GET: api/actors/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// GET: api/actors/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpGet("{id:Guid}", Name = "GetActor")]
 		public async Task<IActionResult> GetActor([FromRoute] Guid id)
 		{
@@ -79,7 +79,7 @@ namespace SocialGamificationAsset.Controllers
 			return Ok(actor);
 		}
 
-		// PUT: api/actors/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// PUT: api/actors/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpPut("{id:Guid}")]
 		public async Task<IActionResult> PutActor([FromRoute] Guid id, [FromBody] Actor actor)
 		{
@@ -143,7 +143,7 @@ namespace SocialGamificationAsset.Controllers
 			return CreatedAtRoute("GetActor", new { id = actor.Id }, actor);
 		}
 
-		// DELETE: api/actors/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// DELETE: api/actors/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpDelete("{id:Guid}")]
 		public async Task<IActionResult> DeleteActor([FromRoute] Guid id)
 		{

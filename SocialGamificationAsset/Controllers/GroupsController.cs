@@ -27,7 +27,7 @@ namespace SGAControllers.Controllers
 			return _context.Groups.ToList();
 		}
 
-		// GET: api/groups/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// GET: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpGet("{id:Guid}", Name = "GetGroup")]
 		public async Task<IActionResult> GetGroup([FromRoute] Guid id)
 		{
@@ -46,7 +46,7 @@ namespace SGAControllers.Controllers
 			return Ok(group);
 		}
 
-		// PUT: api/groups/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// PUT: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpPut("{id:Guid}")]
 		public async Task<IActionResult> PutGroup([FromRoute] Guid id, [FromBody] Group group)
 		{
@@ -110,7 +110,7 @@ namespace SGAControllers.Controllers
 			return CreatedAtRoute("GetGroup", new { id = group.Id }, group);
 		}
 
-		// DELETE: api/groups/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// DELETE: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpDelete("{id:Guid}")]
 		public async Task<IActionResult> DeleteGroup([FromRoute] Guid id)
 		{

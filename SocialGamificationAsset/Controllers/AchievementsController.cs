@@ -27,7 +27,7 @@ namespace SocialGamificationAsset.Controllers
 			return _context.Achievements;
 		}
 
-		// GET: api/achievements/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// GET: api/achievements/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpGet("{id:Guid}", Name = "GetAchievement")]
 		public async Task<IActionResult> GetAchievement([FromRoute] Guid id)
 		{
@@ -46,7 +46,7 @@ namespace SocialGamificationAsset.Controllers
 			return Ok(achievement);
 		}
 
-		// PUT: api/achievements/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// PUT: api/achievements/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpPut("{id:Guid}")]
 		public async Task<IActionResult> PutAchievement([FromRoute] Guid id, [FromBody] Achievement achievement)
 		{
@@ -110,7 +110,7 @@ namespace SocialGamificationAsset.Controllers
 			return CreatedAtRoute("GetAchievement", new { id = achievement.Id }, achievement);
 		}
 
-		// DELETE: api/achievements/936DA01F-9ABD-4d9d-80C7-02AF85C822A8
+		// DELETE: api/achievements/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpDelete("{id:Guid}")]
 		public async Task<IActionResult> DeleteAchievement([FromRoute] Guid id)
 		{

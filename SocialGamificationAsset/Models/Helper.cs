@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SocialGamificationAsset.Models
 {
@@ -7,21 +8,27 @@ namespace SocialGamificationAsset.Models
 	{
 		private static Random rng = new Random();
 
-		public static void Shuffle<T>(this IList<T> list, int limit = -1)
+		/**
+		 * The modern version of the Fisher–Yates shuffle aka 'Algorithm P'
+		 * -- To shuffle an array a of n elements (indices 0..n-1):
+		 * for i from n−1 downto 1 do
+		 *		j ← random integer such that 0 ≤ j ≤ i
+		 *		exchange a[j] and a[i]
+		 */
+
+		public static IList<T> Shuffle<T>(IList<T> list, int limit = 1)
 		{
-			int n = list.Count;
-			if (limit != -1)
+			Random r = new Random();
+			for (int i = list.Count - 1; i >= 1; i--)
 			{
-				n = limit;
+				// 0 ≤ j ≤ i
+				int j = r.Next(0, i + 1);
+				T value = list[i];
+				list[i] = list[j];
+				list[j] = value;
 			}
-			while (n > 1)
-			{
-				n--;
-				int k = rng.Next(n + 1);
-				T value = list[k];
-				list[k] = list[n];
-				list[n] = value;
-			}
+
+			return list.Take(limit).ToList();
 		}
 	}
 }
