@@ -90,6 +90,8 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
+			group.AddActors(_context, group.Actors);
+
 			_context.Groups.Add(group);
 			try
 			{
