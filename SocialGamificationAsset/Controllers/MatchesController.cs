@@ -48,15 +48,38 @@ namespace SGAControllers.Controllers
 			return _context.Matches.Include(m => m.Tournament);
 		}
 
-		// GET: api/matches
-		[HttpGet(Name = "GetMyMatches")]
-		public async Task<IActionResult> GetMyMatches()
+		// GET: api/matches/owned
+		[HttpGet("owned", Name = "GetOwnedMatches")]
+		public async Task<IActionResult> GetOwnedMatches()
 		{
-			IList<Match> matches = _context.MatchActors
+			IList<Match> matches = await _context.MatchActors
 				.Where(a => a.ActorId.Equals(session.Actor.Id))
 				.Select(m => m.Match)
 				.Include(m => m.Tournament)
-				.ToList();
+				.Where(m => m.Tournament.OwnerId.Equals(session.Actor.Id))
+				.ToListAsync()
+			;
+
+			if (matches == null || matches.Count() < 1)
+			{
+				return HttpNotFound("No Match Found.");
+			}
+
+			return Ok(matches);
+		}
+
+		// GET: api/matches
+		// GET: api/matches/participated
+		[HttpGet("", Name = "GetMyMatches")]
+		[HttpGet("participated", Name = "GetParticipatedMatches")]
+		public async Task<IActionResult> GetMyMatches()
+		{
+			IList<Match> matches = await _context.MatchActors
+				.Where(a => a.ActorId.Equals(session.Actor.Id))
+				.Select(m => m.Match)
+				.Include(m => m.Tournament)
+				.ToListAsync()
+			;
 
 			if (matches == null || matches.Count() < 1)
 			{
@@ -94,7 +117,7 @@ namespace SGAControllers.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			IList<MatchActor> actors = _context.MatchActors.Where(a => a.MatchId.Equals(id)).Include(a => a.Actor).ToList();
+			IList<MatchActor> actors = await _context.MatchActors.Where(a => a.MatchId.Equals(id)).Include(a => a.Actor).ToListAsync();
 
 			if (actors == null || actors.Count() < 1)
 			{
