@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Mvc;
 using Microsoft.Data.Entity;
 using SocialGamificationAsset.Models;
+using SocialGamificationAsset.Policies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,23 @@ namespace SGAControllers.Controllers
 		public FriendsController(SocialGamificationAssetContext context)
 		{
 			_context = context;
+		}
+
+		private Session _session;
+
+		public Session session
+		{
+			get { return GetSession(); }
+		}
+
+		protected Session GetSession()
+		{
+			if (_session == null)
+			{
+				_session = HttpContext.Session.GetObjectFromJson<Session>("__session");
+			}
+
+			return _session;
 		}
 
 		// GET: api/friends
@@ -127,6 +145,46 @@ namespace SGAControllers.Controllers
 
 			_context.Friends.Remove(friend);
 			await _context.SaveChangesAsync();
+
+			return Ok(friend);
+		}
+
+		// POST: api/friends/add/936da01f-9abd-4d9d-80c7-02af85c822a8
+		[HttpPost]
+		[Route("add/{id:Guid}")]
+		public async Task<IActionResult> AddFriend([FromRoute] Guid id)
+		{
+			if (session == null || session.Actor == null)
+			{
+				return HttpBadRequest("Error with your session.");
+			}
+
+			Friend friend = await session.Actor.AddFriend(_context, id);
+
+			if (friend != null)
+			{
+				return HttpBadRequest("Friend not in list");
+			}
+
+			return Ok(friend);
+		}
+
+		// Delete: api/friends/delete/936da01f-9abd-4d9d-80c7-02af85c822a8
+		[HttpDelete]
+		[Route("delete/{id:Guid}")]
+		public async Task<IActionResult> Unfriend([FromRoute] Guid id)
+		{
+			if (session == null || session.Actor == null)
+			{
+				return HttpBadRequest("Error with your session.");
+			}
+
+			Friend friend = await session.Actor.UnFriend(_context, id);
+
+			if (friend != null)
+			{
+				return HttpBadRequest("Friend not in list");
+			}
 
 			return Ok(friend);
 		}

@@ -73,7 +73,7 @@ namespace SocialGamificationAsset.Controllers
 
 			if (actor == null)
 			{
-				return HttpNotFound();
+				return HttpBadRequest("Invalid ActorId");
 			}
 
 			return Ok(actor);
@@ -103,7 +103,7 @@ namespace SocialGamificationAsset.Controllers
 			{
 				if (!ActorExists(id))
 				{
-					return HttpNotFound();
+					return HttpBadRequest("Invalid ActorId");
 				}
 				else
 				{
@@ -155,7 +155,7 @@ namespace SocialGamificationAsset.Controllers
 			Actor actor = await _context.Actors.FindAsync(id);
 			if (actor == null)
 			{
-				return HttpNotFound();
+				return HttpBadRequest("Invalid ActorId");
 			}
 
 			_context.Actors.Remove(actor);
