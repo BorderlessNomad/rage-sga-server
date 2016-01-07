@@ -12,6 +12,7 @@ namespace SGAControllers.Controllers
 {
 	[Produces("application/json")]
 	[Route("api/friends")]
+	[ServiceFilter(typeof(ISessionAuthorizeFilter))]
 	public class FriendsController : Controller
 	{
 		private SocialGamificationAssetContext _context;
