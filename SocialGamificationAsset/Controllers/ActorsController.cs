@@ -4,6 +4,7 @@ using Microsoft.Data.Entity;
 using SocialGamificationAsset.Models;
 using SocialGamificationAsset.Policies;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -53,9 +54,16 @@ namespace SocialGamificationAsset.Controllers
 
 		// GET: api/actors
 		[HttpGet]
-		public async Task<IActionResult> GetActors()
+		public async Task<IActionResult> GetAllActors()
 		{
-			return Ok(_context.Actors.ToList());
+			IList<Actor> actors = await _context.Actors.ToListAsync();
+
+			if (actors == null || actors.Count < 1)
+			{
+				return HttpNotFound("No Actor Found.");
+			}
+
+			return Ok(actors);
 		}
 
 		// GET: api/actors/936da01f-9abd-4d9d-80c7-02af85c822a8
