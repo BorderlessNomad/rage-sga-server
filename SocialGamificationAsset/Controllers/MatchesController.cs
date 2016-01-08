@@ -10,7 +10,7 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SGAControllers.Controllers
+namespace SocialGamificationAsset.Controllers
 {
 	[Produces("application/json")]
 	[Route("api/matches")]
