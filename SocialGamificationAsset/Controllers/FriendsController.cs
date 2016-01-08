@@ -49,7 +49,7 @@ namespace SocialGamificationAsset.Controllers
 				return HttpNotFound("Invalid Session.");
 			}
 
-			Actor actor = await _context.Actors.Where(a => a.Id.Equals(session.Actor.Id)).Include(a => a.Friends).FirstAsync();
+			Actor actor = await _context.Actors.Where(a => a.Id.Equals(session.Actor.Id)).Include(a => a.Friends).FirstOrDefaultAsync();
 
 			return Ok(actor.Friends);
 		}
@@ -64,7 +64,7 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Actor actor = await _context.Actors.Where(a => a.Id.Equals(actorId)).Include(a => a.Friends).FirstAsync();
+			Actor actor = await _context.Actors.Where(a => a.Id.Equals(actorId)).Include(a => a.Friends).FirstOrDefaultAsync();
 
 			if (actor == null)
 			{
@@ -74,8 +74,8 @@ namespace SocialGamificationAsset.Controllers
 			return Ok(actor.Friends);
 		}
 
-		// POST: api/friends/936da01f-9abd-4d9d-80c7-02af85c822a8
-		[HttpPost]
+		// PUT: api/friends/936da01f-9abd-4d9d-80c7-02af85c822a8
+		[HttpPut]
 		[Route("{id:Guid}")]
 		public async Task<IActionResult> AddFriend([FromRoute] Guid id)
 		{
@@ -84,14 +84,47 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest("Error with your session.");
 			}
 
-			Friend friend = await session.Actor.AddFriend(_context, id);
+			Actor actor = await _context.Actors.Where(a => a.Id.Equals(id)).Include(a => a.Friends).FirstOrDefaultAsync();
+
+			if (actor == null)
+			{
+				return HttpNotFound("No such Actor found.");
+			}
+
+			Friend friend = await _context.Friends
+				.Where(f =>
+					(f.RequesterId.Equals(id) && f.RequesteeId.Equals(session.Actor.Id)) ||
+					(f.RequesteeId.Equals(id) && f.RequesterId.Equals(session.Actor.Id))
+				)
+				.FirstOrDefaultAsync();
 
 			if (friend != null)
 			{
-				return HttpBadRequest("Friend not in list");
+				if (friend.State != FriendState.Accepted)
+				{
+					return HttpBadRequest("Friend Request already sent.");
+				}
+
+				return HttpBadRequest("You are aleady friend with this Actor.");
 			}
 
-			return Ok(friend);
+			Friend newFriend = new Friend()
+			{
+				RequesterId = session.Actor.Id,
+				RequesteeId = id
+			};
+
+			_context.Friends.Add(newFriend);
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateException e)
+			{
+				throw e;
+			}
+
+			return Ok(newFriend);
 		}
 
 		// Delete: api/friends/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -104,14 +137,36 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest("Error with your session.");
 			}
 
-			Friend friend = await session.Actor.UnFriend(_context, id);
+			Actor actor = await _context.Actors.Where(a => a.Id.Equals(id)).Include(a => a.Friends).FirstOrDefaultAsync();
 
-			if (friend != null)
+			if (actor == null)
 			{
-				return HttpBadRequest("Friend not in list");
+				return HttpNotFound("No such Actor found.");
 			}
 
-			return Ok(friend);
+			Friend friend = await _context.Friends
+				.Where(f =>
+					(f.RequesterId.Equals(id) && f.RequesteeId.Equals(session.Actor.Id)) ||
+					(f.RequesteeId.Equals(id) && f.RequesterId.Equals(session.Actor.Id))
+				)
+				.FirstOrDefaultAsync();
+
+			if (friend == null)
+			{
+				return HttpBadRequest("Friend is not in list.");
+			}
+
+			_context.Friends.Remove(friend);
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateException e)
+			{
+				throw e;
+			}
+
+			return Ok("Friend Removed fromt the list.");
 		}
 
 		protected override void Dispose(bool disposing)

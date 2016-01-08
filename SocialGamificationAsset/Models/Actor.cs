@@ -1,8 +1,6 @@
-﻿using Microsoft.Data.Entity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Models
 {
@@ -53,7 +51,13 @@ namespace SocialGamificationAsset.Models
 			{
 				results = (IQueryable<Actor>)Friends
 					.Where(f => f.State.Equals(FriendState.Accepted))
-					.Select(f => f.Actor)
+					.Where(f => f.RequesteeId.Equals(this.Id))
+					.Select(f => f.Requestee)
+					.Union((IQueryable<Actor>)Friends
+						.Where(f => f.State.Equals(FriendState.Accepted))
+						.Where(f => f.RequesterId.Equals(this.Id))
+						.Select(f => f.Requester)
+					)
 				;
 			}
 			else
@@ -65,54 +69,6 @@ namespace SocialGamificationAsset.Models
 			}
 
 			return Helper.Shuffle(results.ToList(), limit);
-		}
-
-		public async Task<Friend> AddFriend(SocialGamificationAssetContext db, Guid actorId)
-		{
-			if (this.Friends.Where(f => f.ActorId.Equals(actorId)).Count() != 0)
-			{
-				Console.WriteLine("Friend already in list");
-				return null;
-			}
-
-			Actor actor = db.Actors.Find(actorId);
-
-			Friend newFriend = new Friend { Actor = actor, ActorId = actorId, State = FriendState.Pending };
-
-			db.Friends.Add(newFriend);
-			try
-			{
-				await db.SaveChangesAsync();
-			}
-			catch (DbUpdateException)
-			{
-				throw;
-			}
-
-			return newFriend;
-		}
-
-		public async Task<Friend> UnFriend(SocialGamificationAssetContext db, Guid actorId)
-		{
-			if (this.Friends.Where(f => f.ActorId.Equals(actorId)).Count() == 0)
-			{
-				Console.WriteLine("Friend not in list");
-				return null;
-			}
-
-			Friend friend = this.Friends.Where(f => f.ActorId.Equals(actorId)).FirstOrDefault();
-
-			db.Friends.Remove(friend);
-			try
-			{
-				await db.SaveChangesAsync();
-			}
-			catch (DbUpdateException)
-			{
-				throw;
-			}
-
-			return friend;
 		}
 
 		/**
