@@ -2,7 +2,7 @@
 {
 	public class ServerSetting : Model
 	{
-		public static string ServerVersion = "1.0.0";
+		public static string ServerVersion = "0.0.1";
 
 		public string DataKey { get; set; }
 
