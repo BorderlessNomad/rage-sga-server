@@ -20,8 +20,6 @@ namespace SocialGamificationAsset.Models
 
 		public string LastLoginIp { get; set; }
 
-		public virtual ICollection<Friend> Friends { get; set; }
-
 		public virtual ICollection<Achievement> Achievements { get; set; }
 
 		public virtual ICollection<CustomData> CustomData { get; set; }
@@ -44,21 +42,26 @@ namespace SocialGamificationAsset.Models
 			Role = AccountType.Player;
 		}
 
+		public static IQueryable<Actor> Friends(SocialGamificationAssetContext db, Guid id)
+		{
+			var friendsList = Friend.GetFriendIds(db, id);
+
+			return db.Actors.Where(a => friendsList.Contains(a.Id));
+		}
+
+		public IQueryable<Actor> Friends(SocialGamificationAssetContext db)
+		{
+			return Friends(db, this.Id);
+		}
+
 		public IList<Actor> LoadRandom(SocialGamificationAssetContext db, IList<CustomDataBase> customData, bool friendsOnly = false, int limit = 1)
 		{
 			IQueryable<Actor> results;
 			if (friendsOnly)
 			{
-				results = (IQueryable<Actor>)Friends
-					.Where(f => f.State.Equals(FriendState.Accepted))
-					.Where(f => f.RequesteeId.Equals(this.Id))
-					.Select(f => f.Requestee)
-					.Union((IQueryable<Actor>)Friends
-						.Where(f => f.State.Equals(FriendState.Accepted))
-						.Where(f => f.RequesterId.Equals(this.Id))
-						.Select(f => f.Requester)
-					)
-				;
+				var friendsList = Friend.GetFriendIds(db, this.Id, FriendState.Accepted);
+
+				results = db.Actors.Where(a => friendsList.Contains(this.Id));
 			}
 			else
 			{

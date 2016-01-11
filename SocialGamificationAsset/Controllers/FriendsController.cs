@@ -3,6 +3,7 @@ using Microsoft.AspNet.Mvc;
 using SocialGamificationAsset.Models;
 using SocialGamificationAsset.Policies;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -49,9 +50,9 @@ namespace SocialGamificationAsset.Controllers
 				return HttpNotFound("Invalid Session.");
 			}
 
-			Actor actor = await _context.Actors.Where(a => a.Id.Equals(session.Actor.Id)).Include(a => a.Friends).FirstOrDefaultAsync();
+			IList<Actor> friends = await session.Actor.Friends(_context).ToListAsync();
 
-			return Ok(actor.Friends);
+			return Ok(friends);
 		}
 
 		// GET: api/friends/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -64,15 +65,16 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Actor actor = await _context.Actors.Where(a => a.Id.Equals(actorId)).Include(a => a.Friends).FirstOrDefaultAsync();
-		
+			Actor actor = await _context.Actors.Where(a => a.Id.Equals(actorId)).FirstOrDefaultAsync();
 
 			if (actor == null)
 			{
 				return HttpNotFound("No Actor Found.");
 			}
 
-			return Ok(actor.Friends);
+			IList<Actor> friends = await actor.Friends(_context).ToListAsync();
+
+			return Ok(friends);
 		}
 
 		// PUT: api/friends/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -85,7 +87,7 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest("Error with your session.");
 			}
 
-			Actor actor = await _context.Actors.Where(a => a.Id.Equals(friendId)).Include(a => a.Friends).FirstOrDefaultAsync();
+			Actor actor = await _context.Actors.Where(a => a.Id.Equals(friendId)).FirstOrDefaultAsync();
 
 			if (actor == null)
 			{
@@ -138,7 +140,7 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest("Error with your session.");
 			}
 
-			Actor actor = await _context.Actors.Where(a => a.Id.Equals(friendId)).Include(a => a.Friends).FirstOrDefaultAsync();
+			Actor actor = await _context.Actors.Where(a => a.Id.Equals(friendId)).FirstOrDefaultAsync();
 
 			if (actor == null)
 			{
