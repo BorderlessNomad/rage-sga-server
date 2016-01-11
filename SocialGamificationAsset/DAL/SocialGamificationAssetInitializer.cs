@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Diagnostics;
 using System.Linq;
@@ -19,6 +20,8 @@ namespace SocialGamificationAsset.Models
 				await CreateTests(_context, isAsync);
 
 				await CreateActorSessions(_context, isAsync);
+
+				await CreateFriends(_context, isAsync);
 			}
 		}
 
@@ -124,6 +127,63 @@ namespace SocialGamificationAsset.Models
 				await SaveChanges(_context, isAsync);
 
 				Debug.WriteLine("Actors & Sessions Created.");
+			}
+		}
+
+		protected static async Task CreateFriends(SocialGamificationAssetContext _context, bool isAsync = false)
+		{
+			if (!_context.Friends.Any())
+			{
+				Actor mayur = await _context.Actors.Where(a => a.Username.Equals("mayur")).FirstOrDefaultAsync();
+				Actor matt = await _context.Actors.Where(a => a.Username.Equals("matt")).FirstOrDefaultAsync();
+				Actor jack = await _context.Actors.Where(a => a.Username.Equals("jack")).FirstOrDefaultAsync();
+				Actor kam = await _context.Actors.Where(a => a.Username.Equals("kam")).FirstOrDefaultAsync();
+				Actor ben = await _context.Actors.Where(a => a.Username.Equals("ben")).FirstOrDefaultAsync();
+
+				IList<Friend> friends = new List<Friend>
+				{
+					new Friend
+					{
+						RequesterId = mayur.Id,
+						RequesteeId = matt.Id
+					},
+					new Friend
+					{
+						RequesterId = mayur.Id,
+						RequesteeId = jack.Id
+					},
+					new Friend
+					{
+						RequesterId = jack.Id,
+						RequesteeId = matt.Id
+					},
+					new Friend
+					{
+						RequesterId = jack.Id,
+						RequesteeId = kam.Id
+					},
+					new Friend
+					{
+						RequesterId = matt.Id,
+						RequesteeId = ben.Id
+					},
+					new Friend
+					{
+						RequesterId = kam.Id,
+						RequesteeId = ben.Id
+					},
+					new Friend
+					{
+						RequesterId = kam.Id,
+						RequesteeId = mayur.Id
+					},
+				};
+
+				_context.Friends.AddRange(friends);
+
+				await SaveChanges(_context, isAsync);
+
+				Debug.WriteLine("Friends Created.");
 			}
 		}
 

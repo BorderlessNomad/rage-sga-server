@@ -2372,7 +2372,7 @@
           "lib/net45/_._": {}
         }
       },
-      "System.Linq/4.0.1-rc2-23621": {
+      "System.Linq/4.0.0": {
         "type": "package",
         "compile": {
           "ref/net45/_._": {}
@@ -2381,7 +2381,7 @@
           "lib/net45/_._": {}
         }
       },
-      "System.Linq.Queryable/4.0.1-rc2-23621": {
+      "System.Linq.Queryable/4.0.0": {
         "type": "package",
         "compile": {
           "ref/net45/_._": {}
@@ -4909,7 +4909,7 @@
           "lib/net45/_._": {}
         }
       },
-      "System.Linq/4.0.1-rc2-23621": {
+      "System.Linq/4.0.0": {
         "type": "package",
         "compile": {
           "ref/net45/_._": {}
@@ -4918,7 +4918,7 @@
           "lib/net45/_._": {}
         }
       },
-      "System.Linq.Queryable/4.0.1-rc2-23621": {
+      "System.Linq.Queryable/4.0.0": {
         "type": "package",
         "compile": {
           "ref/net45/_._": {}
@@ -7446,7 +7446,7 @@
           "lib/net45/_._": {}
         }
       },
-      "System.Linq/4.0.1-rc2-23621": {
+      "System.Linq/4.0.0": {
         "type": "package",
         "compile": {
           "ref/net45/_._": {}
@@ -7455,7 +7455,7 @@
           "lib/net45/_._": {}
         }
       },
-      "System.Linq.Queryable/4.0.1-rc2-23621": {
+      "System.Linq.Queryable/4.0.0": {
         "type": "package",
         "compile": {
           "ref/net45/_._": {}
@@ -9899,103 +9899,69 @@
         "System.IO.nuspec"
       ]
     },
-    "System.Linq/4.0.1-rc2-23621": {
+    "System.Linq/4.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "DZmPghiho6mgfdJWSqC5TuYiUYgmL1VO16PQhRHmM39S9arUxepJeQ4zpoJbZqAtVBy+YynNPX4TGJlQfNkjTQ==",
+      "sha512": "r6Hlc+ytE6m/9UBr+nNRRdoJEWjoeQiT3L3lXYFDHoXk3VYsRBCDNXrawcexw7KPLaH0zamQLiAb6avhZ50cGg==",
       "files": [
-        "lib/dotnet5.4/System.Linq.dll",
-        "lib/MonoAndroid10/_._",
-        "lib/MonoTouch10/_._",
+        "lib/dotnet/System.Linq.dll",
         "lib/net45/_._",
         "lib/netcore50/System.Linq.dll",
         "lib/win8/_._",
         "lib/wp80/_._",
         "lib/wpa81/_._",
-        "lib/xamarinios10/_._",
-        "lib/xamarinmac20/_._",
-        "ref/dotnet5.1/de/System.Linq.xml",
-        "ref/dotnet5.1/es/System.Linq.xml",
-        "ref/dotnet5.1/fr/System.Linq.xml",
-        "ref/dotnet5.1/it/System.Linq.xml",
-        "ref/dotnet5.1/ja/System.Linq.xml",
-        "ref/dotnet5.1/ko/System.Linq.xml",
-        "ref/dotnet5.1/ru/System.Linq.xml",
-        "ref/dotnet5.1/System.Linq.dll",
-        "ref/dotnet5.1/System.Linq.xml",
-        "ref/dotnet5.1/zh-hans/System.Linq.xml",
-        "ref/dotnet5.1/zh-hant/System.Linq.xml",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
+        "ref/dotnet/de/System.Linq.xml",
+        "ref/dotnet/es/System.Linq.xml",
+        "ref/dotnet/fr/System.Linq.xml",
+        "ref/dotnet/it/System.Linq.xml",
+        "ref/dotnet/ja/System.Linq.xml",
+        "ref/dotnet/ko/System.Linq.xml",
+        "ref/dotnet/ru/System.Linq.xml",
+        "ref/dotnet/System.Linq.dll",
+        "ref/dotnet/System.Linq.xml",
+        "ref/dotnet/zh-hans/System.Linq.xml",
+        "ref/dotnet/zh-hant/System.Linq.xml",
         "ref/net45/_._",
-        "ref/netcore50/de/System.Linq.xml",
-        "ref/netcore50/es/System.Linq.xml",
-        "ref/netcore50/fr/System.Linq.xml",
-        "ref/netcore50/it/System.Linq.xml",
-        "ref/netcore50/ja/System.Linq.xml",
-        "ref/netcore50/ko/System.Linq.xml",
-        "ref/netcore50/ru/System.Linq.xml",
         "ref/netcore50/System.Linq.dll",
         "ref/netcore50/System.Linq.xml",
-        "ref/netcore50/zh-hans/System.Linq.xml",
-        "ref/netcore50/zh-hant/System.Linq.xml",
         "ref/win8/_._",
         "ref/wp80/_._",
         "ref/wpa81/_._",
-        "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._",
-        "System.Linq.4.0.1-rc2-23621.nupkg",
-        "System.Linq.4.0.1-rc2-23621.nupkg.sha512",
+        "System.Linq.4.0.0.nupkg",
+        "System.Linq.4.0.0.nupkg.sha512",
         "System.Linq.nuspec"
       ]
     },
-    "System.Linq.Queryable/4.0.1-rc2-23621": {
+    "System.Linq.Queryable/4.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "9ULGswQJWIqRokIq0h8kF3u+fvKXj8dUaldo0643DZBErBUcp9VSdm5Rt1l5QL+kxUXUCMZMt+IDrW4me+95ew==",
+      "sha512": "DIlvCNn3ucFvwMMzXcag4aFnFJ1fdxkQ5NqwJe9Nh7y8ozzhDm07YakQL/yoF3P1dLzY1T2cTpuwbAmVSdXyBA==",
       "files": [
-        "lib/dotnet5.4/System.Linq.Queryable.dll",
-        "lib/monoandroid1/_._",
-        "lib/monotouch1/_._",
+        "lib/dotnet/System.Linq.Queryable.dll",
         "lib/net45/_._",
         "lib/netcore50/System.Linq.Queryable.dll",
         "lib/win8/_._",
         "lib/wp80/_._",
         "lib/wpa81/_._",
-        "lib/xamarinios1/_._",
-        "lib/xamarinmac2/_._",
-        "ref/dotnet5.1/de/System.Linq.Queryable.xml",
-        "ref/dotnet5.1/es/System.Linq.Queryable.xml",
-        "ref/dotnet5.1/fr/System.Linq.Queryable.xml",
-        "ref/dotnet5.1/it/System.Linq.Queryable.xml",
-        "ref/dotnet5.1/ja/System.Linq.Queryable.xml",
-        "ref/dotnet5.1/ko/System.Linq.Queryable.xml",
-        "ref/dotnet5.1/ru/System.Linq.Queryable.xml",
-        "ref/dotnet5.1/System.Linq.Queryable.dll",
-        "ref/dotnet5.1/System.Linq.Queryable.xml",
-        "ref/dotnet5.1/zh-hans/System.Linq.Queryable.xml",
-        "ref/dotnet5.1/zh-hant/System.Linq.Queryable.xml",
-        "ref/monoandroid1/_._",
-        "ref/monotouch1/_._",
+        "ref/dotnet/de/System.Linq.Queryable.xml",
+        "ref/dotnet/es/System.Linq.Queryable.xml",
+        "ref/dotnet/fr/System.Linq.Queryable.xml",
+        "ref/dotnet/it/System.Linq.Queryable.xml",
+        "ref/dotnet/ja/System.Linq.Queryable.xml",
+        "ref/dotnet/ko/System.Linq.Queryable.xml",
+        "ref/dotnet/ru/System.Linq.Queryable.xml",
+        "ref/dotnet/System.Linq.Queryable.dll",
+        "ref/dotnet/System.Linq.Queryable.xml",
+        "ref/dotnet/zh-hans/System.Linq.Queryable.xml",
+        "ref/dotnet/zh-hant/System.Linq.Queryable.xml",
         "ref/net45/_._",
-        "ref/netcore50/de/System.Linq.Queryable.xml",
-        "ref/netcore50/es/System.Linq.Queryable.xml",
-        "ref/netcore50/fr/System.Linq.Queryable.xml",
-        "ref/netcore50/it/System.Linq.Queryable.xml",
-        "ref/netcore50/ja/System.Linq.Queryable.xml",
-        "ref/netcore50/ko/System.Linq.Queryable.xml",
-        "ref/netcore50/ru/System.Linq.Queryable.xml",
         "ref/netcore50/System.Linq.Queryable.dll",
         "ref/netcore50/System.Linq.Queryable.xml",
-        "ref/netcore50/zh-hans/System.Linq.Queryable.xml",
-        "ref/netcore50/zh-hant/System.Linq.Queryable.xml",
         "ref/win8/_._",
         "ref/wp80/_._",
         "ref/wpa81/_._",
-        "ref/xamarinios1/_._",
-        "ref/xamarinmac2/_._",
-        "System.Linq.Queryable.4.0.1-rc2-23621.nupkg",
-        "System.Linq.Queryable.4.0.1-rc2-23621.nupkg.sha512",
+        "System.Linq.Queryable.4.0.0.nupkg",
+        "System.Linq.Queryable.4.0.0.nupkg.sha512",
         "System.Linq.Queryable.nuspec"
       ]
     },
@@ -10564,8 +10530,8 @@
       "NWebsec.Mvc >= 5.0.0-gamma-39",
       "Swashbuckle >= 6.0.0-rc1-final",
       "System.Collections.Immutable >= 1.1.37",
-      "System.Linq >= 4.0.1-rc2-23621",
-      "System.Linq.Queryable >= 4.0.1-rc2-23621"
+      "System.Linq >= 4.0.0",
+      "System.Linq.Queryable >= 4.0.0"
     ],
     "DNX,Version=v4.5.1": [
       "fx/System.Data >= 4.0.0",

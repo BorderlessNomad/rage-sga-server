@@ -65,6 +65,7 @@ namespace SocialGamificationAsset.Controllers
 			}
 
 			Actor actor = await _context.Actors.Where(a => a.Id.Equals(actorId)).Include(a => a.Friends).FirstOrDefaultAsync();
+		
 
 			if (actor == null)
 			{
@@ -76,15 +77,15 @@ namespace SocialGamificationAsset.Controllers
 
 		// PUT: api/friends/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpPut]
-		[Route("{id:Guid}")]
-		public async Task<IActionResult> AddFriend([FromRoute] Guid id)
+		[Route("{friendId:Guid}")]
+		public async Task<IActionResult> AddFriend([FromRoute] Guid friendId)
 		{
 			if (session == null || session.Actor == null)
 			{
 				return HttpBadRequest("Error with your session.");
 			}
 
-			Actor actor = await _context.Actors.Where(a => a.Id.Equals(id)).Include(a => a.Friends).FirstOrDefaultAsync();
+			Actor actor = await _context.Actors.Where(a => a.Id.Equals(friendId)).Include(a => a.Friends).FirstOrDefaultAsync();
 
 			if (actor == null)
 			{
@@ -93,8 +94,8 @@ namespace SocialGamificationAsset.Controllers
 
 			Friend friend = await _context.Friends
 				.Where(f =>
-					(f.RequesterId.Equals(id) && f.RequesteeId.Equals(session.Actor.Id)) ||
-					(f.RequesteeId.Equals(id) && f.RequesterId.Equals(session.Actor.Id))
+					(f.RequesterId.Equals(friendId) && f.RequesteeId.Equals(session.Actor.Id)) ||
+					(f.RequesteeId.Equals(friendId) && f.RequesterId.Equals(session.Actor.Id))
 				)
 				.FirstOrDefaultAsync();
 
@@ -111,7 +112,7 @@ namespace SocialGamificationAsset.Controllers
 			Friend newFriend = new Friend()
 			{
 				RequesterId = session.Actor.Id,
-				RequesteeId = id
+				RequesteeId = friendId
 			};
 
 			_context.Friends.Add(newFriend);
@@ -129,15 +130,15 @@ namespace SocialGamificationAsset.Controllers
 
 		// Delete: api/friends/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpDelete]
-		[Route("{id:Guid}")]
-		public async Task<IActionResult> Unfriend([FromRoute] Guid id)
+		[Route("{friendId:Guid}")]
+		public async Task<IActionResult> Unfriend([FromRoute] Guid friendId)
 		{
 			if (session == null || session.Actor == null)
 			{
 				return HttpBadRequest("Error with your session.");
 			}
 
-			Actor actor = await _context.Actors.Where(a => a.Id.Equals(id)).Include(a => a.Friends).FirstOrDefaultAsync();
+			Actor actor = await _context.Actors.Where(a => a.Id.Equals(friendId)).Include(a => a.Friends).FirstOrDefaultAsync();
 
 			if (actor == null)
 			{
@@ -146,8 +147,8 @@ namespace SocialGamificationAsset.Controllers
 
 			Friend friend = await _context.Friends
 				.Where(f =>
-					(f.RequesterId.Equals(id) && f.RequesteeId.Equals(session.Actor.Id)) ||
-					(f.RequesteeId.Equals(id) && f.RequesterId.Equals(session.Actor.Id))
+					(f.RequesterId.Equals(friendId) && f.RequesteeId.Equals(session.Actor.Id)) ||
+					(f.RequesteeId.Equals(friendId) && f.RequesterId.Equals(session.Actor.Id))
 				)
 				.FirstOrDefaultAsync();
 
