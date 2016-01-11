@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
@@ -16,7 +17,18 @@ namespace SocialGamificationAsset.Models
 
 		public Session()
 		{
-			this.IsExpired = false;
+			IsExpired = false;
 		}
+	}
+
+	public class LoginForm
+	{
+		[Required]
+		public string Username { get; set; }
+
+		// public string Email { get; set; }
+
+		[Required]
+		public string Password { get; set; }
 	}
 }

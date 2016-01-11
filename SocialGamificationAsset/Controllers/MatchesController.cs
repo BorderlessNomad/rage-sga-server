@@ -230,7 +230,7 @@ namespace SocialGamificationAsset.Controllers
 			IList<Actor> actors = actors = session.Actor.LoadRandom(_context, customData, quickMatch.FriendsOnly, quickMatch.Actors - 1);
 			actors.Add(session.Actor);
 
-			if (actors.Count() < quickMatch.Actors)
+			if (actors.Count < quickMatch.Actors)
 			{
 				string verb = (quickMatch.Type == MatchType.Player) ? "Players" : "Groups";
 				return HttpNotFound("No " + verb + " available for match at this moment.");

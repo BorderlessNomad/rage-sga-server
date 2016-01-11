@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
-using Microsoft.Data.Entity;
 using SocialGamificationAsset.Models;
 using System;
-using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,13 +18,6 @@ namespace SocialGamificationAsset.Controllers
 		public SessionsController(SocialGamificationAssetContext context)
 		{
 			_context = context;
-		}
-
-		// GET: api/sessions
-		[HttpGet]
-		public IEnumerable<Session> GetSessions()
-		{
-			return _context.Sessions;
 		}
 
 		// GET: api/sessions/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -46,49 +39,40 @@ namespace SocialGamificationAsset.Controllers
 			return Ok(session);
 		}
 
-		// PUT: api/sessions/936da01f-9abd-4d9d-80c7-02af85c822a8
-		[HttpPut("{id:Guid}")]
-		public async Task<IActionResult> PutSession([FromRoute] Guid id, [FromBody] Session session)
-		{
-			if (!ModelState.IsValid)
-			{
-				return HttpBadRequest(ModelState);
-			}
-
-			if (id != session.Id)
-			{
-				return HttpBadRequest();
-			}
-
-			_context.Entry(session).State = System.Data.Entity.EntityState.Modified;
-
-			try
-			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-				if (!SessionExists(id))
-				{
-					return HttpNotFound();
-				}
-				else
-				{
-					throw;
-				}
-			}
-
-			return new HttpStatusCodeResult(StatusCodes.Status204NoContent);
-		}
-
 		// POST: api/sessions
 		[HttpPost]
-		public async Task<IActionResult> PostSession([FromBody] Session session)
+		public async Task<IActionResult> Login([FromBody] LoginForm login)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
+
+			if (String.IsNullOrWhiteSpace(login.Username))
+			{
+				return HttpBadRequest("Either Username is required for Login.");
+			}
+
+			Actor actor = await _context.Actors.Where(a => a.Username.Equals(login.Username)).FirstOrDefaultAsync();
+
+			if (actor == null)
+			{
+				return HttpNotFound("No such Actor found.");
+			}
+
+			if (!actor.Password.Equals(login.Password))
+			{
+				return new ContentResult()
+				{
+					StatusCode = StatusCodes.Status401Unauthorized,
+					Content = "Invalid Login Details."
+				};
+			}
+
+			Session session = new Session()
+			{
+				Actor = actor
+			};
 
 			_context.Sessions.Add(session);
 			try
@@ -112,7 +96,7 @@ namespace SocialGamificationAsset.Controllers
 
 		// DELETE: api/sessions/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpDelete("{id:Guid}")]
-		public async Task<IActionResult> DeleteSession([FromRoute] Guid id)
+		public async Task<IActionResult> Logout([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -122,11 +106,26 @@ namespace SocialGamificationAsset.Controllers
 			Session session = await _context.Sessions.FindAsync(id);
 			if (session == null)
 			{
-				return HttpNotFound();
+				return HttpNotFound("No such Session found.");
 			}
 
-			_context.Sessions.Remove(session);
-			await _context.SaveChangesAsync();
+			session.IsExpired = true;
+
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateException)
+			{
+				if (SessionExists(session.Id))
+				{
+					return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
+				}
+				else
+				{
+					throw;
+				}
+			}
 
 			return Ok(session);
 		}
@@ -137,6 +136,7 @@ namespace SocialGamificationAsset.Controllers
 			{
 				_context.Dispose();
 			}
+
 			base.Dispose(disposing);
 		}
 
