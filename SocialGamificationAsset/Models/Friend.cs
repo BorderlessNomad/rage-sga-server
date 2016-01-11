@@ -2,16 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace SocialGamificationAsset.Models
 {
-	public enum FriendState
-	{
-		Pending,
-		Declined,
-		Accepted
-	}
-
 	public class Friend : Model
 	{
 		public Guid RequesterId { get; set; }
@@ -31,13 +25,9 @@ namespace SocialGamificationAsset.Models
 			State = FriendState.Pending;
 		}
 
-		public static IQueryable<Friend> FindWithLink(SocialGamificationAssetContext db, Guid actorId, Guid friendId)
+		public static Expression<Func<Friend, bool>> IsFriend(Guid actorId)
 		{
-			return db.Friends
-				.Where(f =>
-					(f.RequesterId.Equals(friendId) && f.RequesteeId.Equals(actorId)) ||
-					(f.RequesteeId.Equals(friendId) && f.RequesterId.Equals(actorId))
-				);
+			return f => f.RequesterId.Equals(actorId) || f.RequesteeId.Equals(actorId);
 		}
 
 		public static IList<Guid> FriendsList(IList<Friend> friends, Guid actorId)
@@ -48,28 +38,30 @@ namespace SocialGamificationAsset.Models
 				friendIds.Add(friend.RequesteeId.Equals(actorId) ? friend.RequesterId : friend.RequesteeId);
 			}
 
-			friendIds.Distinct();
+			friendIds.Distinct(); // Test this
 
 			return friendIds;
 		}
 
 		public static IList<Guid> GetFriendIds(SocialGamificationAssetContext db, Guid actorId)
 		{
-			IList<Friend> friends = db.Friends
-				.Where(f => (f.RequesterId.Equals(actorId) || f.RequesteeId.Equals(actorId)))
-				.ToList();
+			IList<Friend> friends = db.Friends.Where(IsFriend(actorId)).ToList();
 
 			return FriendsList(friends, actorId);
 		}
 
 		public static IList<Guid> GetFriendIds(SocialGamificationAssetContext db, Guid actorId, FriendState state = FriendState.Accepted)
 		{
-			IList<Friend> friends = db.Friends
-				.Where(f => (f.RequesterId.Equals(actorId) || f.RequesteeId.Equals(actorId)))
-				.Where(f => f.State == state)
-				.ToList();
+			IList<Friend> friends = db.Friends.Where(IsFriend(actorId)).Where(f => f.State == state).ToList();
 
 			return FriendsList(friends, actorId);
 		}
+	}
+
+	public enum FriendState
+	{
+		Pending,
+		Declined,
+		Accepted
 	}
 }

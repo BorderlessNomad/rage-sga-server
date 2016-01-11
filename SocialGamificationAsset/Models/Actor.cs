@@ -56,6 +56,8 @@ namespace SocialGamificationAsset.Models
 
 		public IList<Actor> LoadRandom(SocialGamificationAssetContext db, IList<CustomDataBase> customData, bool friendsOnly = false, int limit = 1)
 		{
+			// TODO: CustomData Implementation
+
 			IQueryable<Actor> results;
 			if (friendsOnly)
 			{
