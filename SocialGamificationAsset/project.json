@@ -38,7 +38,9 @@
         "MySql.Web": "6.9.8",
         "NWebsec.Mvc": "5.0.0-gamma-39",
         "Swashbuckle": "6.0.0-rc1-final",
-        "System.Collections.Immutable": "1.1.37"
+        "System.Collections.Immutable": "1.1.37",
+        "System.Linq": "4.0.1-rc2-23621",
+        "System.Linq.Queryable": "4.0.1-rc2-23621"
     },
 	"commands": {
 		"gen": "Microsoft.Extensions.CodeGeneration",

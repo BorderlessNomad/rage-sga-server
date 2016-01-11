@@ -12,11 +12,21 @@ namespace SocialGamificationAsset.Models
 
 	public class Friend : Model
 	{
-		public Guid ActorId { get; set; }
+		public Guid RequesterId { get; set; }
 
-		[ForeignKey("ActorId")]
-		public virtual Actor Actor { get; set; }
+		[ForeignKey("RequesterId")]
+		public virtual Actor Requester { get; set; }
+
+		public Guid RequesteeId { get; set; }
+
+		[ForeignKey("RequesteeId")]
+		public virtual Actor Requestee { get; set; }
 
 		public FriendState State { get; set; }
+
+		public Friend()
+		{
+			State = FriendState.Pending;
+		}
 	}
 }

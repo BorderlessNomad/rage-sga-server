@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNet.Mvc;
 using SocialGamificationAsset.Models;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,10 +15,13 @@ namespace SocialGamificationAsset.Controllers
 		[HttpPost]
 		public IActionResult Get()
 		{
-			return Ok(new Hashtable() {
-						{"Version", ServerSetting.ServerVersion},
-						{"Time", DateTime.Now.AddDays(3).ToString("yyyy-MM-dd HH:mm:ss")},
-					});
+			Dictionary<string, string> result = new Dictionary<string, string>()
+			{
+				["Version"] = ServerSetting.ServerVersion,
+				["Time"] = DateTime.Now.AddDays(3).ToString("yyyy-MM-dd HH:mm:ss")
+			};
+
+			return Ok(result);
 		}
 	}
 }

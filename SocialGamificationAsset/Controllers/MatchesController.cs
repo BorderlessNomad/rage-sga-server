@@ -98,7 +98,7 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Match match = await _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament).FirstAsync();
+			Match match = await _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament).FirstOrDefaultAsync();
 
 			if (match == null)
 			{
@@ -136,7 +136,7 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Match match = await _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament.Owner).FirstAsync();
+			Match match = await _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament.Owner).FirstOrDefaultAsync();
 
 			if (match == null)
 			{
