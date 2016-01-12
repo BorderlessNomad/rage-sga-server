@@ -23,6 +23,8 @@ namespace SocialGamificationAsset.Models
 			Database.SetInitializer(new DropCreateDatabaseIfModelChanges<SocialGamificationAssetContext>());
 
 			Configuration.LazyLoadingEnabled = false;
+			Configuration.ProxyCreationEnabled = false;
+
 			Database.Log = message => Debug.WriteLine(message);
 		}
 

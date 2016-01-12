@@ -95,10 +95,7 @@ namespace SocialGamificationAsset.Controllers
 			}
 
 			Friend friend = await _context.Friends
-				.Where(f =>
-					(f.RequesterId.Equals(friendId) && f.RequesteeId.Equals(session.Player.Id)) ||
-					(f.RequesteeId.Equals(friendId) && f.RequesterId.Equals(session.Player.Id))
-				)
+				.Where(Friend.IsFriend(friendId, session.Player.Id))
 				.FirstOrDefaultAsync();
 
 			if (friend != null)
@@ -148,10 +145,7 @@ namespace SocialGamificationAsset.Controllers
 			}
 
 			Friend friend = await _context.Friends
-				.Where(f =>
-					(f.RequesterId.Equals(friendId) && f.RequesteeId.Equals(session.Player.Id)) ||
-					(f.RequesteeId.Equals(friendId) && f.RequesterId.Equals(session.Player.Id))
-				)
+				.Where(Friend.IsFriend(friendId, session.Player.Id))
 				.FirstOrDefaultAsync();
 
 			if (friend == null)

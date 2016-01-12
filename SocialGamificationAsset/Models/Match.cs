@@ -17,7 +17,9 @@ namespace SocialGamificationAsset.Models
 
 		public int TotalRounds { get; set; }
 
-		public bool Finished { get; set; }
+		public bool IsFinished { get; set; }
+
+		public bool IsDeleted { get; set; }
 
 		public virtual ICollection<MatchActor> Actors { get; set; }
 
@@ -27,7 +29,8 @@ namespace SocialGamificationAsset.Models
 		{
 			Title = "Test";
 			TotalRounds = 1;
-			Finished = false;
+			IsFinished = false;
+			IsDeleted = false;
 		}
 	}
 

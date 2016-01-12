@@ -165,8 +165,23 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest("Invalid PlayerId");
 			}
 
-			_context.Players.Remove(player);
-			await _context.SaveChangesAsync();
+			player.IsEnabled = false;
+
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!PlayerExists(id))
+				{
+					return HttpNotFound("No Player Found.");
+				}
+				else
+				{
+					throw;
+				}
+			}
 
 			return Ok(player);
 		}
@@ -177,6 +192,7 @@ namespace SocialGamificationAsset.Controllers
 			{
 				_context.Dispose();
 			}
+
 			base.Dispose(disposing);
 		}
 

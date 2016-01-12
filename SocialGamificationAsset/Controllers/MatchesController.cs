@@ -150,7 +150,7 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest("Invalid Match Resource Identifier.");
 			}
 
-			_context.Entry(match).State = System.Data.Entity.EntityState.Modified;
+			_context.Entry(match).State = EntityState.Modified;
 
 			try
 			{
@@ -338,8 +338,23 @@ namespace SocialGamificationAsset.Controllers
 				return HttpNotFound();
 			}
 
-			_context.Matches.Remove(match);
-			await _context.SaveChangesAsync();
+			match.IsDeleted = true;
+
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateException)
+			{
+				if (MatchExists(match.Id))
+				{
+					return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
+				}
+				else
+				{
+					throw;
+				}
+			}
 
 			return Ok(match);
 		}
@@ -350,6 +365,7 @@ namespace SocialGamificationAsset.Controllers
 			{
 				_context.Dispose();
 			}
+
 			base.Dispose(disposing);
 		}
 

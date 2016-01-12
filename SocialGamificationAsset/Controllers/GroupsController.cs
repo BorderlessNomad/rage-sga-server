@@ -40,27 +40,41 @@ namespace SocialGamificationAsset.Controllers
 			_context = context;
 		}
 
-		// GET: api/groups
-		[HttpGet]
-		public IEnumerable<Group> GetGroups()
+		// GET: api/groups/all
+		[HttpGet("all", Name = "GetAllGroups")]
+		public IEnumerable<Group> GetAllGroups()
 		{
-			return _context.Groups.ToList();
+			return _context.Groups.Include(g => g.Players);
+		}
+
+		// GET: api/groups
+		[HttpGet("", Name = "GetMyGroups")]
+		public async Task<IActionResult> GetMyGroups()
+		{
+			var groups = await _context.Players
+				.Where(p => p.Id.Equals(session.Player.Id))
+				.Include(p => p.Groups)
+				.Select(p => p.Groups)
+				.FirstOrDefaultAsync()
+			;
+
+			return Ok(groups);
 		}
 
 		// GET: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpGet("{id:Guid}", Name = "GetGroup")]
-		public async Task<IActionResult> GetGroup([FromRoute] Guid id)
+		public async Task<IActionResult> GetGroupInfo([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			Group group = await _context.Groups.FindAsync(id);
+			Group group = await _context.Groups.Where(g => g.Id.Equals(id)).Include(g => g.Players).FirstOrDefaultAsync();
 
 			if (group == null)
 			{
-				return HttpNotFound();
+				return HttpNotFound("No Group Found.");
 			}
 
 			return Ok(group);
@@ -77,7 +91,7 @@ namespace SocialGamificationAsset.Controllers
 
 			if (id != group.Id)
 			{
-				return HttpBadRequest();
+				return HttpBadRequest("Id & Group.Id does not match.");
 			}
 
 			_context.Entry(group).State = EntityState.Modified;
@@ -95,7 +109,7 @@ namespace SocialGamificationAsset.Controllers
 			{
 				if (!GroupExists(id))
 				{
-					return HttpNotFound();
+					return HttpNotFound("No Group Found.");
 				}
 				else
 				{
@@ -152,11 +166,26 @@ namespace SocialGamificationAsset.Controllers
 			Group group = await _context.Groups.FindAsync(id);
 			if (group == null)
 			{
-				return HttpNotFound();
+				return HttpNotFound("No Group Found.");
 			}
 
-			_context.Groups.Remove(group);
-			await _context.SaveChangesAsync();
+			group.IsEnabled = false;
+
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!GroupExists(id))
+				{
+					return HttpNotFound("No Group Found.");
+				}
+				else
+				{
+					throw;
+				}
+			}
 
 			return Ok(group);
 		}

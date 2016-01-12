@@ -30,6 +30,14 @@ namespace SocialGamificationAsset.Models
 			return f => f.RequesterId.Equals(actorId) || f.RequesteeId.Equals(actorId);
 		}
 
+		public static Expression<Func<Friend, bool>> IsFriend(Guid actorId, Guid friendId)
+		{
+			return f => (
+				(f.RequesterId.Equals(friendId) && f.RequesteeId.Equals(actorId)) ||
+				(f.RequesteeId.Equals(friendId) && f.RequesterId.Equals(actorId))
+			);
+		}
+
 		public static IList<Guid> FriendsList(IList<Friend> friends, Guid actorId)
 		{
 			var friendIds = new List<Guid>();

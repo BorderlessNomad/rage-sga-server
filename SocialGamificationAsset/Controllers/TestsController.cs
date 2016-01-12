@@ -152,6 +152,7 @@ namespace SocialGamificationAsset.Controllers
 			{
 				_context.Dispose();
 			}
+
 			base.Dispose(disposing);
 		}
 
