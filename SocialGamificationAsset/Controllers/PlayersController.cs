@@ -1,19 +1,20 @@
 ﻿using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
-using Microsoft.Data.Entity;
 using SocialGamificationAsset.Models;
 using SocialGamificationAsset.Policies;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Controllers
 {
 	[Produces("application/json")]
-	[Route("api/actors")]
+	[Route("api/players")]
 	[ServiceFilter(typeof(ISessionAuthorizeFilter))]
-	public class ActorsController : Controller
+	public class PlayersController : Controller
 	{
 		private SocialGamificationAssetContext _context;
 
@@ -34,72 +35,72 @@ namespace SocialGamificationAsset.Controllers
 			return _session;
 		}
 
-		public ActorsController(SocialGamificationAssetContext context)
+		public PlayersController(SocialGamificationAssetContext context)
 		{
 			_context = context;
 		}
 
-		// GET: api/actors/whoami
+		// GET: api/players/whoami
 		[HttpGet]
 		[Route("whoami")]
 		public async Task<IActionResult> WhoAmI()
 		{
-			if (session != null && session.Actor != null)
+			if (session != null && session.Player != null)
 			{
-				return Ok(session.Actor);
+				return Ok(session.Player);
 			}
 
 			return HttpNotFound();
 		}
 
-		// GET: api/actors
+		// GET: api/players
 		[HttpGet]
-		public async Task<IActionResult> GetAllActors()
+		public async Task<IActionResult> GetAllPlayers()
 		{
-			IList<Actor> actors = await _context.Actors.ToListAsync();
+			IList<Player> players = await _context.Players.ToListAsync();
 
-			if (actors == null || actors.Count < 1)
+			if (players == null || players.Count < 1)
 			{
-				return HttpNotFound("No Actor Found.");
+				return HttpNotFound("No Player Found.");
 			}
 
-			return Ok(actors);
+			return Ok(players);
 		}
 
-		// GET: api/actors/936da01f-9abd-4d9d-80c7-02af85c822a8
-		[HttpGet("{id:Guid}", Name = "GetActor")]
-		public async Task<IActionResult> GetActor([FromRoute] Guid id)
+		// GET: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
+		[HttpGet("{id:Guid}", Name = "GetPlayer")]
+		public async Task<IActionResult> GetPlayer([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			Actor actor = await _context.Actors.FindAsync(id);
+			Player player = await _context.Players.FindAsync(id);
 
-			if (actor == null)
+			if (player == null)
 			{
-				return HttpBadRequest("Invalid ActorId");
+				return HttpBadRequest("Invalid PlayerId");
 			}
 
-			return Ok(actor);
+			return Ok(player);
 		}
 
-		// PUT: api/actors/936da01f-9abd-4d9d-80c7-02af85c822a8
+		// PUT: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpPut("{id:Guid}")]
-		public async Task<IActionResult> PutActor([FromRoute] Guid id, [FromBody] Actor actor)
+		public async Task<IActionResult> PutPlayer([FromRoute] Guid id, [FromBody] Player player)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			if (id != actor.Id)
+			if (id != player.Id)
 			{
 				return HttpBadRequest();
 			}
 
-			_context.Entry(actor).State = System.Data.Entity.EntityState.Modified;
+			_context.Entry(player).State = EntityState.Modified;
 
 			try
 			{
@@ -107,9 +108,9 @@ namespace SocialGamificationAsset.Controllers
 			}
 			catch (DbUpdateConcurrencyException)
 			{
-				if (!ActorExists(id))
+				if (!PlayerExists(id))
 				{
-					return HttpBadRequest("Invalid ActorId");
+					return HttpBadRequest("Invalid PlayerId");
 				}
 				else
 				{
@@ -120,23 +121,23 @@ namespace SocialGamificationAsset.Controllers
 			return new HttpStatusCodeResult(StatusCodes.Status204NoContent);
 		}
 
-		// POST: api/actors
+		// POST: api/players
 		[HttpPost]
-		public async Task<IActionResult> PostActor([FromBody] Actor actor)
+		public async Task<IActionResult> PostPlayer([FromBody] Player player)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			_context.Actors.Add(actor);
+			_context.Players.Add(player);
 			try
 			{
 				await _context.SaveChangesAsync();
 			}
 			catch (DbUpdateException)
 			{
-				if (ActorExists(actor.Id))
+				if (PlayerExists(player.Id))
 				{
 					return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
 				}
@@ -146,28 +147,28 @@ namespace SocialGamificationAsset.Controllers
 				}
 			}
 
-			return CreatedAtRoute("GetActor", new { id = actor.Id }, actor);
+			return CreatedAtRoute("GetPlayer", new { id = player.Id }, player);
 		}
 
-		// DELETE: api/actors/936da01f-9abd-4d9d-80c7-02af85c822a8
+		// DELETE: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpDelete("{id:Guid}")]
-		public async Task<IActionResult> DeleteActor([FromRoute] Guid id)
+		public async Task<IActionResult> DeletePlayer([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			Actor actor = await _context.Actors.FindAsync(id);
-			if (actor == null)
+			Player player = await _context.Players.FindAsync(id);
+			if (player == null)
 			{
-				return HttpBadRequest("Invalid ActorId");
+				return HttpBadRequest("Invalid PlayerId");
 			}
 
-			_context.Actors.Remove(actor);
+			_context.Players.Remove(player);
 			await _context.SaveChangesAsync();
 
-			return Ok(actor);
+			return Ok(player);
 		}
 
 		protected override void Dispose(bool disposing)
@@ -179,9 +180,9 @@ namespace SocialGamificationAsset.Controllers
 			base.Dispose(disposing);
 		}
 
-		private bool ActorExists(Guid id)
+		private bool PlayerExists(Guid id)
 		{
-			return _context.Actors.Count(e => e.Id == id) > 0;
+			return _context.Players.Count(e => e.Id == id) > 0;
 		}
 	}
 }

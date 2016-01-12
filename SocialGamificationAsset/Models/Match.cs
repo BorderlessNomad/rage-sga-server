@@ -41,6 +41,8 @@ namespace SocialGamificationAsset.Models
 	{
 		public MatchType Type { get; set; }
 
+		public Guid? ActorId { get; set; }
+
 		public bool FriendsOnly { get; set; }
 
 		public int Actors { get; set; }

@@ -19,7 +19,9 @@ namespace SocialGamificationAsset.Models
 
 				await CreateTests(_context, isAsync);
 
-				await CreateActorSessions(_context, isAsync);
+				await CreateGroups(_context, isAsync);
+
+				await CreatePlayerSessions(_context, isAsync);
 
 				await CreateFriends(_context, isAsync);
 			}
@@ -56,15 +58,47 @@ namespace SocialGamificationAsset.Models
 			}
 		}
 
-		protected static async Task CreateActorSessions(SocialGamificationAssetContext _context, bool isAsync = false)
+		protected static async Task CreateGroups(SocialGamificationAssetContext _context, bool isAsync = false)
+		{
+			if (!_context.Friends.Any())
+			{
+				IList<Group> groups = new List<Group>
+				{
+					new Group
+					{
+						Name = "boardgame"
+					},
+					new Group
+					{
+						Name = "gameideas"
+					},
+					new Group
+					{
+						Name = "rage"
+					}
+				};
+
+				_context.Groups.AddRange(groups);
+
+				await SaveChanges(_context, isAsync);
+
+				Debug.WriteLine("Groups Created.");
+			}
+		}
+
+		protected static async Task CreatePlayerSessions(SocialGamificationAssetContext _context, bool isAsync = false)
 		{
 			if (!_context.Sessions.Any())
 			{
+				Group boardgame = await _context.Groups.Where(a => a.Name.Equals("boardgame")).FirstOrDefaultAsync();
+				Group gameideas = await _context.Groups.Where(a => a.Name.Equals("gameideas")).FirstOrDefaultAsync();
+				Group rage = await _context.Groups.Where(a => a.Name.Equals("rage")).FirstOrDefaultAsync();
+
 				IList<Session> sessions = new List<Session>
 				{
 					new Session
 					{
-						Actor = new Actor
+						Player = new Player
 						{
 							Username = "admin",
 							Password = "admin",
@@ -73,7 +107,7 @@ namespace SocialGamificationAsset.Models
 					},
 					new Session
 					{
-						Actor = new Actor
+						Player = new Player
 						{
 							Username = "playgen",
 							Password = "playgen",
@@ -82,42 +116,47 @@ namespace SocialGamificationAsset.Models
 					},
 					new Session
 					{
-						Actor = new Actor
+						Player = new Player
 						{
 							Username = "mayur",
-							Password = "mayur"
+							Password = "mayur",
+							Groups = new List<Group> { boardgame, gameideas, rage }
 						}
 					},
 					new Session
 					{
-						Actor = new Actor
+						Player = new Player
 						{
 							Username = "jack",
-							Password = "jack"
+							Password = "jack",
+							Groups = new List<Group> { gameideas, rage }
 						}
 					},
 					new Session
 					{
-						Actor = new Actor
+						Player = new Player
 						{
 							Username = "matt",
-							Password = "matt"
+							Password = "matt",
+							Groups = new List<Group> { boardgame, rage }
 						}
 					},
 					new Session
 					{
-						Actor = new Actor
+						Player = new Player
 						{
 							Username = "ben",
-							Password = "ben"
+							Password = "ben",
+							Groups = new List<Group> { boardgame, gameideas }
 						}
 					},
 					new Session
 					{
-						Actor = new Actor
+						Player = new Player
 						{
 							Username = "kam",
-							Password = "kam"
+							Password = "kam",
+							Groups = new List<Group> { gameideas }
 						}
 					}
 				};
@@ -126,7 +165,7 @@ namespace SocialGamificationAsset.Models
 
 				await SaveChanges(_context, isAsync);
 
-				Debug.WriteLine("Actors & Sessions Created.");
+				Debug.WriteLine("Players & Sessions Created.");
 			}
 		}
 
@@ -134,11 +173,11 @@ namespace SocialGamificationAsset.Models
 		{
 			if (!_context.Friends.Any())
 			{
-				Actor mayur = await _context.Actors.Where(a => a.Username.Equals("mayur")).FirstOrDefaultAsync();
-				Actor matt = await _context.Actors.Where(a => a.Username.Equals("matt")).FirstOrDefaultAsync();
-				Actor jack = await _context.Actors.Where(a => a.Username.Equals("jack")).FirstOrDefaultAsync();
-				Actor kam = await _context.Actors.Where(a => a.Username.Equals("kam")).FirstOrDefaultAsync();
-				Actor ben = await _context.Actors.Where(a => a.Username.Equals("ben")).FirstOrDefaultAsync();
+				Player mayur = await _context.Players.Where(a => a.Username.Equals("mayur")).FirstOrDefaultAsync();
+				Player matt = await _context.Players.Where(a => a.Username.Equals("matt")).FirstOrDefaultAsync();
+				Player jack = await _context.Players.Where(a => a.Username.Equals("jack")).FirstOrDefaultAsync();
+				Player kam = await _context.Players.Where(a => a.Username.Equals("kam")).FirstOrDefaultAsync();
+				Player ben = await _context.Players.Where(a => a.Username.Equals("ben")).FirstOrDefaultAsync();
 
 				IList<Friend> friends = new List<Friend>
 				{

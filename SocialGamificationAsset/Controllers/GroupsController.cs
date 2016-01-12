@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
-using Microsoft.Data.Entity;
 using SocialGamificationAsset.Models;
+using SocialGamificationAsset.Policies;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,9 +13,27 @@ namespace SocialGamificationAsset.Controllers
 {
 	[Produces("application/json")]
 	[Route("api/groups")]
+	[ServiceFilter(typeof(ISessionAuthorizeFilter))]
 	public class GroupsController : Controller
 	{
 		private SocialGamificationAssetContext _context;
+
+		private Session _session;
+
+		public Session session
+		{
+			get { return GetSession(); }
+		}
+
+		protected Session GetSession()
+		{
+			if (_session == null)
+			{
+				_session = HttpContext.Session.GetObjectFromJson<Session>("__session");
+			}
+
+			return _session;
+		}
 
 		public GroupsController(SocialGamificationAssetContext context)
 		{
@@ -60,11 +80,11 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest();
 			}
 
-			_context.Entry(group).State = System.Data.Entity.EntityState.Modified;
+			_context.Entry(group).State = EntityState.Modified;
 
-			if (group.Actors != null && group.Actors.Count != 0)
+			if (group.Players != null && group.Players.Count != 0)
 			{
-				group.AddActors(_context, group.Actors);
+				group.AddPlayers(_context, group.Players);
 			}
 
 			try
@@ -95,9 +115,9 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			if (group.Actors != null && group.Actors.Count != 0)
+			if (group.Players != null && group.Players.Count != 0)
 			{
-				group.AddActors(_context, group.Actors);
+				group.AddPlayers(_context, group.Players);
 			}
 
 			_context.Groups.Add(group);
@@ -147,6 +167,7 @@ namespace SocialGamificationAsset.Controllers
 			{
 				_context.Dispose();
 			}
+
 			base.Dispose(disposing);
 		}
 

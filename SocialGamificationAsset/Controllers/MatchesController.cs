@@ -53,10 +53,10 @@ namespace SocialGamificationAsset.Controllers
 		public async Task<IActionResult> GetOwnedMatches()
 		{
 			IList<Match> matches = await _context.MatchActors
-				.Where(a => a.ActorId.Equals(session.Actor.Id))
+				.Where(a => a.ActorId.Equals(session.Player.Id))
 				.Select(m => m.Match)
 				.Include(m => m.Tournament)
-				.Where(m => m.Tournament.OwnerId.Equals(session.Actor.Id))
+				.Where(m => m.Tournament.OwnerId.Equals(session.Player.Id))
 				.ToListAsync()
 			;
 
@@ -75,7 +75,7 @@ namespace SocialGamificationAsset.Controllers
 		public async Task<IActionResult> GetMyMatches()
 		{
 			IList<Match> matches = await _context.MatchActors
-				.Where(a => a.ActorId.Equals(session.Actor.Id))
+				.Where(a => a.ActorId.Equals(session.Player.Id))
 				.Select(m => m.Match)
 				.Include(m => m.Tournament)
 				.ToListAsync()
@@ -186,7 +186,7 @@ namespace SocialGamificationAsset.Controllers
 		[HttpPost]
 		public async Task<IActionResult> CreateQuickMatch([FromBody] QuickMatch quickMatch)
 		{
-			if (session == null || session.Actor == null)
+			if (session == null || session.Player == null)
 			{
 				return HttpNotFound();
 			}
@@ -227,8 +227,9 @@ namespace SocialGamificationAsset.Controllers
 				}
 			}
 
-			IList<Actor> actors = actors = session.Actor.LoadRandom(_context, customData, quickMatch.FriendsOnly, quickMatch.Actors - 1);
-			actors.Add(session.Actor);
+			IList<Actor> actors = new List<Actor>();
+			actors = (IList<Actor>)Player.LoadRandom(_context, session.Player, customData, quickMatch.FriendsOnly, quickMatch.Actors - 1);
+			actors.Add(session.Player);
 
 			if (actors.Count < quickMatch.Actors)
 			{
@@ -249,7 +250,7 @@ namespace SocialGamificationAsset.Controllers
 			{
 				tournament = new Tournament()
 				{
-					OwnerId = session.Actor.Id
+					OwnerId = session.Player.Id
 				};
 
 				_context.Tournaments.Add(tournament);

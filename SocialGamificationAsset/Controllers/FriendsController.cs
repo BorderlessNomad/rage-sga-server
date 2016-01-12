@@ -45,12 +45,12 @@ namespace SocialGamificationAsset.Controllers
 		[Route("", Name = "GetMyFriends")]
 		public async Task<IActionResult> GetMyFriends()
 		{
-			if (session == null || session.Actor == null)
+			if (session == null || session.Player == null)
 			{
 				return HttpNotFound("Invalid Session.");
 			}
 
-			IList<Actor> friends = await session.Actor.Friends(_context).ToListAsync();
+			IList<Actor> friends = await session.Player.Friends(_context).ToListAsync();
 
 			return Ok(friends);
 		}
@@ -82,7 +82,7 @@ namespace SocialGamificationAsset.Controllers
 		[Route("{friendId:Guid}")]
 		public async Task<IActionResult> AddFriend([FromRoute] Guid friendId)
 		{
-			if (session == null || session.Actor == null)
+			if (session == null || session.Player == null)
 			{
 				return HttpBadRequest("Error with your session.");
 			}
@@ -96,8 +96,8 @@ namespace SocialGamificationAsset.Controllers
 
 			Friend friend = await _context.Friends
 				.Where(f =>
-					(f.RequesterId.Equals(friendId) && f.RequesteeId.Equals(session.Actor.Id)) ||
-					(f.RequesteeId.Equals(friendId) && f.RequesterId.Equals(session.Actor.Id))
+					(f.RequesterId.Equals(friendId) && f.RequesteeId.Equals(session.Player.Id)) ||
+					(f.RequesteeId.Equals(friendId) && f.RequesterId.Equals(session.Player.Id))
 				)
 				.FirstOrDefaultAsync();
 
@@ -113,7 +113,7 @@ namespace SocialGamificationAsset.Controllers
 
 			Friend newFriend = new Friend()
 			{
-				RequesterId = session.Actor.Id,
+				RequesterId = session.Player.Id,
 				RequesteeId = friendId
 			};
 
@@ -135,7 +135,7 @@ namespace SocialGamificationAsset.Controllers
 		[Route("{friendId:Guid}")]
 		public async Task<IActionResult> Unfriend([FromRoute] Guid friendId)
 		{
-			if (session == null || session.Actor == null)
+			if (session == null || session.Player == null)
 			{
 				return HttpBadRequest("Error with your session.");
 			}
@@ -149,8 +149,8 @@ namespace SocialGamificationAsset.Controllers
 
 			Friend friend = await _context.Friends
 				.Where(f =>
-					(f.RequesterId.Equals(friendId) && f.RequesteeId.Equals(session.Actor.Id)) ||
-					(f.RequesteeId.Equals(friendId) && f.RequesterId.Equals(session.Actor.Id))
+					(f.RequesterId.Equals(friendId) && f.RequesteeId.Equals(session.Player.Id)) ||
+					(f.RequesteeId.Equals(friendId) && f.RequesterId.Equals(session.Player.Id))
 				)
 				.FirstOrDefaultAsync();
 

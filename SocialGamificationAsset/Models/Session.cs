@@ -6,10 +6,10 @@ namespace SocialGamificationAsset.Models
 {
 	public class Session : Model
 	{
-		public Guid ActorId { get; set; }
+		public Guid PlayerId { get; set; }
 
-		[ForeignKey("ActorId")]
-		public virtual Actor Actor { get; set; }
+		[ForeignKey("PlayerId")]
+		public virtual Player Player { get; set; }
 
 		public string LastActionIP { get; set; }
 

@@ -53,14 +53,14 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest("Either Username is required for Login.");
 			}
 
-			Actor actor = await _context.Actors.Where(a => a.Username.Equals(login.Username)).FirstOrDefaultAsync();
+			Player player = await _context.Players.Where(a => a.Username.Equals(login.Username)).FirstOrDefaultAsync();
 
-			if (actor == null)
+			if (player == null)
 			{
-				return HttpNotFound("No such Actor found.");
+				return HttpNotFound("No such Player found.");
 			}
 
-			if (!actor.Password.Equals(login.Password))
+			if (!player.Password.Equals(login.Password))
 			{
 				return new ContentResult()
 				{
@@ -71,7 +71,7 @@ namespace SocialGamificationAsset.Controllers
 
 			Session session = new Session()
 			{
-				Actor = actor
+				Player = player
 			};
 
 			_context.Sessions.Add(session);

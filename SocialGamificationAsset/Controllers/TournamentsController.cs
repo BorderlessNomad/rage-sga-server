@@ -51,7 +51,7 @@ namespace SocialGamificationAsset.Controllers
 		public async Task<IActionResult> GetOwnedTournaments()
 		{
 			IList<Tournament> tournaments = await _context.Tournaments
-				.Where(t => t.OwnerId.Equals(session.Actor.Id))
+				.Where(t => t.OwnerId.Equals(session.Player.Id))
 				.ToListAsync();
 
 			if (tournaments == null || tournaments.Count() < 1)
@@ -69,7 +69,7 @@ namespace SocialGamificationAsset.Controllers
 		public async Task<IActionResult> GetMyTournaments()
 		{
 			IList<Tournament> tournaments = await _context.Tournaments
-				.Where(t => t.OwnerId.Equals(session.Actor.Id))
+				.Where(t => t.OwnerId.Equals(session.Player.Id))
 				.ToListAsync();
 
 			if (tournaments == null || tournaments.Count() < 1)

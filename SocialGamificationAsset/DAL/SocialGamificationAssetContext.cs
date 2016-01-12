@@ -13,6 +13,9 @@ namespace SocialGamificationAsset.Models
 	[DbConfigurationType(typeof(MySqlEFConfiguration))]
 	public class SocialGamificationAssetContext : DbContext
 	{
+		public const string GroupsTableName = "Groups";
+		public const string PlayersTableName = "Players";
+
 		public SocialGamificationAssetContext(IConfiguration config)
 			: base(config["Data:MySQLConnection:ConnectionString"])
 		{
@@ -50,6 +53,8 @@ namespace SocialGamificationAsset.Models
 		public virtual DbSet<MatchRound> MatchRounds { get; set; }
 
 		public virtual DbSet<Platform> Platforms { get; set; }
+
+		public virtual DbSet<Player> Players { get; set; }
 
 		public virtual DbSet<ServerSetting> ServerSettings { get; set; }
 

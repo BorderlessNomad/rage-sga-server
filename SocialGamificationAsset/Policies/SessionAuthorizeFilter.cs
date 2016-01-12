@@ -74,7 +74,7 @@ namespace SocialGamificationAsset.Policies
 			Session localSession = httpContext.Session.GetObjectFromJson<Session>("__session");
 
 			// If 'active' session already exists skip DB call
-			if (localSession != null && localSession.Id.Equals(token) && localSession.Actor != null)
+			if (localSession != null && localSession.Id.Equals(token) && localSession.Player != null)
 			{
 				return;
 			}
@@ -86,7 +86,7 @@ namespace SocialGamificationAsset.Policies
 				return;
 			}
 
-			Session session = await db.Sessions.Where(s => s.Id.Equals(token)).Include(s => s.Actor).FirstOrDefaultAsync();
+			Session session = await db.Sessions.Where(s => s.Id.Equals(token)).Include(s => s.Player).FirstOrDefaultAsync();
 
 			// Find Session
 			if (session == null)
