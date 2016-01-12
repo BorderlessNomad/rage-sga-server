@@ -21,11 +21,11 @@ namespace SocialGamificationAsset.Models
 			Type = GroupVisibility.Public;
 		}
 
-		public static async Task<IList<Actor>> LoadRandom(SocialGamificationAssetContext db, Group group, IList<CustomDataBase> customData, bool friendsOnly = false, int limit = 1)
+		public static async Task<IList<Group>> LoadRandom(SocialGamificationAssetContext db, Group group, IList<CustomDataBase> customData, bool friendsOnly = false, int limit = 1)
 		{
 			if (friendsOnly)
 			{
-				return Actor.LoadRandom(db, group, customData, friendsOnly, limit);
+				return (IList<Group>)Actor.LoadRandom(db, group, customData, friendsOnly, limit);
 			}
 
 			IList<Group> groups = await db.Groups
@@ -34,7 +34,7 @@ namespace SocialGamificationAsset.Models
 				.ToListAsync()
 			;
 
-			return (IList<Actor>)Helper.Shuffle(groups, limit);
+			return Helper.Shuffle(groups, limit);
 		}
 
 		/// <summary>

@@ -32,11 +32,11 @@ namespace SocialGamificationAsset.Models
 			ActivationCode = Guid.NewGuid();
 		}
 
-		public static async Task<IList<Actor>> LoadRandom(SocialGamificationAssetContext db, Player player, IList<CustomDataBase> customData, bool friendsOnly = false, int limit = 1)
+		public static async Task<IList<Player>> LoadRandom(SocialGamificationAssetContext db, Player player, IList<CustomDataBase> customData, bool friendsOnly = false, int limit = 1)
 		{
 			if (friendsOnly)
 			{
-				return Actor.LoadRandom(db, player, customData, friendsOnly, limit);
+				return (IList<Player>)Actor.LoadRandom(db, player, customData, friendsOnly, limit);
 			}
 
 			IList<Player> players = await db.Players
@@ -45,7 +45,7 @@ namespace SocialGamificationAsset.Models
 				.ToListAsync()
 			;
 
-			return (IList<Actor>)Helper.Shuffle(players, limit);
+			return Helper.Shuffle(players, limit);
 		}
 
 		/**

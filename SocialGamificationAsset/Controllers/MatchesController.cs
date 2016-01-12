@@ -60,11 +60,6 @@ namespace SocialGamificationAsset.Controllers
 				.ToListAsync()
 			;
 
-			if (matches == null || matches.Count() < 1)
-			{
-				return HttpNotFound("No Match Found.");
-			}
-
 			return Ok(matches);
 		}
 
@@ -80,11 +75,6 @@ namespace SocialGamificationAsset.Controllers
 				.Include(m => m.Tournament)
 				.ToListAsync()
 			;
-
-			if (matches == null || matches.Count() < 1)
-			{
-				return HttpNotFound("No Match Found.");
-			}
 
 			return Ok(matches);
 		}
@@ -184,7 +174,7 @@ namespace SocialGamificationAsset.Controllers
 		// Creates a Quick Match between logged account and a random user
 		// POST: api/matches
 		[HttpPost]
-		public async Task<IActionResult> CreateQuickMatch(QuickMatch quickMatch)
+		public async Task<IActionResult> CreateQuickMatch([FromBody] QuickMatch quickMatch)
 		{
 			if (session == null || session.Player == null)
 			{
@@ -227,14 +217,39 @@ namespace SocialGamificationAsset.Controllers
 				}
 			}
 
-			IList<Actor> actors = new List<Actor>();
-			actors = (IList<Actor>)Player.LoadRandom(_context, session.Player, customData, quickMatch.FriendsOnly, quickMatch.Actors - 1);
-			actors.Add(session.Player);
+			IList<Player> players = new List<Player>();
+			IList<Group> groups = new List<Group>();
 
-			if (actors.Count < quickMatch.Actors)
+			if (quickMatch.Type == MatchType.Player)
 			{
-				string verb = (quickMatch.Type == MatchType.Player) ? "Players" : "Groups";
-				return HttpNotFound("No " + verb + " available for match at this moment.");
+				players = await Player.LoadRandom(_context, session.Player, customData, quickMatch.FriendsOnly, quickMatch.Actors - 1);
+				players.Add(session.Player);
+
+				if (players.Count < quickMatch.Actors)
+				{
+					return HttpNotFound("No Players available for match at this moment.");
+				}
+			}
+			else if (quickMatch.Type == MatchType.Group)
+			{
+				if (!quickMatch.ActorId.HasValue || quickMatch.ActorId == Guid.Empty)
+				{
+					return HttpBadRequest("GroupId is required for Group Matches.");
+				}
+
+				Group group = session.Player.Groups.FirstOrDefault(g => g.Id.Equals(quickMatch.ActorId));
+				if (group == null)
+				{
+					return HttpNotFound("No such Group found for Player.");
+				}
+
+				groups = await Group.LoadRandom(_context, group, customData, quickMatch.FriendsOnly, quickMatch.Actors - 1);
+				groups.Add(group);
+
+				if (groups.Count < quickMatch.Actors)
+				{
+					return HttpNotFound("No Groups available for match at this moment.");
+				}
 			}
 
 			Tournament tournament;
@@ -290,44 +305,18 @@ namespace SocialGamificationAsset.Controllers
 				}
 			}
 
-			foreach (Actor actor in actors)
+			if (quickMatch.Type == MatchType.Player)
 			{
-				// Add actors to this match
-				MatchActor matchActor = new MatchActor()
+				foreach (Player actor in players)
 				{
-					MatchId = match.Id,
-					ActorId = actor.Id
-				};
-
-				_context.MatchActors.Add(matchActor);
-
-				try
-				{
-					await _context.SaveChangesAsync();
+					MatchActor.Add(_context, match, actor);
 				}
-				catch (DbEntityValidationException e)
+			}
+			else
+			{
+				foreach (Group actor in groups)
 				{
-					throw e;
-				}
-
-				for (int i = 1; i <= match.TotalRounds; ++i)
-				{
-					// Add round(s) entry for each Actor
-					MatchRound matchRound = new MatchRound()
-					{
-						MatchActorId = matchActor.Id
-					};
-
-					_context.MatchRounds.Add(matchRound);
-
-					try
-					{
-						await _context.SaveChangesAsync();
-					}
-					catch (DbEntityValidationException e)
-					{
-						throw e;
-					}
+					MatchActor.Add(_context, match, actor);
 				}
 			}
 
