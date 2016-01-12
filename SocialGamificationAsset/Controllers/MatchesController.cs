@@ -184,7 +184,7 @@ namespace SocialGamificationAsset.Controllers
 		// Creates a Quick Match between logged account and a random user
 		// POST: api/matches
 		[HttpPost]
-		public async Task<IActionResult> CreateQuickMatch([FromBody] QuickMatch quickMatch)
+		public async Task<IActionResult> CreateQuickMatch(QuickMatch quickMatch)
 		{
 			if (session == null || session.Actor == null)
 			{
