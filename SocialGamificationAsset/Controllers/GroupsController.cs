@@ -62,7 +62,7 @@ namespace SocialGamificationAsset.Controllers
 		}
 
 		// GET: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8
-		[HttpGet("{id:Guid}", Name = "GetGroup")]
+		[HttpGet("{id:Guid}", Name = "GetGroupInfo")]
 		public async Task<IActionResult> GetGroupInfo([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -151,7 +151,7 @@ namespace SocialGamificationAsset.Controllers
 				}
 			}
 
-			return CreatedAtRoute("GetGroup", new { id = group.Id }, group);
+			return CreatedAtRoute("GetGroupInfo", new { id = group.Id }, group);
 		}
 
 		// DELETE: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8
