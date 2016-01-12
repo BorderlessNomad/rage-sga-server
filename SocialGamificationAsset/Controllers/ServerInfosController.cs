@@ -18,7 +18,8 @@ namespace SocialGamificationAsset.Controllers
 			Dictionary<string, string> result = new Dictionary<string, string>()
 			{
 				["Version"] = ServerSetting.ServerVersion,
-				["Time"] = DateTime.Now.AddDays(3).ToString("yyyy-MM-dd HH:mm:ss")
+				["Time"] = DateTime.Now.AddDays(3).ToString("yyyy-MM-dd HH:mm:ss"),
+				["Success"] = "true"
 			};
 
 			return Ok(result);

@@ -41,7 +41,7 @@ namespace SocialGamificationAsset.Controllers
 
 		// POST: api/sessions
 		[HttpPost]
-		public async Task<IActionResult> Login([FromBody] LoginForm login)
+		public async Task<IActionResult> Login(LoginForm login)
 		{
 			if (!ModelState.IsValid)
 			{
