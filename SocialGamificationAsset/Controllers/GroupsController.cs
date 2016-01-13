@@ -105,7 +105,7 @@ namespace SocialGamificationAsset.Controllers
 			{
 				await _context.SaveChangesAsync();
 			}
-			catch (DbUpdateConcurrencyException)
+			catch (DbUpdateException)
 			{
 				if (!GroupExists(id))
 				{
@@ -175,7 +175,7 @@ namespace SocialGamificationAsset.Controllers
 			{
 				await _context.SaveChangesAsync();
 			}
-			catch (DbUpdateConcurrencyException)
+			catch (DbUpdateException)
 			{
 				if (!GroupExists(id))
 				{

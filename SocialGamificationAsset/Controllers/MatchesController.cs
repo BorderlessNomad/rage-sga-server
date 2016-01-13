@@ -156,7 +156,7 @@ namespace SocialGamificationAsset.Controllers
 			{
 				await _context.SaveChangesAsync();
 			}
-			catch (DbUpdateConcurrencyException)
+			catch (DbUpdateException)
 			{
 				if (!MatchExists(id))
 				{

@@ -106,7 +106,7 @@ namespace SocialGamificationAsset.Controllers
 			{
 				await _context.SaveChangesAsync();
 			}
-			catch (DbUpdateConcurrencyException)
+			catch (DbUpdateException)
 			{
 				if (!PlayerExists(id))
 				{
@@ -171,7 +171,7 @@ namespace SocialGamificationAsset.Controllers
 			{
 				await _context.SaveChangesAsync();
 			}
-			catch (DbUpdateConcurrencyException)
+			catch (DbUpdateException)
 			{
 				if (!PlayerExists(id))
 				{

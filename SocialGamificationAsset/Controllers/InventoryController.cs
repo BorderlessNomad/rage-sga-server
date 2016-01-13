@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
-using Microsoft.Data.Entity;
 using SocialGamificationAsset.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -60,13 +61,13 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest();
 			}
 
-			_context.Entry(inventory).State = System.Data.Entity.EntityState.Modified;
+			_context.Entry(inventory).State = EntityState.Modified;
 
 			try
 			{
 				await _context.SaveChangesAsync();
 			}
-			catch (DbUpdateConcurrencyException)
+			catch (DbUpdateException)
 			{
 				if (!InventoryExists(id))
 				{

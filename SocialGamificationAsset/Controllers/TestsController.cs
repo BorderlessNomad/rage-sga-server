@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
-using Microsoft.Data.Entity;
 using SocialGamificationAsset.Models;
 using SocialGamificationAsset.Policies;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Description;
@@ -74,13 +75,13 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest();
 			}
 
-			_context.Entry(test).State = System.Data.Entity.EntityState.Modified;
+			_context.Entry(test).State = EntityState.Modified;
 
 			try
 			{
 				await _context.SaveChangesAsync();
 			}
-			catch (DbUpdateConcurrencyException)
+			catch (DbUpdateException)
 			{
 				if (!TestExists(id))
 				{
