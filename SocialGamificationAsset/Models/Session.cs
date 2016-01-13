@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -29,5 +30,7 @@ namespace SocialGamificationAsset.Models
 
 		[Required]
 		public string Password { get; set; }
+
+		public IList<CustomDataBase> CustomData { get; set; }
 	}
 }

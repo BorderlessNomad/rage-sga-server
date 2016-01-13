@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Validation;
+using System.Data.Entity.Infrastructure;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -239,7 +239,7 @@ namespace SocialGamificationAsset.Models
 					_context.SaveChanges();
 				}
 			}
-			catch (DbEntityValidationException e)
+			catch (DbUpdateException e)
 			{
 				throw e;
 			}

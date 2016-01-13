@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Mvc;
 using SocialGamificationAsset.Models;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -97,6 +98,20 @@ namespace SocialGamificationAsset.Controllers
 				{
 					throw;
 				}
+			}
+
+			// Build the filter by CustomData
+			IList<CustomData> customData = CustomData.Parse(register.CustomData, player.Id, CustomDataType.Player);
+
+			_context.CustomData.AddRange(customData);
+
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateException e)
+			{
+				throw e;
 			}
 
 			return CreatedAtRoute("GetSession", new { id = session.Id }, session);
