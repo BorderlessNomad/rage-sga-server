@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 namespace SocialGamificationAsset.Models
@@ -10,6 +11,7 @@ namespace SocialGamificationAsset.Models
 
 		public virtual ICollection<Achievement> Achievements { get; set; }
 
+		[NotMapped]
 		public virtual ICollection<CustomData> CustomData { get; set; }
 
 		public virtual ICollection<File> Files { get; set; }
@@ -47,15 +49,6 @@ namespace SocialGamificationAsset.Models
 		public IQueryable<Actor> Friends(SocialGamificationAssetContext db, FriendState state = FriendState.Accepted)
 		{
 			return Friends(db, this.Id, state);
-		}
-
-		public static IList<Actor> LoadRandom(SocialGamificationAssetContext db, Actor actor, IList<CustomDataBase> customData, bool friendsOnly = false, int limit = 1)
-		{
-			var friendsList = Friend.GetFriendIds(db, actor.Id, FriendState.Accepted);
-
-			IQueryable<Actor> results = db.Actors.Where(a => friendsList.Contains(actor.Id));
-
-			return Helper.Shuffle(results.ToList(), limit);
 		}
 	}
 }

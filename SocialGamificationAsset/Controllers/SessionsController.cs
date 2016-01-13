@@ -100,7 +100,7 @@ namespace SocialGamificationAsset.Controllers
 				}
 			}
 
-			// Build the filter by CustomData
+			// Store the CustomData
 			IList<CustomData> customData = CustomData.Parse(register.CustomData, player.Id, CustomDataType.Player);
 
 			_context.CustomData.AddRange(customData);

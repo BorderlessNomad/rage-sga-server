@@ -24,6 +24,8 @@ namespace SocialGamificationAsset.Models
 				await CreatePlayerSessions(_context, isAsync);
 
 				await CreateFriends(_context, isAsync);
+
+				await CreateCustomData(_context, isAsync);
 			}
 		}
 
@@ -223,6 +225,91 @@ namespace SocialGamificationAsset.Models
 				await SaveChanges(_context, isAsync);
 
 				Debug.WriteLine("Friends Created.");
+			}
+		}
+
+		protected static async Task CreateCustomData(SocialGamificationAssetContext _context, bool isAsync = false)
+		{
+			if (!_context.CustomData.Any())
+			{
+				Player mayur = await _context.Players.Where(a => a.Username.Equals("mayur")).FirstOrDefaultAsync();
+				Player matt = await _context.Players.Where(a => a.Username.Equals("matt")).FirstOrDefaultAsync();
+				Player jack = await _context.Players.Where(a => a.Username.Equals("jack")).FirstOrDefaultAsync();
+				Player kam = await _context.Players.Where(a => a.Username.Equals("kam")).FirstOrDefaultAsync();
+				Player ben = await _context.Players.Where(a => a.Username.Equals("ben")).FirstOrDefaultAsync();
+
+				IList<CustomData> customData = new List<CustomData>
+				{
+					new CustomData
+					{
+						Key = "ip",
+						Value = "127.0.0.1",
+						ObjectId = mayur.Id,
+						ObjectType = CustomDataType.Player
+					},
+					new CustomData
+					{
+						Key = "ip",
+						Value = "127.0.0.1",
+						ObjectId = matt.Id,
+						ObjectType = CustomDataType.Player
+					},
+					new CustomData
+					{
+						Key = "ip",
+						Value = "127.0.0.1",
+						ObjectId = jack.Id,
+						ObjectType = CustomDataType.Player
+					},
+					new CustomData
+					{
+						Key = "ip",
+						Value = "127.0.0.1",
+						ObjectId = ben.Id,
+						ObjectType = CustomDataType.Player
+					},
+					new CustomData
+					{
+						Key = "video_id",
+						Value = "1234",
+						ObjectId = mayur.Id,
+						ObjectType = CustomDataType.Player
+					},
+					new CustomData
+					{
+						Key = "video_id",
+						Value = "1234",
+						ObjectId = matt.Id,
+						ObjectType = CustomDataType.Player
+					},
+					new CustomData
+					{
+						Key = "video_id",
+						Value = "1234",
+						ObjectId = jack.Id,
+						ObjectType = CustomDataType.Player
+					},
+					new CustomData
+					{
+						Key = "session_id",
+						Value = "235f73ea-e54f-4150-8dc3-3eb9995d0728",
+						ObjectId = mayur.Id,
+						ObjectType = CustomDataType.Player
+					},
+					new CustomData
+					{
+						Key = "session_id",
+						Value = "235f73ea-e54f-4150-8dc3-3eb9995d0728",
+						ObjectId = matt.Id,
+						ObjectType = CustomDataType.Player
+					},
+				};
+
+				_context.CustomData.AddRange(customData);
+
+				await SaveChanges(_context, isAsync);
+
+				Debug.WriteLine("CustomData Created.");
 			}
 		}
 

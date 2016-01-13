@@ -17,6 +17,7 @@ namespace SocialGamificationAsset.Models
 
 		public DateTime? DateFinished { get; set; }
 
+		[NotMapped]
 		public virtual ICollection<CustomData> CustomData { get; set; }
 
 		public Tournament()

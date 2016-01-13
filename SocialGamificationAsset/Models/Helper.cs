@@ -8,6 +8,9 @@ namespace SocialGamificationAsset.Models
 	{
 		private static Random rng = new Random();
 
+		// public static List<string> allowedOperators = new List<string> { "=", "!", "%", ">", ">=", "<", "<=" };
+		public static List<string> AllowedOperators = new List<string> { "=", "!", "%" };
+
 		/**
 		 * The modern version of the Fisher–Yates shuffle aka 'Algorithm P'
 		 * -- To shuffle an array a of n elements (indices 0..n-1):

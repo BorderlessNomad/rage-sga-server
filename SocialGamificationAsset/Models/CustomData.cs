@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace SocialGamificationAsset.Models
 {
@@ -18,27 +19,13 @@ namespace SocialGamificationAsset.Models
 			IList<CustomDataBase> customData = new List<CustomDataBase>();
 			if (sourceData != null && sourceData.Count > 0)
 			{
-				// Check for allowed operators
-				List<string> allowedOperators = new List<string> { "=", "!", "%", ">", ">=", "<", "<=" };
-
 				for (int i = 0; i < sourceData.Count; i++)
 				{
 					CustomDataBase data = sourceData[i];
 
-					if (!allowedOperators.Contains(data.Operator))
+					if (!Helper.AllowedOperators.Contains(data.Operator))
 					{
 						continue;
-					}
-
-					switch (data.Operator)
-					{
-						case "!": // Unequal
-							data.Operator = "<>";
-							break;
-
-						case "%": // Like
-							data.Operator = "REGEXP";
-							break;
 					}
 
 					customData.Add(data);
@@ -66,28 +53,9 @@ namespace SocialGamificationAsset.Models
 
 			if (sourceData != null && sourceData.Count > 0)
 			{
-				// Check for allowed operators
-				List<string> allowedOperators = new List<string> { "=", "!", "%", ">", ">=", "<", "<=" };
-
 				for (int i = 0; i < sourceData.Count; i++)
 				{
 					CustomDataBase data = sourceData[i];
-
-					if (!allowedOperators.Contains(data.Operator))
-					{
-						continue;
-					}
-
-					switch (data.Operator)
-					{
-						case "!": // Unequal
-							data.Operator = "<>";
-							break;
-
-						case "%": // Like
-							data.Operator = "REGEXP";
-							break;
-					}
 
 					customData.Add(new CustomData()
 					{
@@ -100,6 +68,41 @@ namespace SocialGamificationAsset.Models
 			}
 
 			return customData;
+		}
+
+		public static IQueryable<CustomData> ConditionBuilder(SocialGamificationAssetContext db, IList<CustomDataBase> sourceData, CustomDataType objectType)
+		{
+			IQueryable<CustomData> query = db.CustomData.Where(c => c.ObjectType == objectType);
+
+			if (sourceData != null && sourceData.Count > 0)
+			{
+				foreach (CustomDataBase data in sourceData)
+				{
+					query = query.Where(c => c.Key.Equals(data.Key));
+
+					if (!Helper.AllowedOperators.Contains(data.Operator))
+					{
+						continue;
+					}
+
+					switch (data.Operator)
+					{
+						case "=":
+							query = query.Where(c => c.Value.Equals(data.Value));
+							break;
+
+						case "!":
+							query = query.Where(c => c.Value != data.Value);
+							break;
+
+						case "%":
+							query = query.Where(c => c.Value.Contains(data.Value));
+							break;
+					}
+				}
+			}
+
+			return query;
 		}
 	}
 

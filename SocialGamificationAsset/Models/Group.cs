@@ -23,16 +23,25 @@ namespace SocialGamificationAsset.Models
 
 		public static async Task<IList<Group>> LoadRandom(SocialGamificationAssetContext db, Group group, IList<CustomDataBase> customData, bool friendsOnly = false, int limit = 1)
 		{
+			IQueryable<Group> query = db.Groups;
+
 			if (friendsOnly)
 			{
-				return (IList<Group>)Actor.LoadRandom(db, group, customData, friendsOnly, limit);
+				var friendsList = Friend.GetFriendIds(db, group.Id, FriendState.Accepted);
+
+				query = query.Where(a => friendsList.Contains(group.Id));
+			}
+			else
+			{
+				query = query.Where(g => g.Id != group.Id).Where(g => g.Type == GroupVisibility.Public);
 			}
 
-			IList<Group> groups = await db.Groups
-				.Where(a => a.Id != group.Id)
-				.Where(a => a.Type == GroupVisibility.Public)
-				.ToListAsync()
-			;
+			// CustomData conditions
+			var cQuery = Models.CustomData.ConditionBuilder(db, customData, CustomDataType.Group);
+			IList<Guid> similarGroups = await cQuery.Select(c => c.ObjectId).Distinct().ToListAsync();
+
+			// Check if Group satisfy CustomData constaints
+			IList<Group> groups = await query.Where(g => similarGroups.Contains(g.Id)).ToListAsync();
 
 			return Helper.Shuffle(groups, limit);
 		}
