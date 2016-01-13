@@ -40,10 +40,10 @@ namespace SocialGamificationAsset.Controllers
 			return _session;
 		}
 
-		// GET: api/friends
+		// GET: api/friends/all
 		[HttpGet]
-		[Route("", Name = "GetMyFriends")]
-		public async Task<IActionResult> GetMyFriends()
+		[Route("all", Name = "GetAllFriends")]
+		public async Task<IActionResult> GetAllFriends()
 		{
 			if (session == null || session.Player == null)
 			{
@@ -51,6 +51,34 @@ namespace SocialGamificationAsset.Controllers
 			}
 
 			IList<Actor> friends = await session.Player.Friends(_context).ToListAsync();
+
+			return Ok(friends);
+		}
+
+		// GET: api/friends
+		// GET: api/friends/accepted
+		// GET: api/friends/pending
+		// GET: api/friends/declined
+		[HttpGet]
+		[Route("{state?}", Name = "GetMyFriends")]
+		public async Task<IActionResult> GetMyFriends([FromRoute] string state = "accepted")
+		{
+			if (session == null || session.Player == null)
+			{
+				return HttpNotFound("Invalid Session.");
+			}
+
+			FriendState friendshipStatus = FriendState.Accepted;
+			if (state == "pending")
+			{
+				friendshipStatus = FriendState.Pending;
+			}
+			else if (state == "declined")
+			{
+				friendshipStatus = FriendState.Declined;
+			}
+
+			IList<Actor> friends = await session.Player.Friends(_context, friendshipStatus).ToListAsync();
 
 			return Ok(friends);
 		}

@@ -37,6 +37,18 @@ namespace SocialGamificationAsset.Models
 			return Friends(db, this.Id);
 		}
 
+		public static IQueryable<Actor> Friends(SocialGamificationAssetContext db, Guid id, FriendState state = FriendState.Accepted)
+		{
+			var friendsList = Friend.GetFriendIds(db, id, state);
+
+			return db.Actors.Where(a => friendsList.Contains(a.Id));
+		}
+
+		public IQueryable<Actor> Friends(SocialGamificationAssetContext db, FriendState state = FriendState.Accepted)
+		{
+			return Friends(db, this.Id, state);
+		}
+
 		public static IList<Actor> LoadRandom(SocialGamificationAssetContext db, Actor actor, IList<CustomDataBase> customData, bool friendsOnly = false, int limit = 1)
 		{
 			var friendsList = Friend.GetFriendIds(db, actor.Id, FriendState.Accepted);
