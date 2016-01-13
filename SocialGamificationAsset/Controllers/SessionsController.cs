@@ -39,28 +39,111 @@ namespace SocialGamificationAsset.Controllers
 			return Ok(session);
 		}
 
-		// POST: api/sessions
-		[HttpPost]
-		public async Task<IActionResult> Login([FromBody] LoginForm login)
+		// PUT: api/sessions
+		[HttpPut]
+		public async Task<IActionResult> AddPlayer([FromBody] UserForm register)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			if (String.IsNullOrWhiteSpace(login.Username))
+			if (String.IsNullOrWhiteSpace(register.Username) && String.IsNullOrWhiteSpace(register.Email))
 			{
-				return HttpBadRequest("Either Username is required for Login.");
+				return HttpBadRequest("Either Username or Email is required.");
 			}
 
-			Player player = await _context.Players.Where(a => a.Username.Equals(login.Username)).FirstOrDefaultAsync();
+			Player player = new Player();
+
+			if (!String.IsNullOrWhiteSpace(register.Username))
+			{
+				if (await Player.ExistsUsername(_context, register.Username))
+				{
+					return HttpBadRequest("Username already exists.");
+				}
+
+				player.Username = register.Username;
+			}
+
+			if (!String.IsNullOrWhiteSpace(register.Email))
+			{
+				if (await Player.ExistsEmail(_context, register.Email))
+				{
+					return HttpBadRequest("Email already exists.");
+				}
+
+				player.Email = register.Email;
+			}
+
+			player.Password = Helper.HashPassword(register.Password);
+
+			Session session = new Session
+			{
+				Player = player
+			};
+
+			_context.Sessions.Add(session);
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateException)
+			{
+				if (SessionExists(session.Id))
+				{
+					return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
+				}
+				else
+				{
+					throw;
+				}
+			}
+
+			return CreatedAtRoute("GetSession", new { id = session.Id }, session);
+		}
+
+		// POST: api/sessions
+		[HttpPost]
+		public async Task<IActionResult> Login([FromBody] UserForm login)
+		{
+			if (!ModelState.IsValid)
+			{
+				return HttpBadRequest(ModelState);
+			}
+
+			if (String.IsNullOrWhiteSpace(login.Username) && String.IsNullOrWhiteSpace(login.Email))
+			{
+				return HttpBadRequest("Either Username or Email is required.");
+			}
+
+			Player player = new Player();
+
+			if (!String.IsNullOrWhiteSpace(login.Username) && String.IsNullOrWhiteSpace(login.Email))
+			{
+				player = await _context.Players
+					.Where(a => a.Username.Equals(login.Username))
+					.FirstOrDefaultAsync();
+			}
+			else if (String.IsNullOrWhiteSpace(login.Username) && !String.IsNullOrWhiteSpace(login.Email))
+			{
+				player = await _context.Players
+					.Where(a => a.Email.Equals(login.Email))
+					.FirstOrDefaultAsync();
+			}
+			else if (!String.IsNullOrWhiteSpace(login.Username) && !String.IsNullOrWhiteSpace(login.Email))
+			{
+				player = await _context.Players
+					.Where(a => a.Username.Equals(login.Username))
+					.Where(a => a.Email.Equals(login.Email))
+					.FirstOrDefaultAsync();
+			}
 
 			if (player == null)
 			{
 				return HttpNotFound("No such Player found.");
 			}
 
-			if (!player.Password.Equals(login.Password))
+			if (!Helper.ValidatePassword(login.Password, player.Password))
 			{
 				return new ContentResult()
 				{

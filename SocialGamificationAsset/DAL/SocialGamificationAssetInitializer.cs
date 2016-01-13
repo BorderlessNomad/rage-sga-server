@@ -101,7 +101,7 @@ namespace SocialGamificationAsset.Models
 						Player = new Player
 						{
 							Username = "admin",
-							Password = "admin",
+							Password = Helper.HashPassword("admin"),
 							Role = AccountType.Admin
 						}
 					},
@@ -110,7 +110,7 @@ namespace SocialGamificationAsset.Models
 						Player = new Player
 						{
 							Username = "playgen",
-							Password = "playgen",
+							Password = Helper.HashPassword("playgen"),
 							Role = AccountType.Admin
 						}
 					},
@@ -119,7 +119,7 @@ namespace SocialGamificationAsset.Models
 						Player = new Player
 						{
 							Username = "mayur",
-							Password = "mayur",
+							Password = Helper.HashPassword("mayur"),
 							Groups = new List<Group> { boardgame, gameideas, rage }
 						}
 					},
@@ -128,7 +128,7 @@ namespace SocialGamificationAsset.Models
 						Player = new Player
 						{
 							Username = "jack",
-							Password = "jack",
+							Password = Helper.HashPassword("jack"),
 							Groups = new List<Group> { gameideas, rage }
 						}
 					},
@@ -137,7 +137,7 @@ namespace SocialGamificationAsset.Models
 						Player = new Player
 						{
 							Username = "matt",
-							Password = "matt",
+							Password = Helper.HashPassword("matt"),
 							Groups = new List<Group> { boardgame, rage }
 						}
 					},
@@ -146,7 +146,7 @@ namespace SocialGamificationAsset.Models
 						Player = new Player
 						{
 							Username = "ben",
-							Password = "ben",
+							Password = Helper.HashPassword("ben"),
 							Groups = new List<Group> { boardgame, gameideas }
 						}
 					},
@@ -155,7 +155,7 @@ namespace SocialGamificationAsset.Models
 						Player = new Player
 						{
 							Username = "kam",
-							Password = "kam",
+							Password = Helper.HashPassword("kam"),
 							Groups = new List<Group> { gameideas }
 						}
 					}

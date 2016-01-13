@@ -54,7 +54,7 @@ namespace SocialGamificationAsset.Models
          * @return boolean Returns TRUE if Username exists
          */
 
-		public async Task<bool> ExistsUsername(SocialGamificationAssetContext db, string username)
+		public static async Task<bool> ExistsUsername(SocialGamificationAssetContext db, string username)
 		{
 			Player player = await db.Players.Where(p => p.Username.Equals(username)).FirstOrDefaultAsync();
 
@@ -72,7 +72,7 @@ namespace SocialGamificationAsset.Models
 		 * @return boolean Returns TRUE if Username exists
 		 */
 
-		public async Task<bool> ExistsEmail(SocialGamificationAssetContext db, string email)
+		public static async Task<bool> ExistsEmail(SocialGamificationAssetContext db, string email)
 		{
 			Player player = await db.Players.Where(p => p.Email.Equals(email)).FirstOrDefaultAsync();
 
@@ -90,7 +90,7 @@ namespace SocialGamificationAsset.Models
 		 * @return bool Returns TRUE if the account is online
 		 */
 
-		public async Task<bool> IsOnline(SocialGamificationAssetContext db, Guid playerId)
+		public static async Task<bool> IsOnline(SocialGamificationAssetContext db, Guid playerId)
 		{
 			Session session = await GetSession(db, playerId);
 
@@ -113,7 +113,7 @@ namespace SocialGamificationAsset.Models
 		 * @return Session
 		 */
 
-		public async Task<Session> GetSession(SocialGamificationAssetContext db, Guid playerId)
+		public static async Task<Session> GetSession(SocialGamificationAssetContext db, Guid playerId)
 		{
 			Session session = (Session)await db.Players
 				.Where(p => p.Id.Equals(playerId))
