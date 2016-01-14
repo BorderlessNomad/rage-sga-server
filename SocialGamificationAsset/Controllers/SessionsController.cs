@@ -60,7 +60,7 @@ namespace SocialGamificationAsset.Controllers
 			{
 				if (await Player.ExistsUsername(_context, register.Username))
 				{
-					return HttpBadRequest("Username already exists.");
+					return HttpBadRequest("Player with this Username already exists.");
 				}
 
 				player.Username = register.Username;
@@ -70,7 +70,7 @@ namespace SocialGamificationAsset.Controllers
 			{
 				if (await Player.ExistsEmail(_context, register.Email))
 				{
-					return HttpBadRequest("Email already exists.");
+					return HttpBadRequest("Player with this Email already exists.");
 				}
 
 				player.Email = register.Email;
@@ -129,31 +129,22 @@ namespace SocialGamificationAsset.Controllers
 
 			if (String.IsNullOrWhiteSpace(login.Username) && String.IsNullOrWhiteSpace(login.Email))
 			{
-				return HttpBadRequest("Either Username or Email is required.");
+				return HttpBadRequest("Either Username or Email is required for Login.");
 			}
 
-			// TODO: Make this IQueryable
-			Player player = new Player();
+			IQueryable<Player> query = _context.Players;
 
-			if (!String.IsNullOrWhiteSpace(login.Username) && String.IsNullOrWhiteSpace(login.Email))
+			if (!String.IsNullOrWhiteSpace(login.Username))
 			{
-				player = await _context.Players
-					.Where(a => a.Username.Equals(login.Username))
-					.FirstOrDefaultAsync();
+				query = query.Where(a => a.Username.Equals(login.Username));
 			}
-			else if (String.IsNullOrWhiteSpace(login.Username) && !String.IsNullOrWhiteSpace(login.Email))
+
+			if (!String.IsNullOrWhiteSpace(login.Email))
 			{
-				player = await _context.Players
-					.Where(a => a.Email.Equals(login.Email))
-					.FirstOrDefaultAsync();
+				query = query.Where(a => a.Email.Equals(login.Email));
 			}
-			else if (!String.IsNullOrWhiteSpace(login.Username) && !String.IsNullOrWhiteSpace(login.Email))
-			{
-				player = await _context.Players
-					.Where(a => a.Username.Equals(login.Username))
-					.Where(a => a.Email.Equals(login.Email))
-					.FirstOrDefaultAsync();
-			}
+
+			Player player = await query.FirstOrDefaultAsync();
 
 			if (player == null)
 			{
@@ -175,6 +166,7 @@ namespace SocialGamificationAsset.Controllers
 			};
 
 			_context.Sessions.Add(session);
+
 			try
 			{
 				await _context.SaveChangesAsync();
