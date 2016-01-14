@@ -49,7 +49,7 @@ namespace SocialGamificationAsset.Models
 
 		public Guid? ActorId { get; set; }
 
-		public bool FriendsOnly { get; set; }
+		public bool AlliancesOnly { get; set; }
 
 		public int Actors { get; set; }
 
@@ -63,7 +63,7 @@ namespace SocialGamificationAsset.Models
 		{
 			Type = MatchType.Player;
 
-			FriendsOnly = false;
+			AlliancesOnly = false;
 
 			if (Actors < 2)
 			{

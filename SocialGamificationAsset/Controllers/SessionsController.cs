@@ -30,7 +30,7 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Session session = await _context.Sessions.FindAsync(id);
+			Session session = await _context.Sessions.Include(s => s.Player).Where(s => s.Id.Equals(id)).FirstOrDefaultAsync();
 
 			if (session == null)
 			{
@@ -84,6 +84,7 @@ namespace SocialGamificationAsset.Controllers
 			};
 
 			_context.Sessions.Add(session);
+
 			try
 			{
 				await _context.SaveChangesAsync();
@@ -131,6 +132,7 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest("Either Username or Email is required.");
 			}
 
+			// TODO: Make this IQueryable
 			Player player = new Player();
 
 			if (!String.IsNullOrWhiteSpace(login.Username) && String.IsNullOrWhiteSpace(login.Email))

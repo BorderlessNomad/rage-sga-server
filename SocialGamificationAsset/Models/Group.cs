@@ -21,15 +21,15 @@ namespace SocialGamificationAsset.Models
 			Type = GroupVisibility.Public;
 		}
 
-		public static async Task<IList<Group>> LoadRandom(SocialGamificationAssetContext db, Group group, IList<CustomDataBase> customData, bool friendsOnly = false, int limit = 1)
+		public static async Task<IList<Group>> LoadRandom(SocialGamificationAssetContext db, Group group, IList<CustomDataBase> customData, bool alliancesOnly = false, int limit = 1)
 		{
 			IQueryable<Group> query = db.Groups;
 
-			if (friendsOnly)
+			if (alliancesOnly)
 			{
-				var friendsList = Friend.GetFriendIds(db, group.Id, FriendState.Accepted);
+				var alliancesList = Alliance.GetAllianceIds(db, group.Id, AllianceState.Accepted);
 
-				query = query.Where(a => friendsList.Contains(group.Id));
+				query = query.Where(a => alliancesList.Contains(group.Id));
 			}
 			else
 			{

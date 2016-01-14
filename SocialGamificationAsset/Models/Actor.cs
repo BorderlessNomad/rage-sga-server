@@ -27,28 +27,28 @@ namespace SocialGamificationAsset.Models
 			IsEnabled = true;
 		}
 
-		public static IQueryable<Actor> Friends(SocialGamificationAssetContext db, Guid id)
+		public static IQueryable<Actor> Alliances(SocialGamificationAssetContext db, Guid id)
 		{
-			var friendsList = Friend.GetFriendIds(db, id);
+			var alliancesList = Alliance.GetAllianceIds(db, id);
 
-			return db.Actors.Where(a => friendsList.Contains(a.Id));
+			return db.Actors.Where(a => alliancesList.Contains(a.Id));
 		}
 
-		public IQueryable<Actor> Friends(SocialGamificationAssetContext db)
+		public IQueryable<Actor> Alliances(SocialGamificationAssetContext db)
 		{
-			return Friends(db, this.Id);
+			return Alliances(db, this.Id);
 		}
 
-		public static IQueryable<Actor> Friends(SocialGamificationAssetContext db, Guid id, FriendState state = FriendState.Accepted)
+		public static IQueryable<Actor> Alliances(SocialGamificationAssetContext db, Guid id, AllianceState state = AllianceState.Accepted)
 		{
-			var friendsList = Friend.GetFriendIds(db, id, state);
+			var alliancesList = Alliance.GetAllianceIds(db, id, state);
 
-			return db.Actors.Where(a => friendsList.Contains(a.Id));
+			return db.Actors.Where(a => alliancesList.Contains(a.Id));
 		}
 
-		public IQueryable<Actor> Friends(SocialGamificationAssetContext db, FriendState state = FriendState.Accepted)
+		public IQueryable<Actor> Alliances(SocialGamificationAssetContext db, AllianceState state = AllianceState.Accepted)
 		{
-			return Friends(db, this.Id, state);
+			return Alliances(db, this.Id, state);
 		}
 	}
 }

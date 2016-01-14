@@ -38,7 +38,7 @@ namespace SocialGamificationAsset.Models
 
 		public virtual DbSet<FileActivity> FileActivities { get; set; }
 
-		public virtual DbSet<Friend> Friends { get; set; }
+		public virtual DbSet<Alliance> Alliances { get; set; }
 
 		public virtual DbSet<Group> Groups { get; set; }
 

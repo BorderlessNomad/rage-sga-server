@@ -23,7 +23,7 @@ namespace SocialGamificationAsset.Models
 
 				await CreatePlayerSessions(_context, isAsync);
 
-				await CreateFriends(_context, isAsync);
+				await CreateAlliances(_context, isAsync);
 
 				await CreateCustomData(_context, isAsync);
 			}
@@ -62,7 +62,7 @@ namespace SocialGamificationAsset.Models
 
 		protected static async Task CreateGroups(SocialGamificationAssetContext _context, bool isAsync = false)
 		{
-			if (!_context.Friends.Any())
+			if (!_context.Alliances.Any())
 			{
 				IList<Group> groups = new List<Group>
 				{
@@ -171,9 +171,9 @@ namespace SocialGamificationAsset.Models
 			}
 		}
 
-		protected static async Task CreateFriends(SocialGamificationAssetContext _context, bool isAsync = false)
+		protected static async Task CreateAlliances(SocialGamificationAssetContext _context, bool isAsync = false)
 		{
-			if (!_context.Friends.Any())
+			if (!_context.Alliances.Any())
 			{
 				Player mayur = await _context.Players.Where(a => a.Username.Equals("mayur")).FirstOrDefaultAsync();
 				Player matt = await _context.Players.Where(a => a.Username.Equals("matt")).FirstOrDefaultAsync();
@@ -181,50 +181,50 @@ namespace SocialGamificationAsset.Models
 				Player kam = await _context.Players.Where(a => a.Username.Equals("kam")).FirstOrDefaultAsync();
 				Player ben = await _context.Players.Where(a => a.Username.Equals("ben")).FirstOrDefaultAsync();
 
-				IList<Friend> friends = new List<Friend>
+				IList<Alliance> alliances = new List<Alliance>
 				{
-					new Friend
+					new Alliance
 					{
 						RequesterId = mayur.Id,
 						RequesteeId = matt.Id
 					},
-					new Friend
+					new Alliance
 					{
 						RequesterId = mayur.Id,
 						RequesteeId = jack.Id
 					},
-					new Friend
+					new Alliance
 					{
 						RequesterId = jack.Id,
 						RequesteeId = matt.Id
 					},
-					new Friend
+					new Alliance
 					{
 						RequesterId = jack.Id,
 						RequesteeId = kam.Id
 					},
-					new Friend
+					new Alliance
 					{
 						RequesterId = matt.Id,
 						RequesteeId = ben.Id
 					},
-					new Friend
+					new Alliance
 					{
 						RequesterId = kam.Id,
 						RequesteeId = ben.Id
 					},
-					new Friend
+					new Alliance
 					{
 						RequesterId = kam.Id,
 						RequesteeId = mayur.Id
 					},
 				};
 
-				_context.Friends.AddRange(friends);
+				_context.Alliances.AddRange(alliances);
 
 				await SaveChanges(_context, isAsync);
 
-				Debug.WriteLine("Friends Created.");
+				Debug.WriteLine("Alliances Created.");
 			}
 		}
 

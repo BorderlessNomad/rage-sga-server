@@ -32,15 +32,15 @@ namespace SocialGamificationAsset.Models
 			ActivationCode = Guid.NewGuid();
 		}
 
-		public static async Task<IList<Player>> LoadRandom(SocialGamificationAssetContext db, Player player, IList<CustomDataBase> customData, bool friendsOnly = false, int limit = 1)
+		public static async Task<IList<Player>> LoadRandom(SocialGamificationAssetContext db, Player player, IList<CustomDataBase> customData, bool alliancesOnly = false, int limit = 1)
 		{
 			IQueryable<Player> query = db.Players.Where(a => a.Role == AccountType.Player);
 
-			if (friendsOnly)
+			if (alliancesOnly)
 			{
-				var friendsList = Friend.GetFriendIds(db, player.Id, FriendState.Accepted);
+				var alliancesList = Alliance.GetAllianceIds(db, player.Id, AllianceState.Accepted);
 
-				query = query.Where(p => friendsList.Contains(player.Id));
+				query = query.Where(p => alliancesList.Contains(player.Id));
 			}
 			else
 			{

@@ -193,7 +193,7 @@ namespace SocialGamificationAsset.Controllers
 
 			if (quickMatch.Type == MatchType.Player)
 			{
-				players = await Player.LoadRandom(_context, session.Player, customData, quickMatch.FriendsOnly, quickMatch.Actors - 1);
+				players = await Player.LoadRandom(_context, session.Player, customData, quickMatch.AlliancesOnly, quickMatch.Actors - 1);
 				players.Add(session.Player);
 
 				if (players.Count < quickMatch.Actors)
@@ -214,7 +214,7 @@ namespace SocialGamificationAsset.Controllers
 					return HttpNotFound("No such Group found for Player.");
 				}
 
-				groups = await Group.LoadRandom(_context, group, customData, quickMatch.FriendsOnly, quickMatch.Actors - 1);
+				groups = await Group.LoadRandom(_context, group, customData, quickMatch.AlliancesOnly, quickMatch.Actors - 1);
 				groups.Add(group);
 
 				if (groups.Count < quickMatch.Actors)
