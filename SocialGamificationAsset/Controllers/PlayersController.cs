@@ -124,7 +124,7 @@ namespace SocialGamificationAsset.Controllers
 				player.Email = form.Email;
 			}
 
-			if (!String.IsNullOrWhiteSpace(form.Email))
+			if (!String.IsNullOrWhiteSpace(form.Password))
 			{
 				player.Password = Helper.HashPassword(form.Password);
 			}
