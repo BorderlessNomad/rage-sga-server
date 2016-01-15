@@ -11,14 +11,14 @@ namespace SocialGamificationAsset.Controllers
 	[Route("api/server")]
 	public class ServerInfosController : Controller
 	{
-		// POST: api/values
-		[HttpPost]
+		// GET: api/values
+		[HttpGet]
 		public IActionResult Get()
 		{
 			Dictionary<string, string> result = new Dictionary<string, string>()
 			{
 				["Version"] = ServerSetting.ServerVersion,
-				["Time"] = DateTime.Now.AddDays(3).ToString("yyyy-MM-dd HH:mm:ss"),
+				["Time"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
 				["Success"] = "true"
 			};
 
