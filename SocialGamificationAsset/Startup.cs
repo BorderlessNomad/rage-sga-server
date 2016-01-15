@@ -137,6 +137,8 @@ namespace SocialGamificationAsset
 
 			ConfigureErrorPages(application, this.hostingEnvironment);
 
+			ConfigureHeadersOverride(application);
+
 			ConfigureSecurity(application, this.hostingEnvironment);
 
 			ConfigureSession(application);
