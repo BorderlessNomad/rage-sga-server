@@ -2,7 +2,6 @@
 using Microsoft.AspNet.Mvc;
 using SocialGamificationAsset.Models;
 using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -106,19 +105,8 @@ namespace SocialGamificationAsset.Controllers
 				}
 			}
 
-			// Store the CustomData
-			IList<CustomData> customData = CustomData.Parse(register.CustomData, player.Id, CustomDataType.Player);
-
-			_context.CustomData.AddRange(customData);
-
-			try
-			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateException e)
-			{
-				throw e;
-			}
+			// Add or Update the CustomData
+			player.AddOrUpdateCustomData(_context, register.CustomData);
 
 			return CreatedAtRoute("GetSession", new { id = session.Id }, session);
 		}

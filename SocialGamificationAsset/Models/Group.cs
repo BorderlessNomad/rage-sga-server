@@ -63,6 +63,11 @@ namespace SocialGamificationAsset.Models
 
 			this.Players = new List<Player>(actors);
 		}
+
+		public async void AddOrUpdateCustomData(SocialGamificationAssetContext db, IList<CustomDataBase> sourceData)
+		{
+			await Models.CustomData.AddOrUpdate(db, sourceData, this.Id, CustomDataType.Group);
+		}
 	}
 
 	public enum GroupVisibility

@@ -140,6 +140,11 @@ namespace SocialGamificationAsset.Models
 		{
 			return await GetSession(db, this.Id);
 		}
+
+		public async void AddOrUpdateCustomData(SocialGamificationAssetContext db, IList<CustomDataBase> sourceData)
+		{
+			await Models.CustomData.AddOrUpdate(db, sourceData, this.Id, CustomDataType.Player);
+		}
 	}
 
 	public enum AccountType

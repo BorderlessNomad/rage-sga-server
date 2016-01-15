@@ -145,19 +145,8 @@ namespace SocialGamificationAsset.Controllers
 				}
 			}
 
-			// Store the CustomData
-			IList<CustomData> customData = CustomData.Parse(form.CustomData, player.Id, CustomDataType.Player);
-
-			_context.CustomData.AddRange(customData);
-
-			try
-			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateException e)
-			{
-				throw e;
-			}
+			// Add or Update the CustomData
+			player.AddOrUpdateCustomData(_context, form.CustomData);
 
 			return CreatedAtRoute("GetPlayer", new { id = player.Id }, player);
 		}

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Models
 {
@@ -46,28 +48,49 @@ namespace SocialGamificationAsset.Models
 
 		public CustomDataType ObjectType { get; set; }
 
-		public static IList<CustomData> Parse(IList<CustomDataBase> sourceData, Guid objectId, CustomDataType objectType)
+		public static async Task AddOrUpdate(SocialGamificationAssetContext db, IList<CustomDataBase> sourceData, Guid objectId, CustomDataType objectType)
 		{
 			// Build the filter by CustomData
-			IList<CustomData> customData = new List<CustomData>();
-
 			if (sourceData != null && sourceData.Count > 0)
 			{
 				for (int i = 0; i < sourceData.Count; i++)
 				{
 					CustomDataBase data = sourceData[i];
 
-					customData.Add(new CustomData()
+					CustomData customData = await db.CustomData
+						.Where(c => c.Key.Equals(data.Key))
+						.Where(c => c.ObjectId.Equals(objectId))
+						.Where(c => c.ObjectType == objectType)
+						.FirstOrDefaultAsync();
+
+					if (customData != null)
 					{
-						Key = data.Key,
-						Value = data.Value,
-						ObjectId = objectId,
-						ObjectType = objectType
-					});
+						db.Entry(customData).State = EntityState.Modified;
+						customData.Value = data.Value;
+					}
+					else
+					{
+						customData = new CustomData()
+						{
+							Key = data.Key,
+							Value = data.Value,
+							ObjectId = objectId,
+							ObjectType = objectType
+						};
+
+						db.CustomData.Add(customData);
+					}
 				}
 			}
 
-			return customData;
+			try
+			{
+				await db.SaveChangesAsync();
+			}
+			catch (DbUpdateException e)
+			{
+				throw e;
+			}
 		}
 
 		public static IQueryable<CustomData> ConditionBuilder(SocialGamificationAssetContext db, IList<CustomDataBase> sourceData, CustomDataType objectType)
