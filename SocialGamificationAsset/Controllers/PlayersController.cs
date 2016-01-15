@@ -88,19 +88,46 @@ namespace SocialGamificationAsset.Controllers
 
 		// PUT: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpPut("{id:Guid}")]
-		public async Task<IActionResult> PutPlayer([FromRoute] Guid id, [FromBody] Player player)
+		public async Task<IActionResult> PutPlayer([FromRoute] Guid id, [FromBody] UserForm form)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			if (id != player.Id)
+			Player player = await _context.Players.Where(p => p.Id.Equals(id)).FirstOrDefaultAsync();
+
+			if (player == null)
 			{
-				return HttpBadRequest();
+				return HttpNotFound("No Player Found.");
 			}
 
 			_context.Entry(player).State = EntityState.Modified;
+
+			if (!String.IsNullOrWhiteSpace(form.Username) && player.Username != form.Username)
+			{
+				if (await Player.ExistsUsername(_context, form.Username))
+				{
+					return HttpBadRequest("Player with this Username already exists.");
+				}
+
+				player.Username = form.Username;
+			}
+
+			if (!String.IsNullOrWhiteSpace(form.Email) && player.Email != form.Email)
+			{
+				if (await Player.ExistsEmail(_context, form.Email))
+				{
+					return HttpBadRequest("Player with this Email already exists.");
+				}
+
+				player.Email = form.Email;
+			}
+
+			if (!String.IsNullOrWhiteSpace(form.Email))
+			{
+				player.Password = Helper.HashPassword(form.Password);
+			}
 
 			try
 			{
@@ -118,7 +145,21 @@ namespace SocialGamificationAsset.Controllers
 				}
 			}
 
-			return new HttpStatusCodeResult(StatusCodes.Status204NoContent);
+			// Store the CustomData
+			IList<CustomData> customData = CustomData.Parse(form.CustomData, player.Id, CustomDataType.Player);
+
+			_context.CustomData.AddRange(customData);
+
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateException e)
+			{
+				throw e;
+			}
+
+			return CreatedAtRoute("GetPlayer", new { id = player.Id }, player);
 		}
 
 		// POST: api/players
