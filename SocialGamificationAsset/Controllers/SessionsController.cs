@@ -54,6 +54,11 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest("Either Username or Email is required.");
 			}
 
+			if (String.IsNullOrWhiteSpace(register.Password))
+			{
+				return HttpBadRequest("Password is required.");
+			}
+
 			Player player = new Player();
 
 			if (!String.IsNullOrWhiteSpace(register.Username))
@@ -129,7 +134,12 @@ namespace SocialGamificationAsset.Controllers
 
 			if (String.IsNullOrWhiteSpace(login.Username) && String.IsNullOrWhiteSpace(login.Email))
 			{
-				return HttpBadRequest("Either Username or Email is required for Login.");
+				return HttpBadRequest("Either Username or Email is required.");
+			}
+
+			if (String.IsNullOrWhiteSpace(login.Password))
+			{
+				return HttpBadRequest("Password is required.");
 			}
 
 			IQueryable<Player> query = _context.Players;
