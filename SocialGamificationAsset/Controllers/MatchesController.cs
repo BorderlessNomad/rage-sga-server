@@ -107,14 +107,40 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			IList<MatchActor> actors = await _context.MatchActors.Where(a => a.MatchId.Equals(id)).Include(a => a.Actor).ToListAsync();
+			IList<MatchActor> matchActors = await _context.MatchActors.Where(a => a.MatchId.Equals(id)).Include(a => a.Actor).ToListAsync();
 
-			if (actors == null || actors.Count() < 1)
+			if (matchActors == null || matchActors.Count < 1)
 			{
 				return HttpNotFound("No Actor Found for Match " + id);
 			}
 
-			return Ok(actors);
+			return Ok(matchActors);
+		}
+
+		// GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8/rounds
+		[HttpGet("{id:Guid}/rounds", Name = "GetMatchRounds")]
+		public async Task<IActionResult> GetMatchRounds([FromRoute] Guid id)
+		{
+			if (!ModelState.IsValid)
+			{
+				return HttpBadRequest(ModelState);
+			}
+
+			IList<MatchActor> matchActors = await _context.MatchActors.Where(a => a.MatchId.Equals(id)).Include(a => a.Actor).ToListAsync();
+
+			IList<MatchRound> rounds = new List<MatchRound>();
+			foreach (MatchActor matchActor in matchActors)
+			{
+				MatchRound round = await _context.MatchRounds.Where(r => r.MatchActorId.Equals(matchActor.Id)).FirstOrDefaultAsync();
+				rounds.Add(round);
+			}
+
+			if (matchActors == null || matchActors.Count < 1)
+			{
+				return HttpNotFound("No Actor Found for Match " + id);
+			}
+
+			return Ok(rounds);
 		}
 
 		// GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8/owner
