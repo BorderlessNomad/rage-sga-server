@@ -13,12 +13,12 @@ namespace SocialGamificationAsset
 			services.AddScoped<SocialGamificationAssetContext>();
 
 			// Add DB Initiliazer Service
-			services.AddTransient<SocialGamificationAssetInitializer>();
+			services.AddTransient<DataInitializer>();
 		}
 
 		private static void ConfigureDatabaseInitialization(IApplicationBuilder application)
 		{
-			SocialGamificationAssetInitializer.InitializeDatabase(application.ApplicationServices, true).Wait();
+			DataInitializer.InitializeDatabase(application.ApplicationServices, true).Wait();
 		}
 	}
 }

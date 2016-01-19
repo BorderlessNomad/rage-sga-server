@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Models
 {
-	public class SocialGamificationAssetInitializer
+	public class DataInitializer
 	{
 		public static async Task InitializeDatabase(IServiceProvider serviceProvider, bool isAsync = false)
 		{

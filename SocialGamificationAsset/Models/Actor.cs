@@ -20,6 +20,8 @@ namespace SocialGamificationAsset.Models
 
 		public virtual ICollection<Inventory> Inventories { get; set; }
 
+		public virtual ICollection<Item> Items { get; set; }
+
 		public virtual ICollection<Platform> Platforms { get; set; }
 
 		public Actor()
