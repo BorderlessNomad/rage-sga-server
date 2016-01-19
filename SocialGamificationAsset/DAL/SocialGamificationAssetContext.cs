@@ -44,6 +44,10 @@ namespace SocialGamificationAsset.Models
 
 		public virtual DbSet<Inventory> Inventory { get; set; }
 
+		public virtual DbSet<Item> Items { get; set; }
+
+		public virtual DbSet<ItemType> ItemTypes { get; set; }
+
 		public virtual DbSet<Leaderboard> Leaderboards { get; set; }
 
 		public virtual DbSet<LeaderboardUser> LeaderboardUsers { get; set; }

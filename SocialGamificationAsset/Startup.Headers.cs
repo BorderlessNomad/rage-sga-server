@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
-using SocialGamificationAsset.Policies;
 using System.Threading.Tasks;
 
 namespace SocialGamificationAsset

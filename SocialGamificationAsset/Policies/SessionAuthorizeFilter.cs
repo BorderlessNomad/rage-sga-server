@@ -17,7 +17,7 @@ namespace SocialGamificationAsset.Policies
 
 	public class SessionAuthorizeFilter : IAsyncAuthorizationFilter, ISessionAuthorizeFilter
 	{
-		public const string SessionHeaderName = "X-HTTP-SESSION";
+		public const string SessionHeaderName = "X-HTTP-Session";
 		public const string DocumentationApiKey = "api_key";
 		public const string DocumentationApiValue = "00000000-0000-0000-0000-000000000000";
 

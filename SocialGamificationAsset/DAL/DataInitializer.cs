@@ -17,19 +17,19 @@ namespace SocialGamificationAsset.Models
 			{
 				var _context = serviceScope.ServiceProvider.GetService<SocialGamificationAssetContext>();
 
-				await CreateTests(_context, isAsync);
+				await SeedTests(_context, isAsync);
 
-				await CreateGroups(_context, isAsync);
+				await SeedGroups(_context, isAsync);
 
-				await CreatePlayerSessions(_context, isAsync);
+				await SeedPlayerSessions(_context, isAsync);
 
-				await CreateAlliances(_context, isAsync);
+				await SeedAlliances(_context, isAsync);
 
-				await CreateCustomData(_context, isAsync);
+				await SeedCustomData(_context, isAsync);
 			}
 		}
 
-		protected static async Task CreateTests(SocialGamificationAssetContext _context, bool isAsync = false)
+		protected static async Task SeedTests(SocialGamificationAssetContext _context, bool isAsync = false)
 		{
 			if (!_context.Tests.Any())
 			{
@@ -56,11 +56,11 @@ namespace SocialGamificationAsset.Models
 
 				await SaveChanges(_context, isAsync);
 
-				Debug.WriteLine("Tests Created.");
+				Debug.WriteLine("Tests Seeded.");
 			}
 		}
 
-		protected static async Task CreateGroups(SocialGamificationAssetContext _context, bool isAsync = false)
+		protected static async Task SeedGroups(SocialGamificationAssetContext _context, bool isAsync = false)
 		{
 			if (!_context.Alliances.Any())
 			{
@@ -84,11 +84,11 @@ namespace SocialGamificationAsset.Models
 
 				await SaveChanges(_context, isAsync);
 
-				Debug.WriteLine("Groups Created.");
+				Debug.WriteLine("Groups Seeded.");
 			}
 		}
 
-		protected static async Task CreatePlayerSessions(SocialGamificationAssetContext _context, bool isAsync = false)
+		protected static async Task SeedPlayerSessions(SocialGamificationAssetContext _context, bool isAsync = false)
 		{
 			if (!_context.Sessions.Any())
 			{
@@ -167,11 +167,11 @@ namespace SocialGamificationAsset.Models
 
 				await SaveChanges(_context, isAsync);
 
-				Debug.WriteLine("Players & Sessions Created.");
+				Debug.WriteLine("Players & Sessions Seeded.");
 			}
 		}
 
-		protected static async Task CreateAlliances(SocialGamificationAssetContext _context, bool isAsync = false)
+		protected static async Task SeedAlliances(SocialGamificationAssetContext _context, bool isAsync = false)
 		{
 			if (!_context.Alliances.Any())
 			{
@@ -224,11 +224,11 @@ namespace SocialGamificationAsset.Models
 
 				await SaveChanges(_context, isAsync);
 
-				Debug.WriteLine("Alliances Created.");
+				Debug.WriteLine("Alliances Seeded.");
 			}
 		}
 
-		protected static async Task CreateCustomData(SocialGamificationAssetContext _context, bool isAsync = false)
+		protected static async Task SeedCustomData(SocialGamificationAssetContext _context, bool isAsync = false)
 		{
 			if (!_context.CustomData.Any())
 			{
@@ -309,7 +309,7 @@ namespace SocialGamificationAsset.Models
 
 				await SaveChanges(_context, isAsync);
 
-				Debug.WriteLine("CustomData Created.");
+				Debug.WriteLine("CustomData Seeded.");
 			}
 		}
 
