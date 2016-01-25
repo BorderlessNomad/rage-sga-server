@@ -1,0 +1,8 @@
+﻿{
+	"site_name": "Social Gamification Asset - Staging",
+	"Data": {
+		"MySQLConnection": {
+			"ConnectionString": "Server=45.32.181.133;Port=3306;Database=SocialGamificationAsset;Uid=rage;Pwd=MMhdHr2LKJb57QnS;"
+		}
+	},
+}
