@@ -38,6 +38,8 @@ namespace SocialGamificationAsset.Models
 
 		public virtual DbSet<CustomData> CustomData { get; set; }
 
+		public virtual DbSet<ConcernMatrix> ConcernMatrix { get; set; }
+
 		public virtual DbSet<File> Files { get; set; }
 
 		public virtual DbSet<FileActivity> FileActivities { get; set; }
@@ -65,6 +67,8 @@ namespace SocialGamificationAsset.Models
 		public virtual DbSet<Platform> Platforms { get; set; }
 
 		public virtual DbSet<Player> Players { get; set; }
+
+		public virtual DbSet<RewardResourceMatrix> RewardResourceMatrix { get; set; }
 
 		public virtual DbSet<Role> Roles { get; set; }
 
