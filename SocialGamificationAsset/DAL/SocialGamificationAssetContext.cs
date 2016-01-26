@@ -52,6 +52,10 @@ namespace SocialGamificationAsset.Models
 
 		public virtual DbSet<Alliance> Alliances { get; set; }
 
+		public virtual DbSet<Goal> Goals { get; set; }
+
+		public virtual DbSet<GoalFeedback> GoalFeedback { get; set; }
+
 		public virtual DbSet<Group> Groups { get; set; }
 
 		public virtual DbSet<Inventory> Inventory { get; set; }
