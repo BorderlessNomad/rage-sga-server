@@ -30,6 +30,8 @@ namespace SocialGamificationAsset.Models
 
 		public virtual DbSet<Achievement> Achievements { get; set; }
 
+		public virtual DbSet<ActionRelation> ActionRelations { get; set; }
+
 		public virtual DbSet<Action> Actions { get; set; }
 
 		public virtual DbSet<Activity> Activities { get; set; }
@@ -74,11 +76,15 @@ namespace SocialGamificationAsset.Models
 
 		public virtual DbSet<RewardResourceMatrix> RewardResourceMatrix { get; set; }
 
+		public virtual DbSet<Reward> Rewards { get; set; }
+
 		public virtual DbSet<Role> Roles { get; set; }
 
 		public virtual DbSet<ServerSetting> ServerSettings { get; set; }
 
 		public virtual DbSet<Session> Sessions { get; set; }
+
+		public virtual DbSet<Target> Targets { get; set; }
 
 		public virtual DbSet<Tournament> Tournaments { get; set; }
 
