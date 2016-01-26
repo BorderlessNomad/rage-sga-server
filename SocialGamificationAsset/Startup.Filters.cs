@@ -80,7 +80,8 @@ namespace SocialGamificationAsset
 				new XFrameOptionsAttribute()
 				{
 					Policy = XFrameOptionsPolicy.Deny
-				});
+				}
+			);
 		}
 
 		/// <summary>
