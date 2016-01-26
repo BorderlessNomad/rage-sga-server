@@ -11,6 +11,7 @@ namespace SocialGamificationAsset
 		{
 			// SWASHBUCKLE SWAGGER API Documentation Generator
 			services.AddSwaggerGen();
+
 			services.ConfigureSwaggerDocument(options =>
 			{
 				options.IgnoreObsoleteActions = true;
@@ -25,6 +26,8 @@ namespace SocialGamificationAsset
 					TermsOfService = ""
 				});
 
+				// options.OperationFilter<SwaggerSecurityHeaderExtensions>();
+
 				/*
 				options.SecurityDefinitions.Add("apiKey", new ApiKeyScheme()
 				{
@@ -34,6 +37,13 @@ namespace SocialGamificationAsset
 					In = "header"
 				});
 				*/
+			});
+
+			services.ConfigureSwaggerSchema(options =>
+			{
+				options.DescribeAllEnumsAsStrings = true;
+
+				// options.ModelFilter(new Swashbuckle.SwaggerGen.XmlComments.ApplyXmlTypeComments(pathToDoc));
 			});
 		}
 
@@ -49,6 +59,14 @@ namespace SocialGamificationAsset
 		public int Compare(string x, string y)
 		{
 			return string.Compare(y, x, System.StringComparison.CurrentCultureIgnoreCase);
+		}
+	}
+
+	public class SwaggerSecurityHeaderExtensions : IOperationFilter
+	{
+		public void Apply(Operation operation, OperationFilterContext context)
+		{
+			operation.Extensions.Add("X-Http-Session", "swagger");
 		}
 	}
 }
