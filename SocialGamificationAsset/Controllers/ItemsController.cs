@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNet.Authorization;
-using Microsoft.AspNet.Http;
+﻿using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 using SocialGamificationAsset.Models;
 using SocialGamificationAsset.Policies;
@@ -14,13 +13,13 @@ using System.Web.Http.Description;
 namespace SocialGamificationAsset.Controllers
 {
 	[Produces("application/json")]
-	[Route("api/tests")]
+	[Route("api/items")]
 	[ServiceFilter(typeof(ISessionAuthorizeFilter))]
-	public class TestsController : Controller
+	public class ItemsController : Controller
 	{
 		private SocialGamificationAssetContext _context;
 
-		public TestsController(SocialGamificationAssetContext context)
+		public ItemsController(SocialGamificationAssetContext context)
 		{
 			_context = context;
 		}
@@ -42,33 +41,23 @@ namespace SocialGamificationAsset.Controllers
 			return _session;
 		}
 
-		// GET: api/tests
-		/// <summary>
-		/// This method returns all available records from Test Table
-		/// </summary>
-		/// <returns>All the test records which were found</returns>
+		// GET: api/items
 		[HttpGet]
-		public IEnumerable<Test> GetTest()
+		public IEnumerable<Item> GetItem()
 		{
-			return _context.Tests;
+			return _context.Items;
 		}
 
-		// GET: api/tests/936da01f-9abd-4d9d-80c7-02af85c822a8
-		/// <summary>
-		/// This method returns specific record from Test Table
-		/// </summary>
-		/// <param name="id">Guid</param>
-		/// <returns>Test record that was found</returns>
-		[HttpGet("{id}", Name = "GetTest")]
-		[AllowAnonymous]
-		public async Task<IActionResult> GetTest([FromRoute] Guid id)
+		// GET: api/items/936da01f-9abd-4d9d-80c7-02af85c822a8
+		[HttpGet("{id}", Name = "GetItem")]
+		public async Task<IActionResult> GetItem([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			Test test = await _context.Tests.FindAsync(id);
+			Item test = await _context.Items.FindAsync(id);
 
 			if (test == null)
 			{
@@ -78,9 +67,9 @@ namespace SocialGamificationAsset.Controllers
 			return Ok(test);
 		}
 
-		// PUT: api/tests/936da01f-9abd-4d9d-80c7-02af85c822a8
+		// PUT: api/items/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpPut("{id}")]
-		public async Task<IActionResult> PutTest([FromRoute] Guid id, [FromBody] Test test)
+		public async Task<IActionResult> PutItem([FromRoute] Guid id, [FromBody] Item test)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -100,7 +89,7 @@ namespace SocialGamificationAsset.Controllers
 			}
 			catch (DbUpdateException)
 			{
-				if (!TestExists(id))
+				if (!ItemExists(id))
 				{
 					return HttpNotFound();
 				}
@@ -110,27 +99,27 @@ namespace SocialGamificationAsset.Controllers
 				}
 			}
 
-			return CreatedAtRoute("GetTest", new { id = test.Id }, test);
+			return CreatedAtRoute("GetItem", new { id = test.Id }, test);
 		}
 
-		// POST: api/tests
+		// POST: api/items
 		[HttpPost]
-		[ResponseType(typeof(Test))]
-		public async Task<IActionResult> PostTest([FromBody] Test test)
+		[ResponseType(typeof(Item))]
+		public async Task<IActionResult> PostItem([FromBody] Item test)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			_context.Tests.Add(test);
+			_context.Items.Add(test);
 			try
 			{
 				await _context.SaveChangesAsync();
 			}
 			catch (DbUpdateException)
 			{
-				if (TestExists(test.Id))
+				if (ItemExists(test.Id))
 				{
 					return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
 				}
@@ -140,25 +129,25 @@ namespace SocialGamificationAsset.Controllers
 				}
 			}
 
-			return CreatedAtRoute("GetTest", new { id = test.Id }, test);
+			return CreatedAtRoute("GetItem", new { id = test.Id }, test);
 		}
 
-		// DELETE: api/tests/936da01f-9abd-4d9d-80c7-02af85c822a8
+		// DELETE: api/items/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpDelete("{id}")]
-		public async Task<IActionResult> DeleteTest([FromRoute] Guid id)
+		public async Task<IActionResult> DeleteItem([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			Test test = await _context.Tests.FindAsync(id);
+			Item test = await _context.Items.FindAsync(id);
 			if (test == null)
 			{
 				return HttpNotFound();
 			}
 
-			_context.Tests.Remove(test);
+			_context.Items.Remove(test);
 			await _context.SaveChangesAsync();
 
 			return Ok(test);
@@ -174,9 +163,9 @@ namespace SocialGamificationAsset.Controllers
 			base.Dispose(disposing);
 		}
 
-		private bool TestExists(Guid id)
+		private bool ItemExists(Guid id)
 		{
-			return _context.Tests.Count(e => e.Id == id) > 0;
+			return _context.Items.Count(e => e.Id == id) > 0;
 		}
 	}
 }
