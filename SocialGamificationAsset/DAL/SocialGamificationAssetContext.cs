@@ -30,6 +30,8 @@ namespace SocialGamificationAsset.Models
 
 		public virtual DbSet<Achievement> Achievements { get; set; }
 
+		public virtual DbSet<AchievementType> AchievementTypes { get; set; }
+
 		public virtual DbSet<ActionRelation> ActionRelations { get; set; }
 
 		public virtual DbSet<Action> Actions { get; set; }
