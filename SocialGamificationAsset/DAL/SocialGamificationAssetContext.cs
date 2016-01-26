@@ -62,6 +62,8 @@ namespace SocialGamificationAsset.Models
 
 		public virtual DbSet<Player> Players { get; set; }
 
+		public virtual DbSet<Role> Roles { get; set; }
+
 		public virtual DbSet<ServerSetting> ServerSettings { get; set; }
 
 		public virtual DbSet<Session> Sessions { get; set; }
