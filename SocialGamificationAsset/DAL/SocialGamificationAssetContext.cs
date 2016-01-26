@@ -32,6 +32,10 @@ namespace SocialGamificationAsset.Models
 
 		public virtual DbSet<Actor> Actors { get; set; }
 
+		public virtual DbSet<Attribute> Attributes { get; set; }
+
+		public virtual DbSet<AttributeType> AttributeTypes { get; set; }
+
 		public virtual DbSet<CustomData> CustomData { get; set; }
 
 		public virtual DbSet<File> Files { get; set; }
