@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Http;
+﻿using Microsoft.AspNet.Authorization;
+using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 using SocialGamificationAsset.Models;
 using SocialGamificationAsset.Policies;
@@ -88,7 +89,7 @@ namespace SocialGamificationAsset.Controllers
 
 		// PUT: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpPut("{id:Guid}")]
-		public async Task<IActionResult> PutPlayer([FromRoute] Guid id, [FromBody] UserForm form)
+		public async Task<IActionResult> UpdatePlayer([FromRoute] Guid id, [FromBody] UserForm form)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -153,14 +154,55 @@ namespace SocialGamificationAsset.Controllers
 
 		// POST: api/players
 		[HttpPost]
-		public async Task<IActionResult> PostPlayer([FromBody] Player player)
+		[AllowAnonymous]
+		public async Task<IActionResult> AddPlayer([FromBody] UserForm register)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			_context.Players.Add(player);
+			if (String.IsNullOrWhiteSpace(register.Username) && String.IsNullOrWhiteSpace(register.Email))
+			{
+				return HttpBadRequest("Either Username or Email is required.");
+			}
+
+			if (String.IsNullOrWhiteSpace(register.Password))
+			{
+				return HttpBadRequest("Password is required.");
+			}
+
+			Player player = new Player();
+
+			if (!String.IsNullOrWhiteSpace(register.Username))
+			{
+				if (await Player.ExistsUsername(_context, register.Username))
+				{
+					return HttpBadRequest("Player with this Username already exists.");
+				}
+
+				player.Username = register.Username;
+			}
+
+			if (!String.IsNullOrWhiteSpace(register.Email))
+			{
+				if (await Player.ExistsEmail(_context, register.Email))
+				{
+					return HttpBadRequest("Player with this Email already exists.");
+				}
+
+				player.Email = register.Email;
+			}
+
+			player.Password = Helper.HashPassword(register.Password);
+
+			Session session = new Session
+			{
+				Player = player
+			};
+
+			_context.Sessions.Add(session);
+
 			try
 			{
 				await _context.SaveChangesAsync();
@@ -177,7 +219,10 @@ namespace SocialGamificationAsset.Controllers
 				}
 			}
 
-			return CreatedAtRoute("GetPlayer", new { id = player.Id }, player);
+			// Add or Update the CustomData
+			player.AddOrUpdateCustomData(_context, register.CustomData);
+
+			return CreatedAtRoute("GetPlayer", new { id = session.Id }, session);
 		}
 
 		// DELETE: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
