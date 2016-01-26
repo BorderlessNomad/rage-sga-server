@@ -57,7 +57,7 @@ namespace SocialGamificationAsset.Models
 
 		public Guid? Tournament { get; set; }
 
-		public IList<CustomDataBase> Data { get; set; }
+		public IList<CustomDataBase> CustomData { get; set; }
 
 		public QuickMatch()
 		{

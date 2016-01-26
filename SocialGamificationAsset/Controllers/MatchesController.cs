@@ -213,7 +213,7 @@ namespace SocialGamificationAsset.Controllers
 			}
 
 			// Build the filter by CustomData
-			IList<CustomDataBase> customData = CustomDataBase.Parse(quickMatch.Data);
+			IList<CustomDataBase> customData = CustomDataBase.Parse(quickMatch.CustomData);
 			IList<Player> players = new List<Player>();
 			IList<Group> groups = new List<Group>();
 
