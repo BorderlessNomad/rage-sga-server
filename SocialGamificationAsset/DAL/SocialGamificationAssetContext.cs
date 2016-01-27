@@ -76,6 +76,8 @@ namespace SocialGamificationAsset.Models
 
 		public virtual DbSet<MatchRound> MatchRounds { get; set; }
 
+		public virtual DbSet<Notification> Notifications { get; set; }
+
 		public virtual DbSet<Platform> Platforms { get; set; }
 
 		public virtual DbSet<Player> Players { get; set; }
