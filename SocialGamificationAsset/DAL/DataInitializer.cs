@@ -11,7 +11,7 @@ namespace SocialGamificationAsset.Models
 {
 	public class DataInitializer
 	{
-		public static async Task InitializeDatabase(IServiceProvider serviceProvider, bool isAsync = false)
+		public static async Task Initialize(IServiceProvider serviceProvider, bool isAsync = false)
 		{
 			using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
 			{
@@ -321,14 +321,14 @@ namespace SocialGamificationAsset.Models
 					},
 					new CustomData
 					{
-						Key = "session_id",
+						Key = "chat_id",
 						Value = "235f73ea-e54f-4150-8dc3-3eb9995d0728",
 						ObjectId = mayur.Id,
 						ObjectType = CustomDataType.Player
 					},
 					new CustomData
 					{
-						Key = "session_id",
+						Key = "chat_id",
 						Value = "235f73ea-e54f-4150-8dc3-3eb9995d0728",
 						ObjectId = matt.Id,
 						ObjectType = CustomDataType.Player

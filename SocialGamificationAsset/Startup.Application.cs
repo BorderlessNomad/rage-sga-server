@@ -18,7 +18,7 @@ namespace SocialGamificationAsset
 
 		private static void ConfigureDatabaseInitialization(IApplicationBuilder application)
 		{
-			DataInitializer.InitializeDatabase(application.ApplicationServices, true).Wait();
+			DataInitializer.Initialize(application.ApplicationServices, true).Wait();
 		}
 	}
 }
