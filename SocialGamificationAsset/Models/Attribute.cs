@@ -22,6 +22,21 @@ namespace SocialGamificationAsset.Models
 		public AttributeTypeEnum Type { get; set; }
 	}
 
+	public class AttributeHistory : DbEntity
+	{
+		public Guid TypeId { get; set; }
+
+		[ForeignKey("TypeId")]
+		public virtual AttributeType Type { get; set; }
+
+		public Guid ActivityId { get; set; }
+
+		[ForeignKey("ActivityId")]
+		public virtual Activity Activity { get; set; }
+
+		public float Value { get; set; }
+	}
+
 	public enum AttributeTypeEnum
 	{
 		Skill,

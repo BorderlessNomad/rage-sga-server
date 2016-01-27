@@ -32,9 +32,11 @@ namespace SocialGamificationAsset.Models
 
 		public virtual DbSet<AchievementType> AchievementTypes { get; set; }
 
-		public virtual DbSet<ActionRelation> ActionRelations { get; set; }
-
 		public virtual DbSet<Action> Actions { get; set; }
+
+		public virtual DbSet<ActionHistory> ActionHistory { get; set; }
+
+		public virtual DbSet<ActionRelation> ActionRelations { get; set; }
 
 		public virtual DbSet<Activity> Activities { get; set; }
 
@@ -45,6 +47,8 @@ namespace SocialGamificationAsset.Models
 		public virtual DbSet<Alliance> Alliances { get; set; }
 
 		public virtual DbSet<Attribute> Attributes { get; set; }
+
+		public virtual DbSet<AttributeHistory> AttributeHistory { get; set; }
 
 		public virtual DbSet<AttributeType> AttributeTypes { get; set; }
 
