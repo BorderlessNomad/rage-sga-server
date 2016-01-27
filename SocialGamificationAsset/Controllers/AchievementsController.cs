@@ -10,15 +10,11 @@ using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Controllers
 {
-	[Produces("application/json")]
 	[Route("api/achievements")]
-	public class AchievementsController : Controller
+	public class AchievementsController : ApiController
 	{
-		private SocialGamificationAssetContext _context;
-
-		public AchievementsController(SocialGamificationAssetContext context)
+		public AchievementsController(SocialGamificationAssetContext context) : base(context)
 		{
-			_context = context;
 		}
 
 		// GET: api/achievements

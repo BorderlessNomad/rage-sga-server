@@ -2,7 +2,6 @@
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 using SocialGamificationAsset.Models;
-using SocialGamificationAsset.Policies;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -12,33 +11,11 @@ using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Controllers
 {
-	[Produces("application/json")]
 	[Route("api/players")]
-	[ServiceFilter(typeof(ISessionAuthorizeFilter))]
-	public class PlayersController : Controller
+	public class PlayersController : ApiController
 	{
-		private SocialGamificationAssetContext _context;
-
-		private Session _session;
-
-		public Session session
+		public PlayersController(SocialGamificationAssetContext context) : base(context)
 		{
-			get { return GetSession(); }
-		}
-
-		protected Session GetSession()
-		{
-			if (_session == null)
-			{
-				_session = HttpContext.Session.GetObjectFromJson<Session>("__session");
-			}
-
-			return _session;
-		}
-
-		public PlayersController(SocialGamificationAssetContext context)
-		{
-			_context = context;
 		}
 
 		// GET: api/players/whoami

@@ -10,15 +10,11 @@ using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Controllers
 {
-	[Produces("application/json")]
 	[Route("api/inventory")]
-	public class InventoryController : Controller
+	public class InventoryController : ApiController
 	{
-		private SocialGamificationAssetContext _context;
-
-		public InventoryController(SocialGamificationAssetContext context)
+		public InventoryController(SocialGamificationAssetContext context) : base(context)
 		{
-			_context = context;
 		}
 
 		// GET: api/inventory

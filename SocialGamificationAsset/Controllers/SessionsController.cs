@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Http;
+﻿using Microsoft.AspNet.Authorization;
+using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 using SocialGamificationAsset.Models;
 using System;
@@ -9,15 +10,11 @@ using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Controllers
 {
-	[Produces("application/json")]
 	[Route("api/sessions")]
-	public class SessionsController : Controller
+	public class SessionsController : ApiController
 	{
-		private SocialGamificationAssetContext _context;
-
-		public SessionsController(SocialGamificationAssetContext context)
+		public SessionsController(SocialGamificationAssetContext context) : base(context)
 		{
-			_context = context;
 		}
 
 		// GET: api/sessions/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -41,6 +38,7 @@ namespace SocialGamificationAsset.Controllers
 
 		// POST: api/sessions
 		[HttpPost]
+		[AllowAnonymous]
 		public async Task<IActionResult> Login([FromBody] UserForm login)
 		{
 			if (!ModelState.IsValid)
