@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
-	public class FileActivity : Model
+	public class FileActivity : DbEntity
 	{
 		public Guid FileId { get; set; }
 

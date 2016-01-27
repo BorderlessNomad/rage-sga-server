@@ -2,7 +2,7 @@
 
 namespace SocialGamificationAsset.Models
 {
-	public class Activity : Model
+	public class Activity : DbEntity
 	{
 		public string Name { get; set; }
 

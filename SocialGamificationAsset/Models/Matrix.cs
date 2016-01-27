@@ -10,14 +10,14 @@ namespace SocialGamificationAsset.Models
 		public float Y { get; set; }
 	}
 
-	public class ConcernMatrix : Model
+	public class ConcernMatrix : DbEntity
 	{
 		public Matrix Coordinates { get; set; }
 
 		public ConcernCategories Category { get; set; }
 	}
 
-	public class RewardResourceMatrix : Model
+	public class RewardResourceMatrix : DbEntity
 	{
 		public Matrix Coordinates { get; set; }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Models
@@ -12,18 +13,22 @@ namespace SocialGamificationAsset.Models
 	{
 		public string Username { get; set; }
 
+		[IgnoreDataMember]
 		public string Password { get; set; }
 
 		public string Email { get; set; }
 
+		[IgnoreDataMember]
 		public Guid ActivationCode { get; private set; }
 
 		public AccountType Role { get; set; }
 
+		[IgnoreDataMember]
 		public string LastLoginIp { get; set; }
 
 		public virtual ICollection<Group> Groups { get; set; }
 
+		[IgnoreDataMember]
 		public virtual ICollection<Session> Sessions { get; set; }
 
 		public Player()

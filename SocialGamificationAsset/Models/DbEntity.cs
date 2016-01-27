@@ -1,11 +1,18 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
 namespace SocialGamificationAsset.Models
 {
+	public interface IDbEntity
+	{
+		Guid Id { get; set; }
+	}
+
 	[JsonObject(IsReference = true)]
-	public class Model
+	[DataContract]
+	public class DbEntity : IDbEntity
 	{
 		[DatabaseGenerated(DatabaseGeneratedOption.None)]
 		public Guid Id { get; set; }
@@ -14,9 +21,9 @@ namespace SocialGamificationAsset.Models
 
 		public DateTime CreatedDate { get; set; }
 
-		public Model()
+		public DbEntity()
 		{
-			this.Id = Guid.NewGuid();
+			Id = Guid.NewGuid();
 		}
 	}
 }

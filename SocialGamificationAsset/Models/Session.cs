@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
-	public class Session : Model
+	public class Session : DbEntity
 	{
 		public Guid PlayerId { get; set; }
 

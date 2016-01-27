@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SocialGamificationAsset.Models
 {
-	public abstract class Actor : Model
+	public abstract class Actor : DbEntity
 	{
 		public bool IsEnabled { get; set; }
 

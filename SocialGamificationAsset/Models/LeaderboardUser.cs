@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
-	public class LeaderboardUser : Model
+	public class LeaderboardUser : DbEntity
 	{
 		public Guid LeaderboardId { get; set; }
 

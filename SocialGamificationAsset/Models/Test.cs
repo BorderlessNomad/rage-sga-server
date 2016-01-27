@@ -2,7 +2,7 @@
 
 namespace SocialGamificationAsset.Models
 {
-	public class Test : Model
+	public class Test : DbEntity
 	{
 		[Required]
 		public string Field1 { get; set; }

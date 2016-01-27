@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
-	public class Reward : Model
+	public class Reward : DbEntity
 	{
 		public Guid AttributeTypeId { get; set; }
 

@@ -38,7 +38,7 @@ namespace SocialGamificationAsset.Models
 		}
 	}
 
-	public class CustomData : Model
+	public class CustomData : DbEntity
 	{
 		public string Key { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿namespace SocialGamificationAsset.Models
 {
-	public class ServerSetting : Model
+	public class ServerSetting : DbEntity
 	{
 		public static string ServerVersion = "0.0.1";
 

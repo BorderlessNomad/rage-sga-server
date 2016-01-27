@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
-	public class MatchRound : Model
+	public class MatchRound : DbEntity
 	{
 		public Guid MatchActorId { get; set; }
 

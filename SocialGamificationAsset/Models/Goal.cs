@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
-	public class Goal : Model
+	public class Goal : DbEntity
 	{
 		public virtual ICollection<Reward> Rewards { get; set; }
 
@@ -34,7 +34,7 @@ namespace SocialGamificationAsset.Models
 		public virtual GoalFeedback Feedback { get; set; }
 	}
 
-	public class GoalFeedback : Model
+	public class GoalFeedback : DbEntity
 	{
 		public float Threshold { get; set; }
 

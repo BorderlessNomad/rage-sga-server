@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
-	public class Match : Model
+	public class Match : DbEntity
 	{
 		public Guid TournamentId { get; set; }
 

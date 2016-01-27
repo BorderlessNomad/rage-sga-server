@@ -22,7 +22,7 @@ namespace SocialGamificationAsset.Models
 		Float
 	}
 
-	public class Leaderboard : Model
+	public class Leaderboard : DbEntity
 	{
 		public string Title { get; set; }
 

@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace SocialGamificationAsset.Models
 {
-	public class Alliance : Model
+	public class Alliance : DbEntity
 	{
 		public Guid RequesterId { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿namespace SocialGamificationAsset.Models
 {
-	public class Role : Model
+	public class Role : DbEntity
 	{
 		public string Name { get; set; }
 

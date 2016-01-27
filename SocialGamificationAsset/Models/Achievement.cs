@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
-	public class Achievement : Model
+	public class Achievement : DbEntity
 	{
 		public Guid TypeId { get; set; }
 
@@ -22,7 +22,7 @@ namespace SocialGamificationAsset.Models
 		public virtual Activity Activity { get; set; }
 	}
 
-	public class AchievementType : Model
+	public class AchievementType : DbEntity
 	{
 		public string Name { get; set; }
 

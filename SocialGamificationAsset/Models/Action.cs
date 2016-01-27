@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
-	public class Action : Model
+	public class Action : DbEntity
 	{
 		public string Verb { get; set; }
 
@@ -16,7 +16,7 @@ namespace SocialGamificationAsset.Models
 		public virtual ICollection<ActionRelation> Relations { get; set; }
 	}
 
-	public class ActionRelation : Model
+	public class ActionRelation : DbEntity
 	{
 		public Relationships Relationship { get; set; }
 

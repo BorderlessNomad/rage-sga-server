@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
-	public class Platform : Model
+	public class Platform : DbEntity
 	{
 		public string Key { get; set; }
 

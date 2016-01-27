@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
-	public class Inventory : Model
+	public class Inventory : DbEntity
 	{
 		public Guid ActorId { get; set; }
 

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
-	public class File : Model
+	public class File : DbEntity
 	{
 		public Guid ActorId { get; set; }
 

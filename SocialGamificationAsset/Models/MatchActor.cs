@@ -5,7 +5,7 @@ using System.Data.Entity.Validation;
 
 namespace SocialGamificationAsset.Models
 {
-	public class MatchActor : Model
+	public class MatchActor : DbEntity
 	{
 		public Guid MatchId { get; set; }
 

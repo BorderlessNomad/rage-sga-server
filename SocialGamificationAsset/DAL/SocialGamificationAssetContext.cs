@@ -40,6 +40,8 @@ namespace SocialGamificationAsset.Models
 
 		public virtual DbSet<Actor> Actors { get; set; }
 
+		public virtual DbSet<Alliance> Alliances { get; set; }
+
 		public virtual DbSet<Attribute> Attributes { get; set; }
 
 		public virtual DbSet<AttributeType> AttributeTypes { get; set; }
@@ -51,8 +53,6 @@ namespace SocialGamificationAsset.Models
 		public virtual DbSet<File> Files { get; set; }
 
 		public virtual DbSet<FileActivity> FileActivities { get; set; }
-
-		public virtual DbSet<Alliance> Alliances { get; set; }
 
 		public virtual DbSet<Goal> Goals { get; set; }
 

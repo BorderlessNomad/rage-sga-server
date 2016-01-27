@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
-	public class Attribute : Model
+	public class Attribute : DbEntity
 	{
 		public Guid AttributeTypeId { get; set; }
 
@@ -13,7 +13,7 @@ namespace SocialGamificationAsset.Models
 		public float Value { get; set; }
 	}
 
-	public class AttributeType : Model
+	public class AttributeType : DbEntity
 	{
 		public string Name { get; set; }
 
