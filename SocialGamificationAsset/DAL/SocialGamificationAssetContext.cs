@@ -40,6 +40,8 @@ namespace SocialGamificationAsset.Models
 
 		public virtual DbSet<Actor> Actors { get; set; }
 
+		public virtual DbSet<ActorGoal> ActorGoal { get; set; }
+
 		public virtual DbSet<Alliance> Alliances { get; set; }
 
 		public virtual DbSet<Attribute> Attributes { get; set; }

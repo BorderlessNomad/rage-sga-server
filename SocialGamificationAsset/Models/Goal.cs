@@ -58,4 +58,11 @@ namespace SocialGamificationAsset.Models
 		RewardResource,
 		AttributeType
 	}
+
+	public enum GoalStatus
+	{
+		Inactive,
+		InProgress,
+		Complete
+	}
 }
