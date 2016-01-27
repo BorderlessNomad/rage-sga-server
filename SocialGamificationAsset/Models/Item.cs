@@ -24,4 +24,13 @@ namespace SocialGamificationAsset.Models
 
 		public string Image { get; set; }
 	}
+
+	public class ItemForm
+	{
+		public Guid? ActorId { get; set; }
+
+		public Guid ItemTypeId { get; set; }
+
+		public int? Quantity;
+	}
 }

@@ -20,13 +20,37 @@ namespace SocialGamificationAsset.Controllers
 
 		// GET: api/items
 		[HttpGet]
-		public IEnumerable<Item> GetItem()
+		public async Task<IList<Item>> GetItems()
 		{
-			return _context.Items;
+			IList<Item> items = await _context.Items.Where(i => i.ActorId.Equals(session.Player.Id)).Include(i => i.Type).ToListAsync();
+
+			return items;
+		}
+
+		// GET: api/items/types
+		[HttpGet]
+		[HttpGet("types", Name = "GetItemTypes")]
+		public IEnumerable<ItemType> GetItemTypes()
+		{
+			// TODO: Return Item Types defined for the Game
+			return _context.ItemTypes;
+		}
+
+		// GET: api/items/types/936da01f-9abd-4d9d-80c7-02af85c822a8
+		[HttpGet]
+		[HttpGet("types/{id:Guid}", Name = "GetItemsByType")]
+		public async Task<IActionResult> GetItemsByType([FromRoute] Guid id)
+		{
+			// TODO: Return ItemType with Count
+
+			var results = await _context.Items.Where(i => i.ItemTypeId.Equals(id)).GroupBy(i => i.ItemTypeId).ToListAsync();
+
+			return Ok(results);
 		}
 
 		// GET: api/items/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpGet("{id}", Name = "GetItem")]
+		[ResponseType(typeof(Item))]
 		public async Task<IActionResult> GetItem([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -34,69 +58,57 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Item test = await _context.Items.FindAsync(id);
+			Item item = await _context.Items.Where(i => i.Id.Equals(id)).Include(i => i.Type).FirstOrDefaultAsync();
 
-			if (test == null)
+			if (item == null)
 			{
-				return HttpNotFound();
+				return HttpNotFound("No such Item found.");
 			}
 
-			return Ok(test);
-		}
-
-		// PUT: api/items/936da01f-9abd-4d9d-80c7-02af85c822a8
-		[HttpPut("{id}")]
-		public async Task<IActionResult> PutItem([FromRoute] Guid id, [FromBody] Item test)
-		{
-			if (!ModelState.IsValid)
-			{
-				return HttpBadRequest(ModelState);
-			}
-
-			if (id != test.Id)
-			{
-				return HttpBadRequest();
-			}
-
-			_context.Entry(test).State = EntityState.Modified;
-
-			try
-			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateException)
-			{
-				if (!ItemExists(id))
-				{
-					return HttpNotFound();
-				}
-				else
-				{
-					throw;
-				}
-			}
-
-			return CreatedAtRoute("GetItem", new { id = test.Id }, test);
+			return Ok(item);
 		}
 
 		// POST: api/items
 		[HttpPost]
 		[ResponseType(typeof(Item))]
-		public async Task<IActionResult> PostItem([FromBody] Item test)
+		public async Task<IActionResult> AddItem([FromBody] ItemForm form)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			_context.Items.Add(test);
+			Item item = new Item();
+			ItemType itemType = await _context.ItemTypes.Where(i => i.Id.Equals(form.ItemTypeId)).FirstOrDefaultAsync();
+			if (itemType == null)
+			{
+				return HttpBadRequest("Invalid Item Type.");
+			}
+
+			item.Type = itemType;
+
+			if (!form.ActorId.HasValue || form.ActorId == Guid.Empty)
+			{
+				item.Actor = session.Player;
+			}
+
+			if (!form.Quantity.HasValue || form.Quantity <= 0)
+			{
+				item.Quantity = 1;
+			}
+			else
+			{
+				item.Quantity = (int)form.Quantity;
+			}
+
+			_context.Items.Add(item);
 			try
 			{
 				await _context.SaveChangesAsync();
 			}
 			catch (DbUpdateException)
 			{
-				if (ItemExists(test.Id))
+				if (ItemExists(item.Id))
 				{
 					return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
 				}
@@ -106,7 +118,7 @@ namespace SocialGamificationAsset.Controllers
 				}
 			}
 
-			return CreatedAtRoute("GetItem", new { id = test.Id }, test);
+			return CreatedAtRoute("GetItem", new { id = item.Id }, item);
 		}
 
 		// DELETE: api/items/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -118,16 +130,16 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Item test = await _context.Items.FindAsync(id);
-			if (test == null)
+			Item item = await _context.Items.FindAsync(id);
+			if (item == null)
 			{
 				return HttpNotFound();
 			}
 
-			_context.Items.Remove(test);
+			_context.Items.Remove(item);
 			await _context.SaveChangesAsync();
 
-			return Ok(test);
+			return Ok(item);
 		}
 
 		protected override void Dispose(bool disposing)
