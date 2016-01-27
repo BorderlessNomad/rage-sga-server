@@ -1,5 +1,4 @@
-﻿using Boilerplate.Web.Mvc.Filters;
-using Microsoft.AspNet.Builder;
+﻿using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Filters;

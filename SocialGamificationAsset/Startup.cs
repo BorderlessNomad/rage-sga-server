@@ -110,7 +110,7 @@ namespace SocialGamificationAsset
 
 			ConfigureSessionServices(services);
 
-			ConfigureDocumentationGeneratorServices(services);
+			ConfigureDocumentationGeneratorServices(services, this.applicationEnvironment);
 		}
 
 		/// <summary>

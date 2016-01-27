@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 using SocialGamificationAsset.Models;
+using Swashbuckle.SwaggerGen.Annotations;
 using System;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -27,6 +28,7 @@ namespace SocialGamificationAsset.Controllers
 		/// <response code="200">OK</response>
 		/// <response code="400">Bad Request</response>
 		/// <response code="404">Not Found</response>
+		/// <response code="500">Internal Server Error</response>
 		[HttpGet("{id:Guid}", Name = "GetSession")]
 		[ResponseType(typeof(Session))]
 		[AllowAnonymous]
@@ -51,11 +53,13 @@ namespace SocialGamificationAsset.Controllers
 		/// <summary>
 		/// Create Session for given Player / Login
 		/// </summary>
+		/// <param name="login">Player Login Info</param>
 		/// <returns>A Session record with an HTTP 200, or a string message with an HTTP 400 or HTTP 404 or HTTP 409.</returns>
 		/// <response code="200">OK</response>
 		/// <response code="400">Bad Request</response>
 		/// <response code="404">Not Found</response>
 		/// <response code="409">Conflict</response>
+		/// <response code="500">Internal Server Error</response>
 		[HttpPost]
 		[ResponseType(typeof(Session))]
 		[AllowAnonymous]
@@ -140,6 +144,7 @@ namespace SocialGamificationAsset.Controllers
 		/// <response code="400">Bad Request</response>
 		/// <response code="404">Not Found</response>
 		/// <response code="409">Conflict</response>
+		/// <response code="500">Internal Server Error</response>
 		[HttpDelete("{id:Guid}")]
 		[ResponseType(typeof(Session))]
 		public async Task<IActionResult> Logout([FromRoute] Guid id)

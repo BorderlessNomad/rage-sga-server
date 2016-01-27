@@ -1,16 +1,23 @@
 ﻿using Microsoft.AspNet.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.PlatformAbstractions;
 using Swashbuckle.SwaggerGen;
+using System;
 using System.Collections.Generic;
 
 namespace SocialGamificationAsset
 {
 	public partial class Startup
 	{
-		private static string pathToDoc = "C:\\Users\\Mayur\\Projects\\social-gamification-asset\\SGA\\artifacts\\bin\\SocialGamificationAsset\\Debug\\dnx451\\SocialGamificationAsset.xml";
-
-		private static void ConfigureDocumentationGeneratorServices(IServiceCollection services)
+		private static string GetXmlCommentsPath(IApplicationEnvironment applicationEnvironment)
 		{
+			return String.Format(@"{0}\..\artifacts\bin\SocialGamificationAsset\Debug\dnx451\SocialGamificationAsset.xml", applicationEnvironment.ApplicationBasePath);
+		}
+
+		private static void ConfigureDocumentationGeneratorServices(IServiceCollection services, IApplicationEnvironment applicationEnvironment)
+		{
+			string pathToDoc = GetXmlCommentsPath(applicationEnvironment);
+
 			// SWASHBUCKLE SWAGGER API Documentation Generator
 			services.AddSwaggerGen();
 
