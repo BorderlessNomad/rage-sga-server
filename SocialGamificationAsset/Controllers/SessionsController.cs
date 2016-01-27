@@ -7,6 +7,7 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.Description;
 
 namespace SocialGamificationAsset.Controllers
 {
@@ -18,7 +19,17 @@ namespace SocialGamificationAsset.Controllers
 		}
 
 		// GET: api/sessions/936da01f-9abd-4d9d-80c7-02af85c822a8
+		/// <summary>
+		/// Returns the specified Session
+		/// </summary>
+		/// <param name="id">GUID of the Session</param>
+		/// <returns>A Session record with an HTTP 200, or a string message with an HTTP 400 or HTTP 404.</returns>
+		/// <response code="200">OK</response>
+		/// <response code="400">Bad Request</response>
+		/// <response code="404">Not Found</response>
 		[HttpGet("{id:Guid}", Name = "GetSession")]
+		[ResponseType(typeof(Session))]
+		[AllowAnonymous]
 		public async Task<IActionResult> GetSession([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -30,14 +41,23 @@ namespace SocialGamificationAsset.Controllers
 
 			if (session == null)
 			{
-				return HttpNotFound();
+				return HttpNotFound("No such Session found.");
 			}
 
 			return Ok(session);
 		}
 
 		// POST: api/sessions
+		/// <summary>
+		/// Create Session for given Player / Login
+		/// </summary>
+		/// <returns>A Session record with an HTTP 200, or a string message with an HTTP 400 or HTTP 404 or HTTP 409.</returns>
+		/// <response code="200">OK</response>
+		/// <response code="400">Bad Request</response>
+		/// <response code="404">Not Found</response>
+		/// <response code="409">Conflict</response>
 		[HttpPost]
+		[ResponseType(typeof(Session))]
 		[AllowAnonymous]
 		public async Task<IActionResult> Login([FromBody] UserForm login)
 		{
@@ -111,7 +131,17 @@ namespace SocialGamificationAsset.Controllers
 		}
 
 		// DELETE: api/sessions/936da01f-9abd-4d9d-80c7-02af85c822a8
+		/// <summary>
+		/// Delete a Session / Logout
+		/// </summary>
+		/// <param name="id">GUID of the Session</param>
+		/// <returns>A Session record with an HTTP 200, or a string message with an HTTP 400 or HTTP 404 or HTTP 409.</returns>
+		/// <response code="200">OK</response>
+		/// <response code="400">Bad Request</response>
+		/// <response code="404">Not Found</response>
+		/// <response code="409">Conflict</response>
 		[HttpDelete("{id:Guid}")]
+		[ResponseType(typeof(Session))]
 		public async Task<IActionResult> Logout([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)

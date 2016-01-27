@@ -7,6 +7,8 @@ namespace SocialGamificationAsset
 {
 	public partial class Startup
 	{
+		private static string pathToDoc = "C:\\Users\\Mayur\\Projects\\social-gamification-asset\\SGA\\artifacts\\bin\\SocialGamificationAsset\\Debug\\dnx451\\SocialGamificationAsset.xml";
+
 		private static void ConfigureDocumentationGeneratorServices(IServiceCollection services)
 		{
 			// SWASHBUCKLE SWAGGER API Documentation Generator
@@ -26,7 +28,7 @@ namespace SocialGamificationAsset
 					TermsOfService = ""
 				});
 
-				// options.OperationFilter<SwaggerSecurityHeaderExtensions>();
+				// options.OperationFilter(new Swashbuckle.SwaggerGen.XmlComments.ApplyXmlActionComments(pathToDoc));
 
 				/*
 				options.SecurityDefinitions.Add("apiKey", new ApiKeyScheme()
@@ -59,14 +61,6 @@ namespace SocialGamificationAsset
 		public int Compare(string x, string y)
 		{
 			return string.Compare(y, x, System.StringComparison.CurrentCultureIgnoreCase);
-		}
-	}
-
-	public class SwaggerSecurityHeaderExtensions : IOperationFilter
-	{
-		public void Apply(Operation operation, OperationFilterContext context)
-		{
-			operation.Extensions.Add("X-Http-Session", "swagger");
 		}
 	}
 }
