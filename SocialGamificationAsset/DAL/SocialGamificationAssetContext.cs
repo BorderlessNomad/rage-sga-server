@@ -56,6 +56,8 @@ namespace SocialGamificationAsset.Models
 
 		public virtual DbSet<FileActivity> FileActivities { get; set; }
 
+		public virtual DbSet<GameRegistry> GameRegistry { get; set; }
+
 		public virtual DbSet<Goal> Goals { get; set; }
 
 		public virtual DbSet<GoalFeedback> GoalFeedback { get; set; }

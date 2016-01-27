@@ -17,6 +17,13 @@ namespace SocialGamificationAsset.Models
 		[DatabaseGenerated(DatabaseGeneratedOption.None)]
 		public Guid Id { get; set; }
 
+		/*
+		public Guid GameId { get; set; }
+
+		[ForeignKey("GameId")]
+		public virtual GameRegistry Game { get; set; }
+		*/
+
 		public DateTime? UpdatedDate { get; set; }
 
 		public DateTime CreatedDate { get; set; }

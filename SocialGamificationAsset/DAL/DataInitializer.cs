@@ -19,6 +19,8 @@ namespace SocialGamificationAsset.Models
 
 				await SeedTests(_context, isAsync);
 
+				await SeedGames(_context, isAsync);
+
 				await SeedGroups(_context, isAsync);
 
 				await SeedPlayerSessions(_context, isAsync);
@@ -57,6 +59,34 @@ namespace SocialGamificationAsset.Models
 				await SaveChanges(_context, isAsync);
 
 				Debug.WriteLine("Tests Seeded.");
+			}
+		}
+
+		protected static async Task SeedGames(SocialGamificationAssetContext _context, bool isAsync = false)
+		{
+			if (!_context.GameRegistry.Any())
+			{
+				IList<GameRegistry> games = new List<GameRegistry>
+				{
+					new GameRegistry
+					{
+						Name = "ButtonGame",
+						DeveloperName = "PlayGen",
+					},
+					new GameRegistry
+					{
+						Name = "TankGame",
+						DeveloperName = "PlayGen",
+					}
+				};
+
+				_context.GameRegistry.AddRange(games);
+
+				await SaveChanges(_context, isAsync);
+
+				Debug.WriteLine("Games Seeded.");
+
+				// GameRegistry Game = await _context.GameRegistry.Where(g => g.Name.Equals("ButtonGame")).FirstOrDefaultAsync();
 			}
 		}
 
