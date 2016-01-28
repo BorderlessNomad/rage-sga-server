@@ -8,6 +8,7 @@ using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.Description;
 
 namespace SocialGamificationAsset.Controllers
 {
@@ -20,6 +21,7 @@ namespace SocialGamificationAsset.Controllers
 
 		// GET: api/matches/all
 		[HttpGet("all", Name = "GetAllMatches")]
+		[ResponseType(typeof(ItemTypeResponse))]
 		public IEnumerable<Match> GetAllMatches()
 		{
 			return _context.Matches.Include(m => m.Tournament);
@@ -27,6 +29,7 @@ namespace SocialGamificationAsset.Controllers
 
 		// GET: api/matches/owned
 		[HttpGet("owned", Name = "GetOwnedMatches")]
+		[ResponseType(typeof(IList<Match>))]
 		public async Task<IActionResult> GetOwnedMatches()
 		{
 			IList<Match> matches = await _context.MatchActors
@@ -44,6 +47,7 @@ namespace SocialGamificationAsset.Controllers
 		// GET: api/matches/participated
 		[HttpGet("", Name = "GetMyMatches")]
 		[HttpGet("participated", Name = "GetParticipatedMatches")]
+		[ResponseType(typeof(IList<Match>))]
 		public async Task<IActionResult> GetMyMatches()
 		{
 			IList<Match> matches = await _context.MatchActors
@@ -58,6 +62,7 @@ namespace SocialGamificationAsset.Controllers
 
 		// GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpGet("{id:Guid}", Name = "GetMatch")]
+		[ResponseType(typeof(Match))]
 		public async Task<IActionResult> GetMatch([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -77,6 +82,7 @@ namespace SocialGamificationAsset.Controllers
 
 		// GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8/actors
 		[HttpGet("{id:Guid}/actors", Name = "GetMatchActors")]
+		[ResponseType(typeof(IList<MatchActor>))]
 		public async Task<IActionResult> GetMatchActors([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -96,6 +102,7 @@ namespace SocialGamificationAsset.Controllers
 
 		// GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8/rounds
 		[HttpGet("{id:Guid}/rounds", Name = "GetMatchRounds")]
+		[ResponseType(typeof(IList<MatchRound>))]
 		public async Task<IActionResult> GetMatchRounds([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -122,6 +129,7 @@ namespace SocialGamificationAsset.Controllers
 
 		// GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8/owner
 		[HttpGet("{id:Guid}/owner", Name = "GetMatchOwner")]
+		[ResponseType(typeof(Actor))]
 		public async Task<IActionResult> GetMatchOwner([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -140,7 +148,8 @@ namespace SocialGamificationAsset.Controllers
 		}
 
 		// PUT: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
-		[HttpPut("{id:Guid}")]
+		[HttpPut("{id:Guid}", Name = "UpdateMatchRoundScore")]
+		[ResponseType(typeof(MatchRound))]
 		public async Task<IActionResult> UpdateMatchRoundScore([FromRoute] Guid id, [FromBody] MatchRoundForm roundForm)
 		{
 			if (!ModelState.IsValid)
@@ -184,12 +193,13 @@ namespace SocialGamificationAsset.Controllers
 				}
 			}
 
-			return HttpNotFound("No Actor for this Match.");
+			return HttpNotFound("No Actor '" + roundForm.ActorId + "' found for this Match.");
 		}
 
 		// Creates a Quick Match between logged account and a random user
 		// POST: api/matches
-		[HttpPost]
+		[HttpPost("", Name = "CreateQuickMatch")]
+		[ResponseType(typeof(Match))]
 		public async Task<IActionResult> CreateQuickMatch([FromBody] QuickMatch quickMatch)
 		{
 			if (session == null || session.Player == null)
@@ -311,7 +321,8 @@ namespace SocialGamificationAsset.Controllers
 		}
 
 		// DELETE: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
-		[HttpDelete("{id:Guid}")]
+		[HttpDelete("{id:Guid}", Name = "DeleteMatch")]
+		[ResponseType(typeof(Match))]
 		public async Task<IActionResult> DeleteMatch([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
