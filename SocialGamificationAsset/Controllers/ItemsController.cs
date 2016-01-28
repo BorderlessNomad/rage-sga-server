@@ -243,27 +243,6 @@ namespace SocialGamificationAsset.Controllers
 			return CreatedAtRoute("GetItemType", new { id = itemType.Id }, itemType);
 		}
 
-		// DELETE: api/items/936da01f-9abd-4d9d-80c7-02af85c822a8
-		[HttpDelete("{id}")]
-		public async Task<IActionResult> DeleteItem([FromRoute] Guid id)
-		{
-			if (!ModelState.IsValid)
-			{
-				return HttpBadRequest(ModelState);
-			}
-
-			Item item = await _context.Items.FindAsync(id);
-			if (item == null)
-			{
-				return HttpNotFound();
-			}
-
-			_context.Items.Remove(item);
-			await _context.SaveChangesAsync();
-
-			return Ok(item);
-		}
-
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing)

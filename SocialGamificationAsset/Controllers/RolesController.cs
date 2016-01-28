@@ -34,69 +34,40 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			Role test = await _context.Roles.FindAsync(id);
+			Role role = await _context.Roles.FindAsync(id);
 
-			if (test == null)
+			if (role == null)
 			{
-				return HttpNotFound();
+				return HttpNotFound("No such Role found.");
 			}
 
-			return Ok(test);
-		}
-
-		// PUT: api/roles/936da01f-9abd-4d9d-80c7-02af85c822a8
-		[HttpPut("{id}")]
-		public async Task<IActionResult> PutRole([FromRoute] Guid id, [FromBody] Role test)
-		{
-			if (!ModelState.IsValid)
-			{
-				return HttpBadRequest(ModelState);
-			}
-
-			if (id != test.Id)
-			{
-				return HttpBadRequest();
-			}
-
-			_context.Entry(test).State = EntityState.Modified;
-
-			try
-			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateException)
-			{
-				if (!RoleExists(id))
-				{
-					return HttpNotFound();
-				}
-				else
-				{
-					throw;
-				}
-			}
-
-			return CreatedAtRoute("GetRole", new { id = test.Id }, test);
+			return Ok(role);
 		}
 
 		// POST: api/roles
 		[HttpPost]
 		[ResponseType(typeof(Role))]
-		public async Task<IActionResult> PostRole([FromBody] Role test)
+		public async Task<IActionResult> AddRole([FromBody] Role role)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			_context.Roles.Add(test);
+			Role checkRole = await _context.Roles.Where(r => r.Name.Equals(role.Name)).FirstOrDefaultAsync();
+			if (checkRole != null)
+			{
+				return HttpBadRequest("Role '" + checkRole.Name + "' already exists.");
+			}
+
+			_context.Roles.Add(role);
 			try
 			{
 				await _context.SaveChangesAsync();
 			}
 			catch (DbUpdateException)
 			{
-				if (RoleExists(test.Id))
+				if (RoleExists(role.Id))
 				{
 					return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
 				}
@@ -106,28 +77,7 @@ namespace SocialGamificationAsset.Controllers
 				}
 			}
 
-			return CreatedAtRoute("GetRole", new { id = test.Id }, test);
-		}
-
-		// DELETE: api/roles/936da01f-9abd-4d9d-80c7-02af85c822a8
-		[HttpDelete("{id}")]
-		public async Task<IActionResult> DeleteRole([FromRoute] Guid id)
-		{
-			if (!ModelState.IsValid)
-			{
-				return HttpBadRequest(ModelState);
-			}
-
-			Role test = await _context.Roles.FindAsync(id);
-			if (test == null)
-			{
-				return HttpNotFound();
-			}
-
-			_context.Roles.Remove(test);
-			await _context.SaveChangesAsync();
-
-			return Ok(test);
+			return CreatedAtRoute("GetRole", new { id = role.Id }, role);
 		}
 
 		protected override void Dispose(bool disposing)
