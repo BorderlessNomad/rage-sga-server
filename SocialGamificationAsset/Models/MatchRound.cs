@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -28,5 +29,21 @@ namespace SocialGamificationAsset.Models
 
 		[Required]
 		public int Score { get; set; }
+	}
+
+	public class MatchRoundActor
+	{
+		public Guid ActorId { get; set; }
+
+		public int Score { get; set; }
+
+		public DateTime? DateScore { get; set; }
+	}
+
+	public class MatchRoundResponse
+	{
+		public int RoundNumber { get; set; }
+
+		public IList<MatchRoundActor> Actors { get; set; }
 	}
 }

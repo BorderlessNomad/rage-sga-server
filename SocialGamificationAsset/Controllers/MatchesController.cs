@@ -102,7 +102,7 @@ namespace SocialGamificationAsset.Controllers
 
 		// GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8/rounds
 		[HttpGet("{id:Guid}/rounds", Name = "GetMatchRounds")]
-		[ResponseType(typeof(IList<MatchRound>))]
+		[ResponseType(typeof(IList<MatchRoundResponse>))]
 		public async Task<IActionResult> GetMatchRounds([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -110,21 +110,55 @@ namespace SocialGamificationAsset.Controllers
 				return HttpBadRequest(ModelState);
 			}
 
-			IList<MatchActor> matchActors = await _context.MatchActors.Where(a => a.MatchId.Equals(id)).Include(a => a.Actor).ToListAsync();
-
-			IList<MatchRound> rounds = new List<MatchRound>();
-			foreach (MatchActor matchActor in matchActors)
+			Match match = await _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Actors).FirstOrDefaultAsync();
+			if (match == null)
 			{
-				MatchRound round = await _context.MatchRounds.Where(r => r.MatchActorId.Equals(matchActor.Id)).FirstOrDefaultAsync();
-				rounds.Add(round);
+				return HttpNotFound("No such Match found.");
 			}
 
-			if (matchActors == null || matchActors.Count < 1)
+			IList<Guid> matchActors = match.Actors.AsEnumerable().Select(a => a.Id).ToList();
+
+			IList<MatchRound> matchRounds = await _context.MatchRounds
+				.Where(r => matchActors.Contains(r.MatchActorId))
+				.OrderBy(r => r.RoundNumber)
+				.ToListAsync();
+
+			IList<MatchRoundResponse> matchRoundResponse = new List<MatchRoundResponse>();
+			foreach (MatchRound round in matchRounds)
 			{
-				return HttpNotFound("No Actor Found for Match " + id);
+				bool pushRound = false;
+				MatchRoundResponse mRound = matchRoundResponse.FirstOrDefault(r => r.RoundNumber.Equals(round.RoundNumber));
+				if (mRound == null)
+				{
+					mRound = new MatchRoundResponse
+					{
+						RoundNumber = round.RoundNumber,
+						Actors = new List<MatchRoundActor>()
+					};
+
+					pushRound = true;
+				}
+
+				MatchActor actor = match.Actors.FirstOrDefault(a => a.Id.Equals(round.MatchActorId));
+				if (actor != null)
+				{
+					MatchRoundActor matchRoundActor = new MatchRoundActor
+					{
+						ActorId = actor.ActorId,
+						Score = round.Score,
+						DateScore = round.DateScore
+					};
+
+					mRound.Actors.Add(matchRoundActor);
+				}
+
+				if (pushRound)
+				{
+					matchRoundResponse.Add(mRound);
+				}
 			}
 
-			return Ok(rounds);
+			return Ok(matchRoundResponse);
 		}
 
 		// GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8/owner
