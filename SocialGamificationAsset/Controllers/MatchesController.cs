@@ -141,37 +141,50 @@ namespace SocialGamificationAsset.Controllers
 
 		// PUT: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
 		[HttpPut("{id:Guid}")]
-		public async Task<IActionResult> PutMatch([FromRoute] Guid id, [FromBody] Match match)
+		public async Task<IActionResult> UpdateMatchRoundScore([FromRoute] Guid id, [FromBody] MatchRoundForm roundForm)
 		{
 			if (!ModelState.IsValid)
 			{
 				return HttpBadRequest(ModelState);
 			}
 
-			if (id != match.Id)
+			Match match = await _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Actors).FirstOrDefaultAsync();
+			if (match == null)
 			{
-				return HttpBadRequest("Invalid Match Resource Identifier.");
+				return HttpNotFound("No such Match found.");
 			}
 
-			_context.Entry(match).State = EntityState.Modified;
-
-			try
+			foreach (MatchActor actor in match.Actors)
 			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateException)
-			{
-				if (!MatchExists(id))
+				if (actor.ActorId.Equals(roundForm.ActorId))
 				{
-					return HttpNotFound("No Match Found for ID " + id);
-				}
-				else
-				{
-					throw;
+					MatchRound round = await _context.MatchRounds
+						.Where(r => r.MatchActorId.Equals(actor.Id))
+						.Where(r => r.RoundNumber.Equals(roundForm.RoundNumber))
+						.FirstOrDefaultAsync();
+					if (round == null)
+					{
+						return HttpNotFound("No Round #'" + roundForm.RoundNumber + "' found for Actor '" + roundForm.ActorId + "'");
+					}
+
+					_context.Entry(round).State = EntityState.Modified;
+					round.Score = roundForm.Score;
+					round.DateScore = DateTime.Now;
+
+					try
+					{
+						await _context.SaveChangesAsync();
+					}
+					catch (DbUpdateException e)
+					{
+						throw e;
+					}
+
+					return Ok(round);
 				}
 			}
 
-			return new HttpStatusCodeResult(StatusCodes.Status204NoContent);
+			return HttpNotFound("No Actor for this Match.");
 		}
 
 		// Creates a Quick Match between logged account and a random user

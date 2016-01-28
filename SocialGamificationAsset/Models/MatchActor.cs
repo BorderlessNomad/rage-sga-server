@@ -44,7 +44,8 @@ namespace SocialGamificationAsset.Models
 				// Add round(s) entry for each Actor
 				MatchRound matchRound = new MatchRound()
 				{
-					MatchActorId = matchActor.Id
+					MatchActorId = matchActor.Id,
+					RoundNumber = i
 				};
 
 				db.MatchRounds.Add(matchRound);

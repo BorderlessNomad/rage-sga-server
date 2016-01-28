@@ -1,10 +1,13 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
 	public class MatchRound : DbEntity
 	{
+		public int RoundNumber { get; set; }
+
 		public Guid MatchActorId { get; set; }
 
 		[ForeignKey("MatchActorId")]
@@ -12,6 +15,18 @@ namespace SocialGamificationAsset.Models
 
 		public int Score { get; set; }
 
-		public DateTime DateScore { get; set; }
+		public DateTime? DateScore { get; set; }
+	}
+
+	public class MatchRoundForm
+	{
+		[Required]
+		public Guid ActorId { get; set; }
+
+		[Required]
+		public int RoundNumber { get; set; }
+
+		[Required]
+		public int Score { get; set; }
 	}
 }
