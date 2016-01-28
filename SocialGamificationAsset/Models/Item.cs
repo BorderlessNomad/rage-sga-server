@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
@@ -15,11 +16,14 @@ namespace SocialGamificationAsset.Models
 		[ForeignKey("ItemTypeId")]
 		public virtual ItemType Type { get; set; }
 
-		public int Quantity;
+		public int Quantity { get; set; }
 	}
 
 	public class ItemType : DbEntity
 	{
+		[Index(IsUnique = true)]
+		[StringLength(128)]
+		[Required]
 		public string Name { get; set; }
 
 		public string Image { get; set; }
@@ -29,8 +33,32 @@ namespace SocialGamificationAsset.Models
 	{
 		public Guid? ActorId { get; set; }
 
-		public Guid ItemTypeId { get; set; }
+		public Guid? ItemTypeId { get; set; }
 
-		public int? Quantity;
+		[Required]
+		public string ItemTypeName { get; set; }
+
+		public int? Quantity { get; set; }
+
+		public ItemOperation Operation { get; set; }
+	}
+
+	public class ItemTypeResponse
+	{
+		public Guid Id { get; set; }
+
+		public string Name { get; set; }
+
+		public string Image { get; set; }
+
+		public int Total { get; set; }
+
+		public DateTime LastUpdated { get; set; }
+	}
+
+	public enum ItemOperation
+	{
+		Add = 0,
+		Remove = 1
 	}
 }
