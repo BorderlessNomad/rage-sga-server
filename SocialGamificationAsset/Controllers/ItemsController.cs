@@ -19,7 +19,7 @@ namespace SocialGamificationAsset.Controllers
 		}
 
 		// GET: api/items
-		[HttpGet]
+		[HttpGet("", Name = "GetItems")]
 		public async Task<IList<Item>> GetItems()
 		{
 			IList<Item> items = await _context.Items.Where(i => i.ActorId.Equals(session.Player.Id)).Include(i => i.Type).ToListAsync();
@@ -81,7 +81,7 @@ namespace SocialGamificationAsset.Controllers
 		}
 
 		// GET: api/items/936da01f-9abd-4d9d-80c7-02af85c822a8
-		[HttpGet("{id}", Name = "GetItem")]
+		[HttpGet("{id:Guid}", Name = "GetItem")]
 		[ResponseType(typeof(Item))]
 		public async Task<IActionResult> GetItem([FromRoute] Guid id)
 		{
@@ -101,7 +101,7 @@ namespace SocialGamificationAsset.Controllers
 		}
 
 		// GET: api/items/type/936da01f-9abd-4d9d-80c7-02af85c822a8
-		[HttpGet("{id}", Name = "GetItemType")]
+		[HttpGet("type/{id:Guid}", Name = "GetItemType")]
 		[ResponseType(typeof(ItemType))]
 		public async Task<IActionResult> GetItemType([FromRoute] Guid id)
 		{

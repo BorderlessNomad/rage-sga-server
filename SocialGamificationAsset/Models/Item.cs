@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
 namespace SocialGamificationAsset.Models
 {
@@ -8,11 +9,13 @@ namespace SocialGamificationAsset.Models
 	{
 		public Guid ActorId { get; set; }
 
+		[IgnoreDataMember]
 		[ForeignKey("ActorId")]
 		public virtual Actor Actor { get; set; }
 
 		public Guid ItemTypeId { get; set; }
 
+		[IgnoreDataMember]
 		[ForeignKey("ItemTypeId")]
 		public virtual ItemType Type { get; set; }
 
@@ -58,7 +61,7 @@ namespace SocialGamificationAsset.Models
 
 	public enum ItemOperation
 	{
-		Add = 0,
-		Remove = 1
+		Add,
+		Remove
 	}
 }

@@ -26,7 +26,7 @@ namespace SocialGamificationAsset.Controllers
 		}
 
 		// GET: api/roles/936da01f-9abd-4d9d-80c7-02af85c822a8
-		[HttpGet("{id}", Name = "GetRole")]
+		[HttpGet("{id:Guid}", Name = "GetRole")]
 		public async Task<IActionResult> GetRole([FromRoute] Guid id)
 		{
 			if (!ModelState.IsValid)
@@ -45,7 +45,7 @@ namespace SocialGamificationAsset.Controllers
 		}
 
 		// POST: api/roles
-		[HttpPost]
+		[HttpPost("", Name = "AddRole")]
 		[ResponseType(typeof(Role))]
 		public async Task<IActionResult> AddRole([FromBody] Role role)
 		{
