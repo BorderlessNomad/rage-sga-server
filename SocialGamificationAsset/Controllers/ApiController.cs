@@ -1,35 +1,28 @@
 ﻿using Microsoft.AspNet.Mvc;
+
 using SocialGamificationAsset.Models;
 using SocialGamificationAsset.Policies;
 
 namespace SocialGamificationAsset.Controllers
 {
-	[Produces("application/json")]
-	[ServiceFilter(typeof(ISessionAuthorizeFilter))]
-	public class ApiController : Controller
-	{
-		protected SocialGamificationAssetContext _context;
+    [Produces("application/json")]
+    [ServiceFilter(typeof(ISessionAuthorizeFilter))]
+    public class ApiController : Controller
+    {
+        protected SocialGamificationAssetContext _context;
 
-		protected Session _session;
+        protected Session _session;
 
-		public Session session
-		{
-			get { return GetSession(); }
-		}
+        public ApiController(SocialGamificationAssetContext context)
+        {
+            this._context = context;
+        }
 
-		protected Session GetSession()
-		{
-			if (_session == null)
-			{
-				_session = HttpContext.Session.GetObjectFromJson<Session>("__session");
-			}
+        public Session session => this.GetSession();
 
-			return _session;
-		}
-
-		public ApiController(SocialGamificationAssetContext context)
-		{
-			_context = context;
-		}
-	}
+        protected Session GetSession()
+        {
+            return this._session ?? (this._session = this.HttpContext.Session.GetObjectFromJson<Session>("__session"));
+        }
+    }
 }

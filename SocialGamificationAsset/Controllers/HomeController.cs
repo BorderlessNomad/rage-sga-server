@@ -2,30 +2,30 @@
 
 namespace SocialGamificationAsset.Controllers
 {
-	public class HomeController : Controller
-	{
-		public IActionResult Index()
-		{
-			return View();
-		}
+    public class HomeController : Controller
+    {
+        public IActionResult Index()
+        {
+            return this.View();
+        }
 
-		public IActionResult About()
-		{
-			ViewData["Message"] = "RAGE Social Gamification Asset.";
+        public IActionResult About()
+        {
+            this.ViewData["Message"] = "RAGE Social Gamification Asset.";
 
-			return View();
-		}
+            return this.View();
+        }
 
-		public IActionResult Contact()
-		{
-			ViewData["Message"] = "Our HQ Tech City";
+        public IActionResult Contact()
+        {
+            this.ViewData["Message"] = "Our HQ Tech City";
 
-			return View();
-		}
+            return this.View();
+        }
 
-		public IActionResult Error()
-		{
-			return View();
-		}
-	}
+        public IActionResult Error()
+        {
+            return this.View();
+        }
+    }
 }

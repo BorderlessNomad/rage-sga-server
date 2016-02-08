@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNet.Authorization;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc;
-using SocialGamificationAsset.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -10,151 +6,162 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Description;
 
+using Microsoft.AspNet.Authorization;
+using Microsoft.AspNet.Http;
+using Microsoft.AspNet.Mvc;
+
+using SocialGamificationAsset.Models;
+
 namespace SocialGamificationAsset.Controllers
 {
-	[Route("api/tests")]
-	public class TestsController : ApiController
-	{
-		public TestsController(SocialGamificationAssetContext context) : base(context)
-		{
-		}
+    [Route("api/tests")]
+    public class TestsController : ApiController
+    {
+        public TestsController(SocialGamificationAssetContext context)
+            : base(context)
+        {
+        }
 
-		// GET: api/tests
-		/// <summary>
-		/// This method returns all available records from Test Table
-		/// </summary>
-		/// <returns>All the test records which were found</returns>
-		[HttpGet]
-		[AllowAnonymous]
-		public IEnumerable<Test> GetTest()
-		{
-			return _context.Tests;
-		}
+        // GET: api/tests
+        /// <summary>
+        ///     <para>
+        ///         This method returns all available records from <see cref="Test" />
+        ///     </para>
+        ///     <para>Table</para>
+        /// </summary>
+        /// <returns>
+        ///     All the test records which were found
+        /// </returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public IEnumerable<Test> GetTest()
+        {
+            return this._context.Tests;
+        }
 
-		// GET: api/tests/936da01f-9abd-4d9d-80c7-02af85c822a8
-		/// <summary>
-		/// This method returns specific record from Test Table
-		/// </summary>
-		/// <param name="id">Guid</param>
-		/// <returns>Test record that was found</returns>
-		[HttpGet("{id}", Name = "GetTest")]
-		[AllowAnonymous]
-		public async Task<IActionResult> GetTest([FromRoute] Guid id)
-		{
-			if (!ModelState.IsValid)
-			{
-				return HttpBadRequest(ModelState);
-			}
+        // GET: api/tests/936da01f-9abd-4d9d-80c7-02af85c822a8
+        /// <summary>
+        ///     This method returns specific record from <see cref="Test" /> Table
+        /// </summary>
+        /// <param name="id">
+        ///     <see cref="Guid" />
+        /// </param>
+        /// <returns>
+        ///     <see cref="Test" /> record that was found
+        /// </returns>
+        [HttpGet("{id}", Name = "GetTest")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetTest([FromRoute] Guid id)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.HttpBadRequest(this.ModelState);
+            }
 
-			Test test = await _context.Tests.FindAsync(id);
+            var test = await this._context.Tests.FindAsync(id);
 
-			if (test == null)
-			{
-				return HttpNotFound();
-			}
+            if (test == null)
+            {
+                return this.HttpNotFound();
+            }
 
-			return Ok(test);
-		}
+            return this.Ok(test);
+        }
 
-		// PUT: api/tests/936da01f-9abd-4d9d-80c7-02af85c822a8
-		[HttpPut("{id}")]
-		public async Task<IActionResult> PutTest([FromRoute] Guid id, [FromBody] Test test)
-		{
-			if (!ModelState.IsValid)
-			{
-				return HttpBadRequest(ModelState);
-			}
+        // PUT: api/tests/936da01f-9abd-4d9d-80c7-02af85c822a8
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutTest([FromRoute] Guid id, [FromBody] Test test)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.HttpBadRequest(this.ModelState);
+            }
 
-			if (id != test.Id)
-			{
-				return HttpBadRequest();
-			}
+            if (id != test.Id)
+            {
+                return this.HttpBadRequest();
+            }
 
-			_context.Entry(test).State = EntityState.Modified;
+            this._context.Entry(test)
+                .State = EntityState.Modified;
 
-			try
-			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateException)
-			{
-				if (!TestExists(id))
-				{
-					return HttpNotFound();
-				}
-				else
-				{
-					throw;
-				}
-			}
+            try
+            {
+                await this._context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (!this.TestExists(id))
+                {
+                    return this.HttpNotFound();
+                }
+                throw;
+            }
 
-			return CreatedAtRoute("GetTest", new { id = test.Id }, test);
-		}
+            return this.CreatedAtRoute("GetTest", new { id = test.Id }, test);
+        }
 
-		// POST: api/tests
-		[HttpPost]
-		[ResponseType(typeof(Test))]
-		public async Task<IActionResult> PostTest([FromBody] Test test)
-		{
-			if (!ModelState.IsValid)
-			{
-				return HttpBadRequest(ModelState);
-			}
+        // POST: api/tests
+        [HttpPost]
+        [ResponseType(typeof(Test))]
+        public async Task<IActionResult> PostTest([FromBody] Test test)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.HttpBadRequest(this.ModelState);
+            }
 
-			_context.Tests.Add(test);
-			try
-			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateException)
-			{
-				if (TestExists(test.Id))
-				{
-					return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
-				}
-				else
-				{
-					throw;
-				}
-			}
+            this._context.Tests.Add(test);
+            try
+            {
+                await this._context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (this.TestExists(test.Id))
+                {
+                    return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
+                }
+                throw;
+            }
 
-			return CreatedAtRoute("GetTest", new { id = test.Id }, test);
-		}
+            return this.CreatedAtRoute("GetTest", new { id = test.Id }, test);
+        }
 
-		// DELETE: api/tests/936da01f-9abd-4d9d-80c7-02af85c822a8
-		[HttpDelete("{id}")]
-		public async Task<IActionResult> DeleteTest([FromRoute] Guid id)
-		{
-			if (!ModelState.IsValid)
-			{
-				return HttpBadRequest(ModelState);
-			}
+        // DELETE: api/tests/936da01f-9abd-4d9d-80c7-02af85c822a8
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTest([FromRoute] Guid id)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.HttpBadRequest(this.ModelState);
+            }
 
-			Test test = await _context.Tests.FindAsync(id);
-			if (test == null)
-			{
-				return HttpNotFound();
-			}
+            var test = await this._context.Tests.FindAsync(id);
+            if (test == null)
+            {
+                return this.HttpNotFound();
+            }
 
-			_context.Tests.Remove(test);
-			await _context.SaveChangesAsync();
+            this._context.Tests.Remove(test);
+            await this._context.SaveChangesAsync();
 
-			return Ok(test);
-		}
+            return this.Ok(test);
+        }
 
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				_context.Dispose();
-			}
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this._context.Dispose();
+            }
 
-			base.Dispose(disposing);
-		}
+            base.Dispose(disposing);
+        }
 
-		private bool TestExists(Guid id)
-		{
-			return _context.Tests.Count(e => e.Id == id) > 0;
-		}
-	}
+        private bool TestExists(Guid id)
+        {
+            return this._context.Tests.Count(e => e.Id == id) > 0;
+        }
+    }
 }
