@@ -4,31 +4,31 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
-	public class Session : DbEntity
-	{
-		public Guid PlayerId { get; set; }
+    public class Session : DbEntity
+    {
+        public Session()
+        {
+            this.IsExpired = false;
+        }
 
-		[ForeignKey("PlayerId")]
-		public virtual Player Player { get; set; }
+        public Guid PlayerId { get; set; }
 
-		public string LastActionIP { get; set; }
+        [ForeignKey("PlayerId")]
+        public virtual Player Player { get; set; }
 
-		public bool IsExpired { get; set; }
+        public string LastActionIP { get; set; }
 
-		public Session()
-		{
-			IsExpired = false;
-		}
-	}
+        public bool IsExpired { get; set; }
+    }
 
-	public class UserForm
-	{
-		public string Username { get; set; }
+    public class UserForm
+    {
+        public string Username { get; set; }
 
-		public string Email { get; set; }
+        public string Email { get; set; }
 
-		public string Password { get; set; }
+        public string Password { get; set; }
 
-		public IList<CustomDataBase> CustomData { get; set; }
-	}
+        public IList<CustomDataBase> CustomData { get; set; }
+    }
 }

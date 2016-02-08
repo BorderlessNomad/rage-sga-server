@@ -4,26 +4,26 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
-	public class Tournament : DbEntity
-	{
-		public Guid OwnerId { get; set; }
+    public class Tournament : DbEntity
+    {
+        public Tournament()
+        {
+            this.Title = "Test Tournament";
+            this.IsFinished = false;
+        }
 
-		[ForeignKey("OwnerId")]
-		public virtual Actor Owner { get; set; }
+        public Guid OwnerId { get; set; }
 
-		public string Title { get; set; }
+        [ForeignKey("OwnerId")]
+        public virtual Actor Owner { get; set; }
 
-		public bool IsFinished { get; set; }
+        public string Title { get; set; }
 
-		public DateTime? DateFinished { get; set; }
+        public bool IsFinished { get; set; }
 
-		[NotMapped]
-		public virtual ICollection<CustomData> CustomData { get; set; }
+        public DateTime? DateFinished { get; set; }
 
-		public Tournament()
-		{
-			Title = "Test Tournament";
-			IsFinished = false;
-		}
-	}
+        [NotMapped]
+        public virtual ICollection<CustomData> CustomData { get; set; }
+    }
 }

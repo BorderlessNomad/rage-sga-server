@@ -3,20 +3,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
-	public class Inventory : DbEntity
-	{
-		public Guid ActorId { get; set; }
+    public class Inventory : DbEntity
+    {
+        public string Name;
 
-		[ForeignKey("ActorId")]
-		public virtual Actor Actor { get; set; }
+        public int Quantity;
 
-		public string Name;
+        public Guid ActorId { get; set; }
 
-		public int Quantity;
+        [ForeignKey("ActorId")]
+        public virtual Actor Actor { get; set; }
 
-		public Guid CustomDataId { get; set; }
+        public Guid CustomDataId { get; set; }
 
-		[ForeignKey("CustomDataId")]
-		public virtual CustomData CustomData { get; set; }
-	}
+        [ForeignKey("CustomDataId")]
+        public virtual CustomData CustomData { get; set; }
+    }
 }

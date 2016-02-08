@@ -4,76 +4,77 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialGamificationAsset.Models
 {
-	public class Match : DbEntity
-	{
-		public Guid TournamentId { get; set; }
+    public class Match : DbEntity
+    {
+        // public virtual ICollection<MatchRound> Rounds { get; set; } // Make this Virtual method
 
-		[ForeignKey("TournamentId")]
-		public Tournament Tournament { get; set; }
+        public Match()
+        {
+            this.Title = "Test";
+            this.TotalRounds = 1;
+            this.IsFinished = false;
+            this.IsDeleted = false;
+        }
 
-		public string Title { get; set; }
+        public Guid TournamentId { get; set; }
 
-		public DateTime? ExpirationDate { get; set; }
+        [ForeignKey("TournamentId")]
+        public Tournament Tournament { get; set; }
 
-		public int TotalRounds { get; set; }
+        public string Title { get; set; }
 
-		public bool IsFinished { get; set; }
+        public DateTime? ExpirationDate { get; set; }
 
-		public bool IsDeleted { get; set; }
+        public int TotalRounds { get; set; }
 
-		public virtual ICollection<MatchActor> Actors { get; set; }
+        public bool IsFinished { get; set; }
 
-		[NotMapped]
-		public virtual ICollection<CustomData> CustomData { get; set; }
+        public bool IsDeleted { get; set; }
 
-		// public virtual ICollection<MatchRound> Rounds { get; set; } // Make this Virtual method
+        public virtual ICollection<MatchActor> Actors { get; set; }
 
-		public Match()
-		{
-			Title = "Test";
-			TotalRounds = 1;
-			IsFinished = false;
-			IsDeleted = false;
-		}
-	}
+        [NotMapped]
+        public virtual ICollection<CustomData> CustomData { get; set; }
+    }
 
-	public enum MatchType
-	{
-		Player,
-		Group
-	}
+    public enum MatchType
+    {
+        Player,
 
-	public class QuickMatch
-	{
-		public MatchType Type { get; set; }
+        Group
+    }
 
-		public Guid? ActorId { get; set; }
+    public class QuickMatch
+    {
+        public QuickMatch()
+        {
+            this.Type = MatchType.Player;
 
-		public bool AlliancesOnly { get; set; }
+            this.AlliancesOnly = false;
 
-		public int Actors { get; set; }
+            if (this.Actors < 2)
+            {
+                this.Actors = 2;
+            }
 
-		public int Rounds { get; set; }
+            if (this.Rounds < 1)
+            {
+                this.Rounds = 1;
+            }
+        }
 
-		public Guid? Tournament { get; set; }
+        public MatchType Type { get; set; }
 
-		public IList<CustomDataBase> CustomData { get; set; }
+        public Guid? ActorId { get; set; }
 
-		public QuickMatch()
-		{
-			Type = MatchType.Player;
+        public bool AlliancesOnly { get; set; }
 
-			AlliancesOnly = false;
+        public int Actors { get; set; }
 
-			if (Actors < 2)
-			{
-				Actors = 2;
-			}
+        public int Rounds { get; set; }
 
-			if (Rounds < 1)
-			{
-				Rounds = 1;
-			}
-		}
-	}
+        public Guid? Tournament { get; set; }
+
+        public IList<CustomDataBase> CustomData { get; set; }
+    }
 }

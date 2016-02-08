@@ -2,40 +2,45 @@
 
 namespace SocialGamificationAsset.Models
 {
-	public enum LeaderboardUnique
-	{
-		None,
-		Increase,
-		ReplaceHigher,
-		ReplaceAny
-	}
+    public enum LeaderboardUnique
+    {
+        None,
 
-	public enum LeaderboardOrder
-	{
-		Desc,
-		Asc
-	}
+        Increase,
 
-	public enum LeaderboardValue
-	{
-		Int,
-		Float
-	}
+        ReplaceHigher,
 
-	public class Leaderboard : DbEntity
-	{
-		public string Title { get; set; }
+        ReplaceAny
+    }
 
-		public string Description { get; set; }
+    public enum LeaderboardOrder
+    {
+        Desc,
 
-		public LeaderboardUnique UniqueRecords { get; set; }
+        Asc
+    }
 
-		public LeaderboardOrder OrderType { get; set; }
+    public enum LeaderboardValue
+    {
+        Int,
 
-		public LeaderboardValue ValueType { get; set; }
+        Float
+    }
 
-		public bool AllowAnonymous { get; set; }
+    public class Leaderboard : DbEntity
+    {
+        public string Title { get; set; }
 
-		public virtual ICollection<LeaderboardUser> LeaderboardUsers { get; set; }
-	}
+        public string Description { get; set; }
+
+        public LeaderboardUnique UniqueRecords { get; set; }
+
+        public LeaderboardOrder OrderType { get; set; }
+
+        public LeaderboardValue ValueType { get; set; }
+
+        public bool AllowAnonymous { get; set; }
+
+        public virtual ICollection<LeaderboardUser> LeaderboardUsers { get; set; }
+    }
 }
