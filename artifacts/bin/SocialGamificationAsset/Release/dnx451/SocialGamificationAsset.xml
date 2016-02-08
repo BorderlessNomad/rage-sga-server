@@ -1,0 +1,279 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SocialGamificationAsset</name>
+    </assembly>
+    <members>
+        <member name="T:SocialGamificationAsset.Startup">
+            <summary>
+            The main start-up class for the application.
+            </summary>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureCacheProfiles(System.Collections.Generic.IDictionary{System.String,Microsoft.AspNet.Mvc.CacheProfile},Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Controls how controller actions cache content in one central location.
+            </summary>
+            <param name="cacheProfiles">The settings for the <see cref="T:Microsoft.AspNet.Mvc.ResponseCacheAttribute"/>'s.</param>
+            <param name="configuration">Gets or sets the application configuration, where key value pair settings are
+            stored.</param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureCachingServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Configures caching for the application. Registers the <see cref="!:IDistrbutedCache"/> and
+            <see cref="!:IMemoryCache"/> types with the services collection or IoC container. The
+            <see cref="!:IDistrbutedCache"/> is intended to be used in cloud hosted scenarios where there is a shared
+            cache, which is shared between multiple instances of the application. Use the <see cref="!:IMemoryCache"/>
+            otherwise.
+            </summary>
+            <param name="services">The services collection or IoC container.</param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureConfiguration(Microsoft.AspNet.Hosting.IHostingEnvironment)">
+            <summary>
+            Creates and configures the application configuration, where key value pair settings are stored. See
+            http://docs.asp.net/en/latest/fundamentals/configuration.html
+            http://weblog.west-wind.com/posts/2015/Jun/03/Strongly-typed-AppSettings-Configuration-in-ASPNET-5
+            </summary>
+            <param name="hostingEnvironment">The environment the application is running under. This can be Development,
+            Staging or Production by default.</param>
+            <returns>A collection of key value pair settings.</returns>
+        </member>
+        <member name="F:SocialGamificationAsset.Startup.applicationEnvironment">
+            <summary>
+            The location the application is running in.
+            </summary>
+        </member>
+        <member name="F:SocialGamificationAsset.Startup.configuration">
+            <summary>
+            Gets or sets the application configuration, where key value pair settings are stored. See
+            http://docs.asp.net/en/latest/fundamentals/configuration.html
+            http://weblog.west-wind.com/posts/2015/Jun/03/Strongly-typed-AppSettings-Configuration-in-ASPNET-5
+            </summary>
+        </member>
+        <member name="F:SocialGamificationAsset.Startup.hostingEnvironment">
+            <summary>
+            The environment the application is running under. This can be Development, Staging or Production by default.
+            To set the hosting environment on Windows:
+            1. On your server, right click 'Computer' or 'My Computer' and click on 'Properties'.
+            2. Go to 'Advanced System Settings'.
+            3. Click on 'Environment Variables' in the Advanced tab.
+            4. Add a new System Variable with the name 'ASPNET_ENV' and a value of Production, Staging or
+            whatever you want.
+            See http://docs.asp.net/en/latest/fundamentals/environments.html
+            </summary>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.#ctor(Microsoft.Extensions.PlatformAbstractions.IApplicationEnvironment,Microsoft.AspNet.Hosting.IHostingEnvironment)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SocialGamificationAsset.Startup"/> class.
+            </summary>
+            <param name="applicationEnvironment">The location the application is running in.</param>
+            <param name="hostingEnvironment">The environment the application is running under. This can be Development,
+            Staging or Production by default.</param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.Main(System.String[])">
+            <summary>
+            Entry point for the application.
+            </summary>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Configures the services to add to the ASP.NET MVC 6 Injection of Control (IoC) container. This method gets
+            called by the ASP.NET runtime. See:
+            http://blogs.msdn.com/b/webdev/archive/2014/06/17/dependency-injection-in-asp-net-vnext.aspx
+            </summary>
+            <param name="services">The services collection or IoC container.</param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.Configure(Microsoft.AspNet.Builder.IApplicationBuilder,Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary>
+            Configures the application and HTTP request pipeline. Configure is called after ConfigureServices is
+            called by the ASP.NET runtime.
+            </summary>
+            <param name="application">The application.</param>
+            <param name="loggerfactory">The logger factory.</param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureDebuggingServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.AspNet.Hosting.IHostingEnvironment)">
+            <summary>
+            Configure tools used to help with debugging the application.
+            </summary>
+            <param name="services">The services collection or IoC container.</param>
+            <param name="environment">The environment the application is running under. This can be Development,
+            Staging or Production by default.</param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureDebugging(Microsoft.AspNet.Builder.IApplicationBuilder,Microsoft.AspNet.Hosting.IHostingEnvironment)">
+            <summary>
+            Configure tools used to help with debugging the application.
+            </summary>
+            <param name="application">The application.</param>
+            <param name="environment">The environment the application is running under. This can be Development,
+            Staging or Production by default.</param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureErrorPages(Microsoft.AspNet.Builder.IApplicationBuilder,Microsoft.AspNet.Hosting.IHostingEnvironment)">
+            <summary>
+            Configures the error pages for the application.
+            </summary>
+            <param name="application">The application.</param>
+            <param name="environment">The environment the application is running under. This can be Development,
+            Staging or Production by default.</param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.Configure404NotFoundErrorPage(Microsoft.AspNet.Builder.IApplicationBuilder,Microsoft.AspNet.Hosting.IHostingEnvironment)">
+            <summary>
+            Configures the 404 Not Found error page for the application. Used when no other route matches.
+            </summary>
+            <param name="application">The application.</param>
+            <param name="environment">The environment the application is running under. This can be Development,
+            Staging or Production by default.</param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureSearchEngineOptimizationFilters(System.Collections.Generic.ICollection{Microsoft.AspNet.Mvc.Filters.IFilterMetadata},Microsoft.AspNet.Routing.RouteOptions)">
+            <summary>
+            Adds filters which help improve search engine optimization (SEO).
+            </summary>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureSecurityFilters(Microsoft.AspNet.Hosting.IHostingEnvironment,System.Collections.Generic.ICollection{Microsoft.AspNet.Mvc.Filters.IFilterMetadata})">
+            <summary>
+            Adds filters which help improve security.
+            </summary>
+            <param name="environment">The environment the application is running under. This can be Development,
+            Staging or Production by default.</param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureSecurity(Microsoft.AspNet.Builder.IApplicationBuilder,Microsoft.AspNet.Hosting.IHostingEnvironment)">
+            <summary>
+            Configures the security for the application.
+            </summary>
+            <param name="application">The application.</param>
+            <param name="environment">The environment the application is running under. This can be Development,
+            Staging or Production by default.</param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureFormatters(Microsoft.Extensions.DependencyInjection.IMvcBuilder)">
+            <summary>
+            Configures the input and output formatters.
+            </summary>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureLogging(Microsoft.AspNet.Builder.IApplicationBuilder,Microsoft.AspNet.Hosting.IHostingEnvironment,Microsoft.Extensions.Logging.ILoggerFactory,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Configure tools used to help with logging internal application events.
+            See http://docs.asp.net/en/latest/fundamentals/logging.html
+            </summary>
+            <param name="application">The application.</param>
+            <param name="environment">The environment the application is running under. This can be Development,
+            Staging or Production by default.</param>
+            <param name="loggerFactory">The logger factory.</param>
+            <param name="configuration">Gets or sets the application configuration, where key value pair settings are
+            stored.</param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureOptionsServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Configures the settings by binding the contents of the config.json file to the specified Plain Old CLR
+            Objects (POCO) and adding <see cref="!:IOptions&lt;&gt;"/> objects to the services collection.
+            </summary>
+            <param name="services">The services collection or IoC container.</param>
+            <param name="configuration">Gets or sets the application configuration, where key value pair settings are
+            stored.</param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureRouting(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.AspNet.Routing.RouteOptions)">
+            <summary>
+            Improve SEO by stopping duplicate URL's due to case differences or trailing slashes.
+            See http://googlewebmastercentral.blogspot.co.uk/2010/04/to-slash-or-not-to-slash.html
+            </summary>
+            <param name="routeOptions">The routing options.</param>
+        </member>
+        <member name="T:SocialGamificationAsset.AppSettings">
+            <summary>
+            The settings for the current application.
+            </summary>
+        </member>
+        <member name="P:SocialGamificationAsset.AppSettings.SiteShortTitle">
+            <summary>
+            Gets or sets the short name of the application, used for display purposes where the full name will be too long.
+            </summary>
+        </member>
+        <member name="P:SocialGamificationAsset.AppSettings.SiteTitle">
+            <summary>
+            Gets or sets the full name of the application.
+            </summary>
+        </member>
+        <member name="P:SocialGamificationAsset.CacheProfileSettings.CacheProfiles">
+            <summary>
+            Gets or sets the cache profiles (How long to cache things for).
+            </summary>
+        </member>
+        <member name="M:SocialGamificationAsset.Controllers.SessionsController.GetSession(System.Guid)">
+            <summary>
+            Returns the specified Session
+            </summary>
+            <param name="id">GUID of the Session</param>
+            <returns>A Session record with an HTTP 200, or a string message with an HTTP 400 or HTTP 404.</returns>
+            <response code="200">OK</response>
+            <response code="400">Bad Request</response>
+            <response code="404">Not Found</response>
+            <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:SocialGamificationAsset.Controllers.SessionsController.Login(SocialGamificationAsset.Models.UserForm)">
+            <summary>
+            Create Session for given Player / Login
+            </summary>
+            <param name="login">Player Login Info</param>
+            <returns>A Session record with an HTTP 200, or a string message with an HTTP 400 or HTTP 404 or HTTP 409.</returns>
+            <response code="200">OK</response>
+            <response code="400">Bad Request</response>
+            <response code="404">Not Found</response>
+            <response code="409">Conflict</response>
+            <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:SocialGamificationAsset.Controllers.SessionsController.Logout(System.Guid)">
+            <summary>
+            Delete a Session / Logout
+            </summary>
+            <param name="id">GUID of the Session</param>
+            <returns>A Session record with an HTTP 200, or a string message with an HTTP 400 or HTTP 404 or HTTP 409.</returns>
+            <response code="200">OK</response>
+            <response code="400">Bad Request</response>
+            <response code="404">Not Found</response>
+            <response code="409">Conflict</response>
+            <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:SocialGamificationAsset.Controllers.TestsController.GetTest">
+            <summary>
+            This method returns all available records from Test Table
+            </summary>
+            <returns>All the test records which were found</returns>
+        </member>
+        <member name="M:SocialGamificationAsset.Controllers.TestsController.GetTest(System.Guid)">
+            <summary>
+            This method returns specific record from Test Table
+            </summary>
+            <param name="id">Guid</param>
+            <returns>Test record that was found</returns>
+        </member>
+        <member name="M:SocialGamificationAsset.Models.Group.AddPlayers(SocialGamificationAsset.Models.SocialGamificationAssetContext,System.Collections.Generic.ICollection{SocialGamificationAsset.Models.Player})">
+            <summary>
+            Create the group for the first time. Needs to populate the fake actor and get the list of player actors.
+            </summary>
+        </member>
+        <member name="M:SocialGamificationAsset.Models.Helper.Shuffle``1(System.Collections.Generic.IList{``0},System.Int32)">
+             The modern version of the Fisher–Yates shuffle aka 'Algorithm P'
+             -- To shuffle an array a of n elements (indices 0..n-1):
+             for i from n−1 downto 1 do
+            		j ← random integer such that 0 ≤ j ≤ i
+            		exchange a[j] and a[i]
+        </member>
+        <member name="M:SocialGamificationAsset.Models.Player.ExistsUsername(SocialGamificationAsset.Models.SocialGamificationAssetContext,System.String)">
+            		 * Check if the current Username already exists
+                     *
+                     * @return boolean Returns TRUE if Username exists
+        </member>
+        <member name="M:SocialGamificationAsset.Models.Player.ExistsEmail(SocialGamificationAsset.Models.SocialGamificationAssetContext,System.String)">
+             Check if the current Email already exists
+            
+             @return boolean Returns TRUE if Username exists
+        </member>
+        <member name="M:SocialGamificationAsset.Models.Player.IsOnline(SocialGamificationAsset.Models.SocialGamificationAssetContext,System.Guid)">
+             Verify if this account is online (with Last session being marked active)
+            
+             @return bool Returns TRUE if the account is online
+        </member>
+        <member name="M:SocialGamificationAsset.Models.Player.GetSession(SocialGamificationAsset.Models.SocialGamificationAssetContext,System.Guid)">
+             Get the current session of Logged account
+            
+             @return Session
+        </member>
+    </members>
+</doc>
