@@ -1,117 +1,135 @@
-﻿using Microsoft.AspNet.Http;
+﻿using System;
+using System.Data.Entity;
+using System.Linq;
+using System.Threading.Tasks;
+
+using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Http.Features;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
+
 using Newtonsoft.Json;
+
 using SocialGamificationAsset.Models;
-using System;
-using System.Data.Entity;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Policies
 {
-	public interface ISessionAuthorizeFilter { }
+    public interface ISessionAuthorizeFilter
+    {
+    }
 
-	public class SessionAuthorizeFilter : IAsyncAuthorizationFilter, ISessionAuthorizeFilter
-	{
-		public const string SessionHeaderName = "X-HTTP-Session";
-		public const string DocumentationApiKey = "api_key";
-		public const string DocumentationApiValue = "00000000-0000-0000-0000-000000000000";
+    public class SessionAuthorizeFilter : IAsyncAuthorizationFilter, ISessionAuthorizeFilter
+    {
+        public const string SessionHeaderName = "X-HTTP-Session";
 
-		public virtual async Task OnAuthorizationAsync(AuthorizationContext context)
-		{
-			if (context == null)
-			{
-				throw new ArgumentNullException(nameof(context));
-			}
+        public const string DocumentationApiKey = "api_key";
 
-			// Allow Anonymous skips all authorization
-			if (context.Filters.Any(item => item is IAllowAnonymousFilter))
-			{
-				return;
-			}
+        public const string DocumentationApiValue = "00000000-0000-0000-0000-000000000000";
 
-			HttpContext httpContext = context.HttpContext;
+        public virtual async Task OnAuthorizationAsync(AuthorizationContext context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
 
-			// Check if Request is from Documentation Generator
-			String documentationApiKey = httpContext.Request.Query[DocumentationApiKey];
-			if (!String.IsNullOrEmpty(documentationApiKey))
-			{
-				if (documentationApiKey.Equals(DocumentationApiValue, StringComparison.InvariantCultureIgnoreCase))
-				{
-					return;
-				}
-				else
-				{
-					context.Result = new BadRequestObjectResult("Invalid value for " + DocumentationApiKey);
-					return;
-				}
-			}
+            // Allow Anonymous skips all authorization
+            if (context.Filters.Any(item => item is IAllowAnonymousFilter))
+            {
+                return;
+            }
 
-			StringValues header;
-			bool headerExists = httpContext.Request.Headers.TryGetValue(SessionHeaderName, out header);
+            var httpContext = context.HttpContext;
 
-			// Check if Session Header exists
-			if (!headerExists)
-			{
-				context.Result = new ContentResult() { StatusCode = StatusCodes.Status401Unauthorized, Content = "No " + SessionHeaderName + " found." };
-				return;
-			}
+            // Check if Request is from Documentation Generator
+            string documentationApiKey = httpContext.Request.Query[DocumentationApiKey];
+            if (!string.IsNullOrEmpty(documentationApiKey))
+            {
+                if (documentationApiKey.Equals(DocumentationApiValue, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return;
+                }
+                context.Result = new BadRequestObjectResult("Invalid value for " + DocumentationApiKey);
+                return;
+            }
 
-			Guid token;
-			bool isValidGuid = Guid.TryParse(header.FirstOrDefault(), out token);
+            StringValues header;
+            var headerExists = httpContext.Request.Headers.TryGetValue(SessionHeaderName, out header);
 
-			// Token value must be valid Guid
-			if (!isValidGuid)
-			{
-				context.Result = new ContentResult() { StatusCode = StatusCodes.Status401Unauthorized, Content = "Invalid " + SessionHeaderName + "." };
-				return;
-			}
+            // Check if Session Header exists
+            if (!headerExists)
+            {
+                context.Result = new ContentResult
+                                 {
+                                     StatusCode = StatusCodes.Status401Unauthorized,
+                                     Content = "No " + SessionHeaderName + " found."
+                                 };
+                return;
+            }
 
-			Session localSession = httpContext.Session.GetObjectFromJson<Session>("__session");
+            Guid token;
+            var isValidGuid = Guid.TryParse(header.FirstOrDefault(), out token);
 
-			// If 'active' session already exists skip DB call
-			if (localSession != null && localSession.Id.Equals(token) && localSession.Player != null)
-			{
-				return;
-			}
+            // Token value must be valid Guid
+            if (!isValidGuid)
+            {
+                context.Result = new ContentResult
+                                 {
+                                     StatusCode = StatusCodes.Status401Unauthorized,
+                                     Content = "Invalid " + SessionHeaderName + "."
+                                 };
+                return;
+            }
 
-			SocialGamificationAssetContext db = httpContext.RequestServices.GetRequiredService<SocialGamificationAssetContext>();
-			if (db == null)
-			{
-				context.Result = new ContentResult() { StatusCode = StatusCodes.Status503ServiceUnavailable, Content = "Unable to find requested database service." };
-				return;
-			}
+            Session localSession = httpContext.Session.GetObjectFromJson<Session>("__session");
 
-			Session session = await db.Sessions.Where(s => s.Id.Equals(token)).Include(s => s.Player).FirstOrDefaultAsync();
+            // If 'active' session already exists skip DB call
+            if (localSession != null && localSession.Id.Equals(token) && localSession.Player != null)
+            {
+                return;
+            }
 
-			// Find Session
-			if (session == null)
-			{
-				context.Result = new HttpNotFoundObjectResult("Session " + token + " is Invalid.");
-				return;
-			}
+            var db = httpContext.RequestServices.GetRequiredService<SocialGamificationAssetContext>();
+            if (db == null)
+            {
+                context.Result = new ContentResult
+                                 {
+                                     StatusCode = StatusCodes.Status503ServiceUnavailable,
+                                     Content = "Unable to find requested database service."
+                                 };
+                return;
+            }
 
-			// Set right Session
-			httpContext.Session.SetObjectAsJson("__session", session);
-		}
-	}
+            var session = await db.Sessions.Where(s => s.Id.Equals(token))
+                                  .Include(s => s.Player)
+                                  .FirstOrDefaultAsync();
 
-	public static class SessionExtensions
-	{
-		public static void SetObjectAsJson(this ISession session, string key, object value)
-		{
-			session.SetString(key, JsonConvert.SerializeObject(value));
-		}
+            // Find Session
+            if (session == null)
+            {
+                context.Result = new HttpNotFoundObjectResult("Session " + token + " is Invalid.");
+                return;
+            }
 
-		public static T GetObjectFromJson<T>(this ISession session, string key)
-		{
-			var value = session.GetString(key);
+            // Set right Session
+            httpContext.Session.SetObjectAsJson("__session", session);
+        }
+    }
 
-			return value == null ? default(T) : JsonConvert.DeserializeObject<T>(value);
-		}
-	}
+    public static class SessionExtensions
+    {
+        public static void SetObjectAsJson(this ISession session, string key, object value)
+        {
+            session.SetString(key, JsonConvert.SerializeObject(value));
+        }
+
+        public static T GetObjectFromJson<T>(this ISession session, string key)
+        {
+            var value = session.GetString(key);
+
+            return value == null ? default(T) : JsonConvert.DeserializeObject<T>(value);
+        }
+    }
 }

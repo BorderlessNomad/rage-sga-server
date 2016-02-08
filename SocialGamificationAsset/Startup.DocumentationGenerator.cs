@@ -1,43 +1,51 @@
-﻿using Microsoft.AspNet.Builder;
+﻿using System;
+using System.Collections.Generic;
+
+using Microsoft.AspNet.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
+
 using Swashbuckle.SwaggerGen;
-using System;
-using System.Collections.Generic;
 
 namespace SocialGamificationAsset
 {
-	public partial class Startup
-	{
-		private static string GetXmlCommentsPath(IApplicationEnvironment applicationEnvironment)
-		{
-			return String.Format(@"{0}\..\artifacts\bin\SocialGamificationAsset\Debug\dnx451\SocialGamificationAsset.xml", applicationEnvironment.ApplicationBasePath);
-		}
+    public partial class Startup
+    {
+        private static string GetXmlCommentsPath(IApplicationEnvironment applicationEnvironment)
+        {
+            return
+                $@"{applicationEnvironment.ApplicationBasePath}\..\artifacts\bin\SocialGamificationAsset\Debug\dnx451\SocialGamificationAsset.xml";
+        }
 
-		private static void ConfigureDocumentationGeneratorServices(IServiceCollection services, IApplicationEnvironment applicationEnvironment)
-		{
-			string pathToDoc = GetXmlCommentsPath(applicationEnvironment);
+        private static void ConfigureDocumentationGeneratorServices(
+            IServiceCollection services,
+            IApplicationEnvironment applicationEnvironment)
+        {
+            var pathToDoc = GetXmlCommentsPath(applicationEnvironment);
 
-			// SWASHBUCKLE SWAGGER API Documentation Generator
-			services.AddSwaggerGen();
+            // SWASHBUCKLE SWAGGER API Documentation Generator
+            services.AddSwaggerGen();
 
-			services.ConfigureSwaggerDocument(options =>
-			{
-				options.IgnoreObsoleteActions = true;
+            services.ConfigureSwaggerDocument(
+                options =>
+                    {
+                        options.IgnoreObsoleteActions = true;
 
-				options.OrderActionGroupsBy(new DescendingAlphabeticComparer());
+                        options.OrderActionGroupsBy(new DescendingAlphabeticComparer());
 
-				options.SingleApiVersion(new Info
-				{
-					Version = "v1",
-					Title = "Social Gamification API",
-					Description = "This module allows to layer game mechanics affording game-inspired social relations and interactions on top a system to support engagement, collaboration, and learning. Two main forms of social interaction are supported: player-player interactions (such as matches) and group interactions (such as shared team goals or team vs. team competitions).",
-					TermsOfService = ""
-				});
+                        options.SingleApiVersion(
+                            new Info
+                            {
+                                Version = "v1",
+                                Title = "Social Gamification API",
+                                Description =
+                                    "This module allows to layer game mechanics affording game-inspired social relations and interactions on top a system to support engagement, collaboration, and learning. Two main forms of social interaction are supported: player-player interactions (such as matches) and group interactions (such as shared team goals or team vs. team competitions).",
+                                TermsOfService = ""
+                            });
 
-				// options.OperationFilter(new Swashbuckle.SwaggerGen.XmlComments.ApplyXmlActionComments(pathToDoc));
+                        // options.OperationFilter(new Swashbuckle.SwaggerGen.XmlComments.ApplyXmlActionComments(pathToDoc));
 
-				/*
+                        /*
 				options.SecurityDefinitions.Add("apiKey", new ApiKeyScheme()
 				{
 					Type = "apiKey",
@@ -46,28 +54,29 @@ namespace SocialGamificationAsset
 					In = "header"
 				});
 				*/
-			});
+                    });
 
-			services.ConfigureSwaggerSchema(options =>
-			{
-				options.DescribeAllEnumsAsStrings = true;
+            services.ConfigureSwaggerSchema(
+                options =>
+                    {
+                        options.DescribeAllEnumsAsStrings = true;
 
-				// options.ModelFilter(new Swashbuckle.SwaggerGen.XmlComments.ApplyXmlTypeComments(pathToDoc));
-			});
-		}
+                        // options.ModelFilter(new Swashbuckle.SwaggerGen.XmlComments.ApplyXmlTypeComments(pathToDoc));
+                    });
+        }
 
-		private static void ConfigureDocumentationGenerator(IApplicationBuilder application)
-		{
-			application.UseSwaggerGen();
-			application.UseSwaggerUi();
-		}
-	}
+        private static void ConfigureDocumentationGenerator(IApplicationBuilder application)
+        {
+            application.UseSwaggerGen();
+            application.UseSwaggerUi();
+        }
+    }
 
-	public class DescendingAlphabeticComparer : IComparer<string>
-	{
-		public int Compare(string x, string y)
-		{
-			return string.Compare(y, x, System.StringComparison.CurrentCultureIgnoreCase);
-		}
-	}
+    public class DescendingAlphabeticComparer : IComparer<string>
+    {
+        public int Compare(string x, string y)
+        {
+            return string.Compare(y, x, StringComparison.CurrentCultureIgnoreCase);
+        }
+    }
 }
