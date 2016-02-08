@@ -18,11 +18,11 @@ namespace SocialGamificationAsset.Controllers
         public IActionResult Get()
         {
             var result = new Dictionary<string, string>
-                             {
-                                 ["Version"] = ServerSetting.ServerVersion,
-                                 ["Time"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                                 ["Success"] = "true"
-                             };
+                         {
+                             ["Version"] = ServerSetting.ServerVersion,
+                             ["Time"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                             ["Success"] = "true"
+                         };
 
             return this.Ok(result);
         }

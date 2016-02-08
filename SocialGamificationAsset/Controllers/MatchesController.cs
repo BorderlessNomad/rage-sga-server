@@ -138,10 +138,10 @@ namespace SocialGamificationAsset.Controllers
                 if (mRound == null)
                 {
                     mRound = new MatchRoundResponse
-                                 {
-                                     RoundNumber = round.RoundNumber,
-                                     Actors = new List<MatchRoundActor>()
-                                 };
+                             {
+                                 RoundNumber = round.RoundNumber,
+                                 Actors = new List<MatchRoundActor>()
+                             };
 
                     pushRound = true;
                 }
@@ -150,11 +150,11 @@ namespace SocialGamificationAsset.Controllers
                 if (actor != null)
                 {
                     var matchRoundActor = new MatchRoundActor
-                                              {
-                                                  ActorId = actor.ActorId,
-                                                  Score = round.Score,
-                                                  DateScore = round.DateScore
-                                              };
+                                          {
+                                              ActorId = actor.ActorId,
+                                              Score = round.Score,
+                                              DateScore = round.DateScore
+                                          };
 
                     mRound.Actors.Add(matchRoundActor);
                 }

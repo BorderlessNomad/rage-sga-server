@@ -75,13 +75,13 @@ namespace SocialGamificationAsset.Controllers
             return
                 this.Ok(
                     new ItemTypeResponse
-                        {
-                            Id = type.Id,
-                            Name = type.Name,
-                            Image = type.Image,
-                            Total = total.Total,
-                            LastUpdated = (DateTime)total.LastUpdated
-                        });
+                    {
+                        Id = type.Id,
+                        Name = type.Name,
+                        Image = type.Image,
+                        Total = total.Total,
+                        LastUpdated = (DateTime)total.LastUpdated
+                    });
         }
 
         // GET: api/items/936da01f-9abd-4d9d-80c7-02af85c822a8
