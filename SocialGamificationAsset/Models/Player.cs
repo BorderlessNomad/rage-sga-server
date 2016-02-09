@@ -30,7 +30,7 @@ namespace SocialGamificationAsset.Models
         public AccountType Role { get; set; }
 
         [IgnoreDataMember]
-        public string LastLoginIp { get; set; }
+        public string LastLoginAddress { get; set; }
 
         public virtual ICollection<Group> Groups { get; set; }
 
@@ -77,12 +77,7 @@ namespace SocialGamificationAsset.Models
         {
             var player = await db.Players.Where(p => p.Username.Equals(username)).FirstOrDefaultAsync();
 
-            if (player != null)
-            {
-                return true;
-            }
-
-            return false;
+            return player != null;
         }
 
         /**
@@ -124,7 +119,7 @@ namespace SocialGamificationAsset.Models
 
         public static async Task<Session> GetSession(SocialGamificationAssetContext db, Guid playerId)
         {
-            var session =
+            Session session =
                 await
                 db.Players.Where(p => p.Id.Equals(playerId))
                   .Include(p => p.Sessions.Where(s => s.IsExpired.Equals(false)).OrderByDescending(s => s.UpdatedDate))
@@ -139,7 +134,7 @@ namespace SocialGamificationAsset.Models
             return await GetSession(db, Id);
         }
 
-        public async void AddOrUpdateCustomData(SocialGamificationAssetContext db, IList<CustomDataBase> sourceData)
+        public async Task AddOrUpdateCustomData(SocialGamificationAssetContext db, IList<CustomDataBase> sourceData)
         {
             await Models.CustomData.AddOrUpdate(db, sourceData, Id, CustomDataType.Player);
         }

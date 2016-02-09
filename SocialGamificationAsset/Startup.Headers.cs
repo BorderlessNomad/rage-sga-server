@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
@@ -22,6 +23,7 @@ namespace SocialGamificationAsset
             _next = next;
         }
 
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         public Task Invoke(HttpContext httpContext)
         {
             var headerValue = httpContext.Request.Headers["X-HTTP-Method-Override"];

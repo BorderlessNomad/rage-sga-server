@@ -27,14 +27,14 @@
                 <para>
                     <para>
                         Configures caching for the application. Registers the
-                        <see cref="!:IDistrbutedCache" /> and <see cref="!:IMemoryCache" />
+                        <see cref="!:IDistrbutedCache" /> and <see cref="T:Microsoft.Extensions.Caching.Memory.IMemoryCache" />
                     </para>
                     <para>
                         types with the <paramref name="services" /> collection or IoC
                         container. The <see cref="!:IDistrbutedCache" /> is intended to be
                         used in cloud hosted scenarios where there is a shared cache, which
                         is shared between multiple instances of the application. Use the
-                        <see cref="!:IMemoryCache" />
+                        <see cref="T:Microsoft.Extensions.Caching.Memory.IMemoryCache" />
                     </para>
                 </para>
                 <para>otherwise.</para>
@@ -175,6 +175,7 @@
                 The environment the application is running under. This can be
                 Development, Staging or Production by default.
             </param>
+            <param name="filters"></param>
         </member>
         <member name="M:SocialGamificationAsset.Startup.ConfigureSecurity(Microsoft.AspNet.Builder.IApplicationBuilder,Microsoft.AspNet.Hosting.IHostingEnvironment)">
             <summary>
@@ -213,7 +214,7 @@
                 <para>
                     Configures the settings by binding the contents of the config.json
                     file to the specified Plain Old CLR Objects (POCO) and adding
-                    <see cref="!:IOptions&lt;&gt;" /> objects to the
+                    <see cref="T:Microsoft.Extensions.OptionsModel.IOptions`1" /> objects to the
                     <paramref name="services" />
                 </para>
                 <para>collection.</para>
@@ -232,7 +233,11 @@
                 trailing slashes. See
                 http://googlewebmastercentral.blogspot.co.uk/2010/04/to-slash-or-not-to-slash.html
             </summary>
+            <param name="services"></param>
             <param name="routeOptions">The routing options.</param>
+        </member>
+        <member name="M:SocialGamificationAsset.XHttpHeaderOverride.Invoke(Microsoft.AspNet.Http.HttpContext)">
+            <exception cref="T:System.Exception">A delegate callback throws an exception.</exception>
         </member>
         <member name="T:SocialGamificationAsset.AppSettings">
             <summary>

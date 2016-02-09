@@ -31,7 +31,7 @@ namespace SocialGamificationAsset.Controllers
                 return Ok(session.Player);
             }
 
-            return HttpNotFound();
+            return HttpNotFound("No Player Found.");
         }
 
         // GET: api/players
@@ -40,7 +40,7 @@ namespace SocialGamificationAsset.Controllers
         {
             IList<Player> players = await _context.Players.ToListAsync();
 
-            if (players == null || players.Count < 1)
+            if (players == null || !players.Any())
             {
                 return HttpNotFound("No Player Found.");
             }
@@ -124,7 +124,7 @@ namespace SocialGamificationAsset.Controllers
             }
 
             // Add or Update the CustomData
-            player.AddOrUpdateCustomData(_context, form.CustomData);
+            await player.AddOrUpdateCustomData(_context, form.CustomData);
 
             return CreatedAtRoute("GetPlayer", new { id = player.Id }, player);
         }
@@ -173,9 +173,9 @@ namespace SocialGamificationAsset.Controllers
 
             player.Password = Helper.HashPassword(register.Password);
 
-            var session = new Session { Player = player };
+            var entity = new Session { Player = player };
 
-            _context.Sessions.Add(session);
+            _context.Sessions.Add(entity);
 
             try
             {
@@ -191,9 +191,9 @@ namespace SocialGamificationAsset.Controllers
             }
 
             // Add or Update the CustomData
-            player.AddOrUpdateCustomData(_context, register.CustomData);
+            await player.AddOrUpdateCustomData(_context, register.CustomData);
 
-            return CreatedAtRoute("GetPlayer", new { id = session.Id }, session);
+            return CreatedAtRoute("GetPlayer", new { id = entity.Id }, entity);
         }
 
         // DELETE: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8

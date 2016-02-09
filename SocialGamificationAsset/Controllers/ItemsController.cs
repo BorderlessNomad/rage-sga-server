@@ -133,26 +133,18 @@ namespace SocialGamificationAsset.Controllers
                 return HttpBadRequest(ModelState);
             }
 
-            /*
-			if ((!form.ItemTypeId.HasValue || form.ItemTypeId == Guid.Empty) && (String.IsNullOrWhiteSpace(form.ItemTypeName)))
+			if ((!form.ItemTypeId.HasValue || form.ItemTypeId == Guid.Empty) && string.IsNullOrWhiteSpace(form.ItemTypeName))
 			{
 				return HttpBadRequest("Either ItemTypeId or ItemTypeName is required.");
 			}
-			*/
-            if (string.IsNullOrWhiteSpace(form.ItemTypeName))
-            {
-                return HttpBadRequest("Either ItemTypeName is required.");
-            }
 
             var searchByName = true;
             IQueryable<ItemType> query = _context.ItemTypes;
-            /*
 			if (form.ItemTypeId.HasValue && form.ItemTypeId != Guid.Empty)
 			{
 				query = query.Where(t => t.Id.Equals(form.ItemTypeId));
 				searchByName = false;
 			}
-			*/
 
             if (searchByName && !string.IsNullOrWhiteSpace(form.ItemTypeName))
             {
@@ -197,6 +189,7 @@ namespace SocialGamificationAsset.Controllers
                 {
                     return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
                 }
+
                 throw;
             }
 

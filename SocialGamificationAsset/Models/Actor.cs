@@ -7,7 +7,7 @@ namespace SocialGamificationAsset.Models
 {
     public abstract class Actor : DbEntity
     {
-        public Actor()
+        protected Actor()
         {
             IsEnabled = true;
         }

@@ -70,7 +70,7 @@ namespace SocialGamificationAsset.Models
             Players = new List<Player>(actors);
         }
 
-        public async void AddOrUpdateCustomData(SocialGamificationAssetContext db, IList<CustomDataBase> sourceData)
+        public async Task AddOrUpdateCustomData(SocialGamificationAssetContext db, IList<CustomDataBase> sourceData)
         {
             await Models.CustomData.AddOrUpdate(db, sourceData, Id, CustomDataType.Group);
         }

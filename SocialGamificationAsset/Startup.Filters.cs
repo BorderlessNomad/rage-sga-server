@@ -35,6 +35,7 @@ namespace SocialGamificationAsset
         ///     The environment the application is running under. This can be
         ///     Development, Staging or Production by default.
         /// </param>
+        /// <param name="filters"></param>
         private static void ConfigureSecurityFilters(
             IHostingEnvironment environment,
             ICollection<IFilterMetadata> filters)

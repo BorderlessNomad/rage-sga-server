@@ -57,10 +57,8 @@ namespace SocialGamificationAsset.Models
             // Build the filter by CustomData
             if (sourceData != null && sourceData.Count > 0)
             {
-                for (var i = 0; i < sourceData.Count; i++)
+                foreach (var data in sourceData)
                 {
-                    var data = sourceData[i];
-
                     var customData =
                         await
                         db.CustomData.Where(c => c.Key.Equals(data.Key))

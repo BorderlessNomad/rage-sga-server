@@ -11,6 +11,7 @@ namespace SocialGamificationAsset
         ///     trailing slashes. See
         ///     http://googlewebmastercentral.blogspot.co.uk/2010/04/to-slash-or-not-to-slash.html
         /// </summary>
+        /// <param name="services"></param>
         /// <param name="routeOptions">The routing options.</param>
         private static void ConfigureRouting(IServiceCollection services, RouteOptions routeOptions)
         {

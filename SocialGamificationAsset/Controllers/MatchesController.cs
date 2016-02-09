@@ -235,7 +235,7 @@ namespace SocialGamificationAsset.Controllers
                     }
                     catch (DbUpdateException e)
                     {
-                        throw;
+                        throw e;
                     }
 
                     return Ok(round);
@@ -272,7 +272,8 @@ namespace SocialGamificationAsset.Controllers
                 {
                     return HttpNotFound();
                 }
-                throw;
+
+                throw ex;
             }
 
             return CreatedAtRoute("GetMatch", new { id = match.Id }, match);
@@ -386,14 +387,14 @@ namespace SocialGamificationAsset.Controllers
             {
                 foreach (var actor in players)
                 {
-                    MatchActor.Add(_context, match, actor);
+                    await MatchActor.Add(_context, match, actor);
                 }
             }
             else
             {
                 foreach (var actor in groups)
                 {
-                    MatchActor.Add(_context, match, actor);
+                    await MatchActor.Add(_context, match, actor);
                 }
             }
 

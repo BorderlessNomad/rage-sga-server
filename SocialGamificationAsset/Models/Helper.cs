@@ -6,8 +6,6 @@ namespace SocialGamificationAsset.Models
 {
     public class Helper
     {
-        private static Random rng = new Random();
-
         // public static List<string> allowedOperators = new List<string> { "=", "!", "%", ">", ">=", "<", "<=" };
         public static List<string> AllowedOperators = new List<string> { "=", "!", "%" };
 

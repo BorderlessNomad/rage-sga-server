@@ -40,12 +40,11 @@ namespace SocialGamificationAsset.Models
 
         public static IList<Guid> AlliancesList(IList<Alliance> alliances, Guid actorId)
         {
-            var allianceIds =
+            IList<Guid> allianceIds =
                 alliances.Select(
                     alliance => alliance.RequesteeId.Equals(actorId) ? alliance.RequesterId : alliance.RequesteeId)
+                         .Distinct()
                          .ToList();
-
-            allianceIds.Distinct(); // Test this
 
             return allianceIds;
         }
