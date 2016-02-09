@@ -15,14 +15,14 @@ namespace SocialGamificationAsset.Controllers
 
         public ApiController(SocialGamificationAssetContext context)
         {
-            this._context = context;
+            _context = context;
         }
 
-        public Session session => this.GetSession();
+        public Session session => GetSession();
 
         protected Session GetSession()
         {
-            return this._session ?? (this._session = this.HttpContext.Session.GetObjectFromJson<Session>("__session"));
+            return _session ?? (_session = HttpContext.Session.GetObjectFromJson<Session>("__session"));
         }
     }
 }

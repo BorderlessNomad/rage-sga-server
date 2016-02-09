@@ -25,58 +25,58 @@ namespace SocialGamificationAsset.Controllers
         [HttpGet]
         public IEnumerable<Activity> GetActivity()
         {
-            return this._context.Activities;
+            return _context.Activities;
         }
 
         // GET: api/activities/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpGet("{id}", Name = "GetActivity")]
         public async Task<IActionResult> GetActivity([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var test = await this._context.Activities.FindAsync(id);
+            var test = await _context.Activities.FindAsync(id);
 
             if (test == null)
             {
-                return this.HttpNotFound();
+                return HttpNotFound();
             }
 
-            return this.Ok(test);
+            return Ok(test);
         }
 
         // PUT: api/activities/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpPut("{id}")]
         public async Task<IActionResult> PutActivity([FromRoute] Guid id, [FromBody] Activity test)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
             if (id != test.Id)
             {
-                return this.HttpBadRequest();
+                return HttpBadRequest();
             }
 
-            this._context.Entry(test).State = EntityState.Modified;
+            _context.Entry(test).State = EntityState.Modified;
 
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (!this.ActivityExists(id))
+                if (!ActivityExists(id))
                 {
-                    return this.HttpNotFound();
+                    return HttpNotFound();
                 }
                 throw;
             }
 
-            return this.CreatedAtRoute("GetActivity", new { id = test.Id }, test);
+            return CreatedAtRoute("GetActivity", new { id = test.Id }, test);
         }
 
         // POST: api/activities
@@ -84,54 +84,54 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(Activity))]
         public async Task<IActionResult> PostActivity([FromBody] Activity test)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            this._context.Activities.Add(test);
+            _context.Activities.Add(test);
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (this.ActivityExists(test.Id))
+                if (ActivityExists(test.Id))
                 {
                     return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
                 }
                 throw;
             }
 
-            return this.CreatedAtRoute("GetActivity", new { id = test.Id }, test);
+            return CreatedAtRoute("GetActivity", new { id = test.Id }, test);
         }
 
         // DELETE: api/activities/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteActivity([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var test = await this._context.Activities.FindAsync(id);
+            var test = await _context.Activities.FindAsync(id);
             if (test == null)
             {
-                return this.HttpNotFound();
+                return HttpNotFound();
             }
 
-            this._context.Activities.Remove(test);
-            await this._context.SaveChangesAsync();
+            _context.Activities.Remove(test);
+            await _context.SaveChangesAsync();
 
-            return this.Ok(test);
+            return Ok(test);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                this._context.Dispose();
+                _context.Dispose();
             }
 
             base.Dispose(disposing);
@@ -139,7 +139,7 @@ namespace SocialGamificationAsset.Controllers
 
         private bool ActivityExists(Guid id)
         {
-            return this._context.Activities.Count(e => e.Id == id) > 0;
+            return _context.Activities.Count(e => e.Id == id) > 0;
         }
     }
 }

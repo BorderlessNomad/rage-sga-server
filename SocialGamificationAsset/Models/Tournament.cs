@@ -8,8 +8,8 @@ namespace SocialGamificationAsset.Models
     {
         public Tournament()
         {
-            this.Title = "Test Tournament";
-            this.IsFinished = false;
+            Title = "Test Tournament";
+            IsFinished = false;
         }
 
         public Guid OwnerId { get; set; }

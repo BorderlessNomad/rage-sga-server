@@ -22,7 +22,7 @@ namespace SocialGamificationAsset.Controllers
         [HttpGet("all", Name = "GetAllTournaments")]
         public IEnumerable<Tournament> GetAllTournaments()
         {
-            return this._context.Tournaments;
+            return _context.Tournaments;
         }
 
         // GET: api/tournaments/owned
@@ -30,14 +30,14 @@ namespace SocialGamificationAsset.Controllers
         public async Task<IActionResult> GetOwnedTournaments()
         {
             IList<Tournament> tournaments =
-                await this._context.Tournaments.Where(t => t.OwnerId.Equals(this.session.Player.Id)).ToListAsync();
+                await _context.Tournaments.Where(t => t.OwnerId.Equals(session.Player.Id)).ToListAsync();
 
             if (tournaments == null || !tournaments.Any())
             {
-                return this.HttpNotFound("No Tournament Found.");
+                return HttpNotFound("No Tournament Found.");
             }
 
-            return this.Ok(tournaments);
+            return Ok(tournaments);
         }
 
         // GET: api/tournaments
@@ -47,21 +47,21 @@ namespace SocialGamificationAsset.Controllers
         public async Task<IActionResult> GetMyTournaments()
         {
             IList<Tournament> tournaments =
-                await this._context.Tournaments.Where(t => t.OwnerId.Equals(this.session.Player.Id)).ToListAsync();
+                await _context.Tournaments.Where(t => t.OwnerId.Equals(session.Player.Id)).ToListAsync();
 
             if (tournaments == null || !tournaments.Any())
             {
-                return this.HttpNotFound("No Tournament Found.");
+                return HttpNotFound("No Tournament Found.");
             }
 
-            return this.Ok(tournaments);
+            return Ok(tournaments);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                this._context.Dispose();
+                _context.Dispose();
             }
 
             base.Dispose(disposing);
@@ -69,7 +69,7 @@ namespace SocialGamificationAsset.Controllers
 
         private bool TournamentExists(Guid id)
         {
-            return this._context.Tournaments.Count(e => e.Id.Equals(id)) > 0;
+            return _context.Tournaments.Count(e => e.Id.Equals(id)) > 0;
         }
     }
 }

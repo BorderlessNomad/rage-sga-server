@@ -27,7 +27,7 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(ItemTypeResponse))]
         public IEnumerable<Match> GetAllMatches()
         {
-            return this._context.Matches.Include(m => m.Tournament);
+            return _context.Matches.Include(m => m.Tournament);
         }
 
         // GET: api/matches/owned
@@ -37,13 +37,13 @@ namespace SocialGamificationAsset.Controllers
         {
             IList<Match> matches =
                 await
-                this._context.MatchActors.Where(a => a.ActorId.Equals(this.session.Player.Id))
-                    .Select(m => m.Match)
-                    .Include(m => m.Tournament)
-                    .Where(m => m.Tournament.OwnerId.Equals(this.session.Player.Id))
-                    .ToListAsync();
+                _context.MatchActors.Where(a => a.ActorId.Equals(session.Player.Id))
+                        .Select(m => m.Match)
+                        .Include(m => m.Tournament)
+                        .Where(m => m.Tournament.OwnerId.Equals(session.Player.Id))
+                        .ToListAsync();
 
-            return this.Ok(matches);
+            return Ok(matches);
         }
 
         // GET: api/matches
@@ -55,12 +55,12 @@ namespace SocialGamificationAsset.Controllers
         {
             IList<Match> matches =
                 await
-                this._context.MatchActors.Where(a => a.ActorId.Equals(this.session.Player.Id))
-                    .Select(m => m.Match)
-                    .Include(m => m.Tournament)
-                    .ToListAsync();
+                _context.MatchActors.Where(a => a.ActorId.Equals(session.Player.Id))
+                        .Select(m => m.Match)
+                        .Include(m => m.Tournament)
+                        .ToListAsync();
 
-            return this.Ok(matches);
+            return Ok(matches);
         }
 
         // GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -68,20 +68,20 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(Match))]
         public async Task<IActionResult> GetMatch([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
             var match =
-                await this._context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament).FirstOrDefaultAsync();
+                await _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament).FirstOrDefaultAsync();
 
             if (match == null)
             {
-                return this.HttpNotFound("No Match Found for ID " + id);
+                return HttpNotFound("No Match Found for ID " + id);
             }
 
-            return this.Ok(match);
+            return Ok(match);
         }
 
         // GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8/actors
@@ -89,20 +89,20 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(IList<MatchActor>))]
         public async Task<IActionResult> GetMatchActors([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
             IList<MatchActor> matchActors =
-                await this._context.MatchActors.Where(a => a.MatchId.Equals(id)).Include(a => a.Actor).ToListAsync();
+                await _context.MatchActors.Where(a => a.MatchId.Equals(id)).Include(a => a.Actor).ToListAsync();
 
             if (matchActors == null || matchActors.Count < 1)
             {
-                return this.HttpNotFound("No Actor Found for Match " + id);
+                return HttpNotFound("No Actor Found for Match " + id);
             }
 
-            return this.Ok(matchActors);
+            return Ok(matchActors);
         }
 
         // GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8/rounds
@@ -110,25 +110,24 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(IList<MatchRoundResponse>))]
         public async Task<IActionResult> GetMatchRounds([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var match =
-                await this._context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Actors).FirstOrDefaultAsync();
+            var match = await _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Actors).FirstOrDefaultAsync();
             if (match == null)
             {
-                return this.HttpNotFound("No such Match found.");
+                return HttpNotFound("No such Match found.");
             }
 
             IList<Guid> matchActors = match.Actors.AsEnumerable().Select(a => a.Id).ToList();
 
             IList<MatchRound> matchRounds =
                 await
-                this._context.MatchRounds.Where(r => matchActors.Contains(r.MatchActorId))
-                    .OrderBy(r => r.RoundNumber)
-                    .ToListAsync();
+                _context.MatchRounds.Where(r => matchActors.Contains(r.MatchActorId))
+                        .OrderBy(r => r.RoundNumber)
+                        .ToListAsync();
 
             IList<MatchRoundResponse> matchRoundResponse = new List<MatchRoundResponse>();
             foreach (var round in matchRounds)
@@ -165,7 +164,7 @@ namespace SocialGamificationAsset.Controllers
                 }
             }
 
-            return this.Ok(matchRoundResponse);
+            return Ok(matchRoundResponse);
         }
 
         // GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8/owner
@@ -173,21 +172,21 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(Actor))]
         public async Task<IActionResult> GetMatchOwner([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
             var match =
                 await
-                this._context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament.Owner).FirstOrDefaultAsync();
+                _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament.Owner).FirstOrDefaultAsync();
 
             if (match == null)
             {
-                return this.HttpNotFound("No Match Found for ID " + id);
+                return HttpNotFound("No Match Found for ID " + id);
             }
 
-            return this.Ok(match.Tournament.Owner);
+            return Ok(match.Tournament.Owner);
         }
 
         // PUT: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -195,19 +194,19 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(MatchRound))]
         public async Task<IActionResult> UpdateMatchRoundScore([FromRoute] Guid id, [FromBody] MatchRoundForm roundForm)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
             var match =
                 await
-                this._context.Matches.Where(m => m.Id.Equals(id) && m.IsFinished.Equals(false))
-                    .Include(m => m.Actors)
-                    .FirstOrDefaultAsync();
+                _context.Matches.Where(m => m.Id.Equals(id) && m.IsFinished.Equals(false))
+                        .Include(m => m.Actors)
+                        .FirstOrDefaultAsync();
             if (match == null)
             {
-                return this.HttpNotFound("No running Match found.");
+                return HttpNotFound("No running Match found.");
             }
 
             foreach (var actor in match.Actors)
@@ -216,34 +215,34 @@ namespace SocialGamificationAsset.Controllers
                 {
                     var round =
                         await
-                        this._context.MatchRounds.Where(r => r.MatchActorId.Equals(actor.Id))
-                            .Where(r => r.RoundNumber.Equals(roundForm.RoundNumber))
-                            .FirstOrDefaultAsync();
+                        _context.MatchRounds.Where(r => r.MatchActorId.Equals(actor.Id))
+                                .Where(r => r.RoundNumber.Equals(roundForm.RoundNumber))
+                                .FirstOrDefaultAsync();
                     if (round == null)
                     {
                         return
-                            this.HttpNotFound(
+                            HttpNotFound(
                                 "No Round #'" + roundForm.RoundNumber + "' found for Actor '" + roundForm.ActorId + "'");
                     }
 
-                    this._context.Entry(round).State = EntityState.Modified;
+                    _context.Entry(round).State = EntityState.Modified;
                     round.Score = roundForm.Score;
                     round.DateScore = DateTime.Now;
 
                     try
                     {
-                        await this._context.SaveChangesAsync();
+                        await _context.SaveChangesAsync();
                     }
                     catch (DbUpdateException e)
                     {
                         throw;
                     }
 
-                    return this.Ok(round);
+                    return Ok(round);
                 }
             }
 
-            return this.HttpNotFound("No Actor '" + roundForm.ActorId + "' found for this Match.");
+            return HttpNotFound("No Actor '" + roundForm.ActorId + "' found for this Match.");
         }
 
         // PUT: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -251,32 +250,32 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(MatchRound))]
         public async Task<IActionResult> UpdateMatch([FromRoute] Guid id, [FromBody] Match match)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
             if (id != match.Id)
             {
-                return this.HttpBadRequest();
+                return HttpBadRequest();
             }
 
-            this._context.Entry(match).State = EntityState.Modified;
+            _context.Entry(match).State = EntityState.Modified;
 
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
-                if (!this.MatchExists(id))
+                if (!MatchExists(id))
                 {
-                    return this.HttpNotFound();
+                    return HttpNotFound();
                 }
                 throw;
             }
 
-            return this.CreatedAtRoute("GetMatch", new { id = match.Id }, match);
+            return CreatedAtRoute("GetMatch", new { id = match.Id }, match);
         }
 
         // Creates a Quick Match between logged account and a random user
@@ -285,14 +284,14 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(Match))]
         public async Task<IActionResult> CreateQuickMatch([FromBody] QuickMatch quickMatch)
         {
-            if (this.session == null || this.session.Player == null)
+            if (session?.Player == null)
             {
-                return this.HttpNotFound();
+                return HttpNotFound();
             }
 
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
             // Build the filter by CustomData
@@ -305,60 +304,59 @@ namespace SocialGamificationAsset.Controllers
                 players =
                     await
                     Player.LoadRandom(
-                        this._context,
-                        this.session.Player,
+                        _context,
+                        session.Player,
                         customData,
                         quickMatch.AlliancesOnly,
                         quickMatch.Actors - 1);
-                players.Add(this.session.Player);
+                players.Add(session.Player);
 
                 if (players.Count < quickMatch.Actors)
                 {
-                    return this.HttpNotFound("No Players available for match at this moment.");
+                    return HttpNotFound("No Players available for match at this moment.");
                 }
             }
             else if (quickMatch.Type == MatchType.Group)
             {
                 if (!quickMatch.ActorId.HasValue || quickMatch.ActorId == Guid.Empty)
                 {
-                    return this.HttpBadRequest("GroupId is required for Group Matches.");
+                    return HttpBadRequest("GroupId is required for Group Matches.");
                 }
 
-                var group = this.session.Player.Groups.FirstOrDefault(g => g.Id.Equals(quickMatch.ActorId));
+                var group = session.Player.Groups.FirstOrDefault(g => g.Id.Equals(quickMatch.ActorId));
                 if (group == null)
                 {
-                    return this.HttpNotFound("No such Group found for Player.");
+                    return HttpNotFound("No such Group found for Player.");
                 }
 
                 groups =
-                    await
-                    Group.LoadRandom(this._context, group, customData, quickMatch.AlliancesOnly, quickMatch.Actors - 1);
+                    await Group.LoadRandom(_context, group, customData, quickMatch.AlliancesOnly, quickMatch.Actors - 1);
                 groups.Add(group);
 
                 if (groups.Count < quickMatch.Actors)
                 {
-                    return this.HttpNotFound("No Groups available for match at this moment.");
+                    return HttpNotFound("No Groups available for match at this moment.");
                 }
             }
 
             Tournament tournament;
             if (quickMatch.Tournament.HasValue && quickMatch.Tournament != Guid.Empty)
             {
-                tournament = await this._context.Tournaments.FindAsync(quickMatch.Tournament);
+                tournament = await _context.Tournaments.FindAsync(quickMatch.Tournament);
                 if (tournament == null)
                 {
-                    return this.HttpBadRequest("Invalid Tournament.");
+                    return HttpBadRequest("Invalid Tournament.");
                 }
             }
             else
             {
-                tournament = new Tournament { OwnerId = this.session.Player.Id };
+                tournament = new Tournament { OwnerId = session.Player.Id };
 
-                this._context.Tournaments.Add(tournament);
+                _context.Tournaments.Add(tournament);
 
                 try
                 {
-                    await this._context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbEntityValidationException e)
                 {
@@ -369,15 +367,15 @@ namespace SocialGamificationAsset.Controllers
             // Create Match
             var match = new Match { TournamentId = tournament.Id, TotalRounds = quickMatch.Rounds };
 
-            this._context.Matches.Add(match);
+            _context.Matches.Add(match);
 
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbEntityValidationException e)
             {
-                if (this.MatchExists(match.Id))
+                if (MatchExists(match.Id))
                 {
                     return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
                 }
@@ -388,18 +386,18 @@ namespace SocialGamificationAsset.Controllers
             {
                 foreach (var actor in players)
                 {
-                    MatchActor.Add(this._context, match, actor);
+                    MatchActor.Add(_context, match, actor);
                 }
             }
             else
             {
                 foreach (var actor in groups)
                 {
-                    MatchActor.Add(this._context, match, actor);
+                    MatchActor.Add(_context, match, actor);
                 }
             }
 
-            return this.CreatedAtRoute("GetMatch", new { id = match.Id }, match);
+            return CreatedAtRoute("GetMatch", new { id = match.Id }, match);
         }
 
         // DELETE: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -407,40 +405,40 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(Match))]
         public async Task<IActionResult> DeleteMatch([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var match = await this._context.Matches.FindAsync(id);
+            var match = await _context.Matches.FindAsync(id);
             if (match == null)
             {
-                return this.HttpNotFound();
+                return HttpNotFound();
             }
 
             match.IsDeleted = true;
 
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (this.MatchExists(match.Id))
+                if (MatchExists(match.Id))
                 {
                     return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
                 }
                 throw;
             }
 
-            return this.Ok(match);
+            return Ok(match);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                this._context.Dispose();
+                _context.Dispose();
             }
 
             base.Dispose(disposing);
@@ -448,7 +446,7 @@ namespace SocialGamificationAsset.Controllers
 
         private bool MatchExists(Guid id)
         {
-            return this._context.Matches.Count(e => e.Id.Equals(id)) > 0;
+            return _context.Matches.Count(e => e.Id.Equals(id)) > 0;
         }
     }
 }

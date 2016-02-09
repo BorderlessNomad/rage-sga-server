@@ -19,7 +19,7 @@ namespace SocialGamificationAsset
 
         public XHttpHeaderOverride(RequestDelegate next)
         {
-            this._next = next;
+            _next = next;
         }
 
         public Task Invoke(HttpContext httpContext)
@@ -36,7 +36,7 @@ namespace SocialGamificationAsset
                 httpContext.Request.Method = queryValue;
             }
 
-            return this._next.Invoke(httpContext);
+            return _next.Invoke(httpContext);
         }
     }
 }

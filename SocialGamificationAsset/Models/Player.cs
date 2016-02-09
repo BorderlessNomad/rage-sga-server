@@ -13,8 +13,8 @@ namespace SocialGamificationAsset.Models
     {
         public Player()
         {
-            this.Role = AccountType.Player;
-            this.ActivationCode = Guid.NewGuid();
+            Role = AccountType.Player;
+            ActivationCode = Guid.NewGuid();
         }
 
         public string Username { get; set; }
@@ -113,7 +113,7 @@ namespace SocialGamificationAsset.Models
 
         public async Task<bool> IsOnline(SocialGamificationAssetContext db)
         {
-            return await IsOnline(db, this.Id);
+            return await IsOnline(db, Id);
         }
 
         /**
@@ -136,12 +136,12 @@ namespace SocialGamificationAsset.Models
 
         public async Task<Session> GetSession(SocialGamificationAssetContext db)
         {
-            return await GetSession(db, this.Id);
+            return await GetSession(db, Id);
         }
 
         public async void AddOrUpdateCustomData(SocialGamificationAssetContext db, IList<CustomDataBase> sourceData)
         {
-            await Models.CustomData.AddOrUpdate(db, sourceData, this.Id, CustomDataType.Player);
+            await Models.CustomData.AddOrUpdate(db, sourceData, Id, CustomDataType.Player);
         }
     }
 

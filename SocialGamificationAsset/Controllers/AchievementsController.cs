@@ -24,52 +24,52 @@ namespace SocialGamificationAsset.Controllers
         [HttpGet]
         public IEnumerable<Achievement> GetAchievements()
         {
-            return this._context.Achievements;
+            return _context.Achievements;
         }
 
         // GET: api/achievements/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpGet("{id:Guid}", Name = "GetAchievement")]
         public async Task<IActionResult> GetAchievement([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var achievement = await this._context.Achievements.FindAsync(id);
+            var achievement = await _context.Achievements.FindAsync(id);
             if (achievement == null)
             {
-                return this.HttpNotFound();
+                return HttpNotFound();
             }
 
-            return this.Ok(achievement);
+            return Ok(achievement);
         }
 
         // PUT: api/achievements/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpPut("{id:Guid}")]
         public async Task<IActionResult> PutAchievement([FromRoute] Guid id, [FromBody] Achievement achievement)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
             if (id != achievement.Id)
             {
-                return this.HttpBadRequest();
+                return HttpBadRequest();
             }
 
-            this._context.Entry(achievement).State = EntityState.Modified;
+            _context.Entry(achievement).State = EntityState.Modified;
 
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (!this.AchievementExists(id))
+                if (!AchievementExists(id))
                 {
-                    return this.HttpNotFound();
+                    return HttpNotFound();
                 }
 
                 throw;
@@ -82,51 +82,51 @@ namespace SocialGamificationAsset.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAchievement([FromBody] Achievement achievement)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            this._context.Achievements.Add(achievement);
+            _context.Achievements.Add(achievement);
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (this.AchievementExists(achievement.Id))
+                if (AchievementExists(achievement.Id))
                 {
                     return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
                 }
                 throw;
             }
 
-            return this.CreatedAtRoute("GetAchievement", new { id = achievement.Id }, achievement);
+            return CreatedAtRoute("GetAchievement", new { id = achievement.Id }, achievement);
         }
 
         // DELETE: api/achievements/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> DeleteAchievement([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var achievement = await this._context.Achievements.FindAsync(id);
+            var achievement = await _context.Achievements.FindAsync(id);
             if (achievement == null)
             {
-                return this.HttpNotFound();
+                return HttpNotFound();
             }
 
-            this._context.Achievements.Remove(achievement);
+            _context.Achievements.Remove(achievement);
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (this.AchievementExists(achievement.Id))
+                if (AchievementExists(achievement.Id))
                 {
                     return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
                 }
@@ -134,14 +134,14 @@ namespace SocialGamificationAsset.Controllers
                 throw;
             }
 
-            return this.Ok(achievement);
+            return Ok(achievement);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                this._context.Dispose();
+                _context.Dispose();
             }
 
             base.Dispose(disposing);
@@ -149,7 +149,7 @@ namespace SocialGamificationAsset.Controllers
 
         private bool AchievementExists(Guid id)
         {
-            return this._context.Achievements.Count(e => e.Id == id) > 0;
+            return _context.Achievements.Count(e => e.Id == id) > 0;
         }
     }
 }

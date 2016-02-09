@@ -26,70 +26,70 @@ namespace SocialGamificationAsset.Controllers
         [Route("whoami")]
         public async Task<IActionResult> WhoAmI()
         {
-            if (this.session != null && this.session.Player != null)
+            if (session?.Player != null)
             {
-                return this.Ok(this.session.Player);
+                return Ok(session.Player);
             }
 
-            return this.HttpNotFound();
+            return HttpNotFound();
         }
 
         // GET: api/players
         [HttpGet]
         public async Task<IActionResult> GetAllPlayers()
         {
-            IList<Player> players = await this._context.Players.ToListAsync();
+            IList<Player> players = await _context.Players.ToListAsync();
 
             if (players == null || players.Count < 1)
             {
-                return this.HttpNotFound("No Player Found.");
+                return HttpNotFound("No Player Found.");
             }
 
-            return this.Ok(players);
+            return Ok(players);
         }
 
         // GET: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpGet("{id:Guid}", Name = "GetPlayer")]
         public async Task<IActionResult> GetPlayer([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var player = await this._context.Players.FindAsync(id);
+            var player = await _context.Players.FindAsync(id);
 
             if (player == null)
             {
-                return this.HttpBadRequest("Invalid PlayerId");
+                return HttpBadRequest("Invalid PlayerId");
             }
 
-            return this.Ok(player);
+            return Ok(player);
         }
 
         // PUT: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpPut("{id:Guid}")]
         public async Task<IActionResult> UpdatePlayer([FromRoute] Guid id, [FromBody] UserForm form)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var player = await this._context.Players.Where(p => p.Id.Equals(id)).FirstOrDefaultAsync();
+            var player = await _context.Players.Where(p => p.Id.Equals(id)).FirstOrDefaultAsync();
 
             if (player == null)
             {
-                return this.HttpNotFound("No Player Found.");
+                return HttpNotFound("No Player Found.");
             }
 
-            this._context.Entry(player).State = EntityState.Modified;
+            _context.Entry(player).State = EntityState.Modified;
 
             if (!string.IsNullOrWhiteSpace(form.Username) && player.Username != form.Username)
             {
-                if (await Player.ExistsUsername(this._context, form.Username))
+                if (await Player.ExistsUsername(_context, form.Username))
                 {
-                    return this.HttpBadRequest("Player with this Username already exists.");
+                    return HttpBadRequest("Player with this Username already exists.");
                 }
 
                 player.Username = form.Username;
@@ -97,9 +97,9 @@ namespace SocialGamificationAsset.Controllers
 
             if (!string.IsNullOrWhiteSpace(form.Email) && player.Email != form.Email)
             {
-                if (await Player.ExistsEmail(this._context, form.Email))
+                if (await Player.ExistsEmail(_context, form.Email))
                 {
-                    return this.HttpBadRequest("Player with this Email already exists.");
+                    return HttpBadRequest("Player with this Email already exists.");
                 }
 
                 player.Email = form.Email;
@@ -112,21 +112,21 @@ namespace SocialGamificationAsset.Controllers
 
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (!this.PlayerExists(id))
+                if (!PlayerExists(id))
                 {
-                    return this.HttpBadRequest("Invalid PlayerId");
+                    return HttpBadRequest("Invalid PlayerId");
                 }
                 throw;
             }
 
             // Add or Update the CustomData
-            player.AddOrUpdateCustomData(this._context, form.CustomData);
+            player.AddOrUpdateCustomData(_context, form.CustomData);
 
-            return this.CreatedAtRoute("GetPlayer", new { id = player.Id }, player);
+            return CreatedAtRoute("GetPlayer", new { id = player.Id }, player);
         }
 
         // POST: api/players
@@ -134,28 +134,28 @@ namespace SocialGamificationAsset.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> AddPlayer([FromBody] UserForm register)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
             if (string.IsNullOrWhiteSpace(register.Username) && string.IsNullOrWhiteSpace(register.Email))
             {
-                return this.HttpBadRequest("Either Username or Email is required.");
+                return HttpBadRequest("Either Username or Email is required.");
             }
 
             if (string.IsNullOrWhiteSpace(register.Password))
             {
-                return this.HttpBadRequest("Password is required.");
+                return HttpBadRequest("Password is required.");
             }
 
             var player = new Player();
 
             if (!string.IsNullOrWhiteSpace(register.Username))
             {
-                if (await Player.ExistsUsername(this._context, register.Username))
+                if (await Player.ExistsUsername(_context, register.Username))
                 {
-                    return this.HttpBadRequest("Player with this Username already exists.");
+                    return HttpBadRequest("Player with this Username already exists.");
                 }
 
                 player.Username = register.Username;
@@ -163,9 +163,9 @@ namespace SocialGamificationAsset.Controllers
 
             if (!string.IsNullOrWhiteSpace(register.Email))
             {
-                if (await Player.ExistsEmail(this._context, register.Email))
+                if (await Player.ExistsEmail(_context, register.Email))
                 {
-                    return this.HttpBadRequest("Player with this Email already exists.");
+                    return HttpBadRequest("Player with this Email already exists.");
                 }
 
                 player.Email = register.Email;
@@ -175,15 +175,15 @@ namespace SocialGamificationAsset.Controllers
 
             var session = new Session { Player = player };
 
-            this._context.Sessions.Add(session);
+            _context.Sessions.Add(session);
 
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (this.PlayerExists(player.Id))
+                if (PlayerExists(player.Id))
                 {
                     return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
                 }
@@ -191,49 +191,49 @@ namespace SocialGamificationAsset.Controllers
             }
 
             // Add or Update the CustomData
-            player.AddOrUpdateCustomData(this._context, register.CustomData);
+            player.AddOrUpdateCustomData(_context, register.CustomData);
 
-            return this.CreatedAtRoute("GetPlayer", new { id = session.Id }, session);
+            return CreatedAtRoute("GetPlayer", new { id = session.Id }, session);
         }
 
         // DELETE: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> DeletePlayer([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var player = await this._context.Players.FindAsync(id);
+            var player = await _context.Players.FindAsync(id);
             if (player == null)
             {
-                return this.HttpBadRequest("Invalid PlayerId");
+                return HttpBadRequest("Invalid PlayerId");
             }
 
             player.IsEnabled = false;
 
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (!this.PlayerExists(id))
+                if (!PlayerExists(id))
                 {
-                    return this.HttpNotFound("No Player Found.");
+                    return HttpNotFound("No Player Found.");
                 }
                 throw;
             }
 
-            return this.Ok(player);
+            return Ok(player);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                this._context.Dispose();
+                _context.Dispose();
             }
 
             base.Dispose(disposing);
@@ -241,7 +241,7 @@ namespace SocialGamificationAsset.Controllers
 
         private bool PlayerExists(Guid id)
         {
-            return this._context.Players.Count(e => e.Id == id) > 0;
+            return _context.Players.Count(e => e.Id == id) > 0;
         }
     }
 }

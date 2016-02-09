@@ -83,7 +83,7 @@ namespace SocialGamificationAsset.Policies
                 return;
             }
 
-            Session localSession = httpContext.Session.GetObjectFromJson<Session>("__session");
+            var localSession = httpContext.Session.GetObjectFromJson<Session>("__session");
 
             // If 'active' session already exists skip DB call
             if (localSession != null && localSession.Id.Equals(token) && localSession.Player != null)

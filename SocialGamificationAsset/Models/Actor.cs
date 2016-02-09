@@ -9,7 +9,7 @@ namespace SocialGamificationAsset.Models
     {
         public Actor()
         {
-            this.IsEnabled = true;
+            IsEnabled = true;
         }
 
         public bool IsEnabled { get; set; }
@@ -38,7 +38,7 @@ namespace SocialGamificationAsset.Models
 
         public IQueryable<Actor> Alliances(SocialGamificationAssetContext db)
         {
-            return Alliances(db, this.Id);
+            return Alliances(db, Id);
         }
 
         public static IQueryable<Actor> Alliances(
@@ -55,7 +55,7 @@ namespace SocialGamificationAsset.Models
             SocialGamificationAssetContext db,
             AllianceState state = AllianceState.Accepted)
         {
-            return Alliances(db, this.Id, state);
+            return Alliances(db, Id, state);
         }
     }
 }

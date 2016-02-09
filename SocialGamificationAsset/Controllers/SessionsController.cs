@@ -47,20 +47,20 @@ namespace SocialGamificationAsset.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetSession([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
             var playerSession =
-                await this._context.Sessions.Include(s => s.Player).Where(s => s.Id.Equals(id)).FirstOrDefaultAsync();
+                await _context.Sessions.Include(s => s.Player).Where(s => s.Id.Equals(id)).FirstOrDefaultAsync();
 
             if (playerSession == null)
             {
-                return this.HttpNotFound("No such Session found.");
+                return HttpNotFound("No such Session found.");
             }
 
-            return this.Ok(playerSession);
+            return Ok(playerSession);
         }
 
         // POST: api/sessions
@@ -95,22 +95,22 @@ namespace SocialGamificationAsset.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] UserForm login)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
             if (string.IsNullOrWhiteSpace(login.Username) && string.IsNullOrWhiteSpace(login.Email))
             {
-                return this.HttpBadRequest("Either Username or Email is required.");
+                return HttpBadRequest("Either Username or Email is required.");
             }
 
             if (string.IsNullOrWhiteSpace(login.Password))
             {
-                return this.HttpBadRequest("Password is required.");
+                return HttpBadRequest("Password is required.");
             }
 
-            IQueryable<Player> query = this._context.Players;
+            IQueryable<Player> query = _context.Players;
 
             if (!string.IsNullOrWhiteSpace(login.Username))
             {
@@ -126,7 +126,7 @@ namespace SocialGamificationAsset.Controllers
 
             if (player == null)
             {
-                return this.HttpNotFound("No such Player found.");
+                return HttpNotFound("No such Player found.");
             }
 
             if (!Helper.ValidatePassword(login.Password, player.Password))
@@ -140,22 +140,22 @@ namespace SocialGamificationAsset.Controllers
 
             var playerSession = new Session { Player = player };
 
-            this._context.Sessions.Add(playerSession);
+            _context.Sessions.Add(playerSession);
 
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (this.SessionExists(playerSession.Id))
+                if (SessionExists(playerSession.Id))
                 {
                     return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
                 }
                 throw;
             }
 
-            return this.CreatedAtRoute("GetSession", new { id = playerSession.Id }, playerSession);
+            return CreatedAtRoute("GetSession", new { id = playerSession.Id }, playerSession);
         }
 
         // DELETE: api/sessions/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -187,40 +187,40 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(Session))]
         public async Task<IActionResult> Logout([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var playerSession = await this._context.Sessions.FindAsync(id);
+            var playerSession = await _context.Sessions.FindAsync(id);
             if (playerSession == null)
             {
-                return this.HttpNotFound("No such Session found.");
+                return HttpNotFound("No such Session found.");
             }
 
             playerSession.IsExpired = true;
 
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (this.SessionExists(playerSession.Id))
+                if (SessionExists(playerSession.Id))
                 {
                     return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
                 }
                 throw;
             }
 
-            return this.Ok(playerSession);
+            return Ok(playerSession);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                this._context.Dispose();
+                _context.Dispose();
             }
 
             base.Dispose(disposing);
@@ -228,7 +228,7 @@ namespace SocialGamificationAsset.Controllers
 
         private bool SessionExists(Guid id)
         {
-            return this._context.Sessions.Count(e => e.Id == id) > 0;
+            return _context.Sessions.Count(e => e.Id == id) > 0;
         }
     }
 }

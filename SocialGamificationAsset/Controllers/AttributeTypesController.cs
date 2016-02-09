@@ -25,58 +25,58 @@ namespace SocialGamificationAsset.Controllers
         [HttpGet]
         public IEnumerable<AttributeType> GetAttributeType()
         {
-            return this._context.AttributeTypes;
+            return _context.AttributeTypes;
         }
 
         // GET: api/attributes/types/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpGet("{id}", Name = "GetAttributeType")]
         public async Task<IActionResult> GetAttributeType([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var test = await this._context.AttributeTypes.FindAsync(id);
+            var test = await _context.AttributeTypes.FindAsync(id);
 
             if (test == null)
             {
-                return this.HttpNotFound();
+                return HttpNotFound();
             }
 
-            return this.Ok(test);
+            return Ok(test);
         }
 
         // PUT: api/attributes/types/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAttributeType([FromRoute] Guid id, [FromBody] AttributeType test)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
             if (id != test.Id)
             {
-                return this.HttpBadRequest();
+                return HttpBadRequest();
             }
 
-            this._context.Entry(test).State = EntityState.Modified;
+            _context.Entry(test).State = EntityState.Modified;
 
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (!this.AttributeTypeExists(id))
+                if (!AttributeTypeExists(id))
                 {
-                    return this.HttpNotFound();
+                    return HttpNotFound();
                 }
                 throw;
             }
 
-            return this.CreatedAtRoute("GetAttributeType", new { id = test.Id }, test);
+            return CreatedAtRoute("GetAttributeType", new { id = test.Id }, test);
         }
 
         // POST: api/attributes/types
@@ -84,54 +84,54 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(AttributeType))]
         public async Task<IActionResult> PostAttributeType([FromBody] AttributeType test)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            this._context.AttributeTypes.Add(test);
+            _context.AttributeTypes.Add(test);
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (this.AttributeTypeExists(test.Id))
+                if (AttributeTypeExists(test.Id))
                 {
                     return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
                 }
                 throw;
             }
 
-            return this.CreatedAtRoute("GetAttributeType", new { id = test.Id }, test);
+            return CreatedAtRoute("GetAttributeType", new { id = test.Id }, test);
         }
 
         // DELETE: api/attributes/types/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAttributeType([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var test = await this._context.AttributeTypes.FindAsync(id);
+            var test = await _context.AttributeTypes.FindAsync(id);
             if (test == null)
             {
-                return this.HttpNotFound();
+                return HttpNotFound();
             }
 
-            this._context.AttributeTypes.Remove(test);
-            await this._context.SaveChangesAsync();
+            _context.AttributeTypes.Remove(test);
+            await _context.SaveChangesAsync();
 
-            return this.Ok(test);
+            return Ok(test);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                this._context.Dispose();
+                _context.Dispose();
             }
 
             base.Dispose(disposing);
@@ -139,7 +139,7 @@ namespace SocialGamificationAsset.Controllers
 
         private bool AttributeTypeExists(Guid id)
         {
-            return this._context.AttributeTypes.Count(e => e.Id == id) > 0;
+            return _context.AttributeTypes.Count(e => e.Id == id) > 0;
         }
     }
 }

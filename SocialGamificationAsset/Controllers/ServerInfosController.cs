@@ -24,7 +24,7 @@ namespace SocialGamificationAsset.Controllers
                              ["Success"] = "true"
                          };
 
-            return this.Ok(result);
+            return Ok(result);
         }
     }
 }

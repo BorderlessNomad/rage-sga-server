@@ -26,10 +26,7 @@ namespace SocialGamificationAsset.Controllers
         public async Task<IList<Item>> GetItems()
         {
             IList<Item> items =
-                await
-                this._context.Items.Where(i => i.ActorId.Equals(this.session.Player.Id))
-                    .Include(i => i.Type)
-                    .ToListAsync();
+                await _context.Items.Where(i => i.ActorId.Equals(session.Player.Id)).Include(i => i.Type).ToListAsync();
 
             return items;
         }
@@ -39,7 +36,7 @@ namespace SocialGamificationAsset.Controllers
         public IEnumerable<ItemType> GetItemTypes()
         {
             // TODO: Return Item Types defined for the Game
-            return this._context.ItemTypes;
+            return _context.ItemTypes;
         }
 
         // GET: api/items/type/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -50,7 +47,7 @@ namespace SocialGamificationAsset.Controllers
         {
             Guid id;
             var isGuid = Guid.TryParse(name, out id);
-            IQueryable<ItemType> query = this._context.ItemTypes;
+            IQueryable<ItemType> query = _context.ItemTypes;
             if (isGuid && id != Guid.Empty)
             {
                 query = query.Where(t => t.Id.Equals(id));
@@ -63,19 +60,19 @@ namespace SocialGamificationAsset.Controllers
             var type = await query.FirstOrDefaultAsync();
             if (type == null)
             {
-                return this.HttpBadRequest("Invalid Item Type");
+                return HttpBadRequest("Invalid Item Type");
             }
 
             var total =
                 await
-                this._context.Items.Where(i => i.ActorId.Equals(this.session.Player.Id))
-                    .Where(i => i.ItemTypeId.Equals(type.Id))
-                    .GroupBy(i => i.ItemTypeId)
-                    .Select(g => new { Total = g.Sum(i => i.Quantity), LastUpdated = g.Max(i => i.UpdatedDate) })
-                    .FirstOrDefaultAsync();
+                _context.Items.Where(i => i.ActorId.Equals(session.Player.Id))
+                        .Where(i => i.ItemTypeId.Equals(type.Id))
+                        .GroupBy(i => i.ItemTypeId)
+                        .Select(g => new { Total = g.Sum(i => i.Quantity), LastUpdated = g.Max(i => i.UpdatedDate) })
+                        .FirstOrDefaultAsync();
 
             return
-                this.Ok(
+                Ok(
                     new ItemTypeResponse
                     {
                         Id = type.Id,
@@ -91,19 +88,19 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(Item))]
         public async Task<IActionResult> GetItem([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var item = await this._context.Items.Where(i => i.Id.Equals(id)).Include(i => i.Type).FirstOrDefaultAsync();
+            var item = await _context.Items.Where(i => i.Id.Equals(id)).Include(i => i.Type).FirstOrDefaultAsync();
 
             if (item == null)
             {
-                return this.HttpNotFound("No such Item found.");
+                return HttpNotFound("No such Item found.");
             }
 
-            return this.Ok(item);
+            return Ok(item);
         }
 
         // GET: api/items/type/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -111,19 +108,19 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(ItemType))]
         public async Task<IActionResult> GetItemType([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var itemType = await this._context.ItemTypes.Where(i => i.Id.Equals(id)).FirstOrDefaultAsync();
+            var itemType = await _context.ItemTypes.Where(i => i.Id.Equals(id)).FirstOrDefaultAsync();
 
             if (itemType == null)
             {
-                return this.HttpNotFound("No such Item Type found.");
+                return HttpNotFound("No such Item Type found.");
             }
 
-            return this.Ok(itemType);
+            return Ok(itemType);
         }
 
         // POST: api/items
@@ -131,9 +128,9 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(Item))]
         public async Task<IActionResult> AddItem([FromBody] ItemForm form)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
             /*
@@ -144,11 +141,11 @@ namespace SocialGamificationAsset.Controllers
 			*/
             if (string.IsNullOrWhiteSpace(form.ItemTypeName))
             {
-                return this.HttpBadRequest("Either ItemTypeName is required.");
+                return HttpBadRequest("Either ItemTypeName is required.");
             }
 
             var searchByName = true;
-            IQueryable<ItemType> query = this._context.ItemTypes;
+            IQueryable<ItemType> query = _context.ItemTypes;
             /*
 			if (form.ItemTypeId.HasValue && form.ItemTypeId != Guid.Empty)
 			{
@@ -165,14 +162,14 @@ namespace SocialGamificationAsset.Controllers
             var itemType = await query.FirstOrDefaultAsync();
             if (itemType == null)
             {
-                return this.HttpBadRequest("Invalid Item Type.");
+                return HttpBadRequest("Invalid Item Type.");
             }
 
             var item = new Item { ItemTypeId = itemType.Id };
 
             if (!form.ActorId.HasValue || form.ActorId == Guid.Empty)
             {
-                item.ActorId = this.session.Player.Id;
+                item.ActorId = session.Player.Id;
             }
 
             if (!form.Quantity.HasValue || form.Quantity <= 0)
@@ -189,21 +186,21 @@ namespace SocialGamificationAsset.Controllers
                 item.Quantity = -item.Quantity;
             }
 
-            this._context.Items.Add(item);
+            _context.Items.Add(item);
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (this.ItemExists(item.Id))
+                if (ItemExists(item.Id))
                 {
                     return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
                 }
                 throw;
             }
 
-            return this.CreatedAtRoute("GetItem", new { id = item.Id }, item);
+            return CreatedAtRoute("GetItem", new { id = item.Id }, item);
         }
 
         // POST: api/items/type
@@ -211,25 +208,25 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(ItemType))]
         public async Task<IActionResult> AddItemType([FromBody] ItemType itemType)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var type = await this._context.ItemTypes.Where(t => t.Name.Equals(itemType.Name)).FirstOrDefaultAsync();
+            var type = await _context.ItemTypes.Where(t => t.Name.Equals(itemType.Name)).FirstOrDefaultAsync();
             if (type != null)
             {
-                return this.HttpBadRequest("ItemType '" + itemType.Name + "' already exists.");
+                return HttpBadRequest("ItemType '" + itemType.Name + "' already exists.");
             }
 
-            this._context.ItemTypes.Add(itemType);
+            _context.ItemTypes.Add(itemType);
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (this.ItemTypeExists(itemType.Id))
+                if (ItemTypeExists(itemType.Id))
 
                 {
                     return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
@@ -237,14 +234,14 @@ namespace SocialGamificationAsset.Controllers
                 throw;
             }
 
-            return this.CreatedAtRoute("GetItemType", new { id = itemType.Id }, itemType);
+            return CreatedAtRoute("GetItemType", new { id = itemType.Id }, itemType);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                this._context.Dispose();
+                _context.Dispose();
             }
 
             base.Dispose(disposing);
@@ -252,12 +249,12 @@ namespace SocialGamificationAsset.Controllers
 
         private bool ItemExists(Guid id)
         {
-            return this._context.Items.Count(e => e.Id == id) > 0;
+            return _context.Items.Count(e => e.Id == id) > 0;
         }
 
         private bool ItemTypeExists(Guid id)
         {
-            return this._context.ItemTypes.Count(e => e.Id == id) > 0;
+            return _context.ItemTypes.Count(e => e.Id == id) > 0;
         }
     }
 }

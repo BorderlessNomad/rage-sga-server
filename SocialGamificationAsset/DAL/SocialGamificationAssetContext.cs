@@ -25,10 +25,10 @@ namespace SocialGamificationAsset.Models
             Database.SetInitializer(new CreateDatabaseIfNotExists<SocialGamificationAssetContext>());
             Database.SetInitializer(new DropCreateDatabaseIfModelChanges<SocialGamificationAssetContext>());
 
-            this.Configuration.LazyLoadingEnabled = false;
-            this.Configuration.ProxyCreationEnabled = false;
+            Configuration.LazyLoadingEnabled = false;
+            Configuration.ProxyCreationEnabled = false;
 
-            this.Database.Log = message => Debug.WriteLine(message);
+            Database.Log = message => Debug.WriteLine(message);
         }
 
         public virtual DbSet<Achievement> Achievements { get; set; }
@@ -120,7 +120,7 @@ namespace SocialGamificationAsset.Models
 
         protected void SaveChangesWithHooks()
         {
-            var entries = this.ChangeTracker.Entries();
+            var entries = ChangeTracker.Entries();
             var changes = entries.Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
 
             foreach (var entry in changes)
@@ -173,14 +173,14 @@ namespace SocialGamificationAsset.Models
 
         public override int SaveChanges()
         {
-            this.SaveChangesWithHooks();
+            SaveChangesWithHooks();
 
             return base.SaveChanges();
         }
 
         public override async Task<int> SaveChangesAsync()
         {
-            this.SaveChangesWithHooks();
+            SaveChangesWithHooks();
 
             return await base.SaveChangesAsync();
         }

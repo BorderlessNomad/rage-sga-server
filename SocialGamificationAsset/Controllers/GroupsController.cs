@@ -24,7 +24,7 @@ namespace SocialGamificationAsset.Controllers
         [HttpGet("all", Name = "GetAllGroups")]
         public IEnumerable<Group> GetAllGroups()
         {
-            return this._context.Groups.Include(g => g.Players);
+            return _context.Groups.Include(g => g.Players);
         }
 
         // GET: api/groups
@@ -33,64 +33,63 @@ namespace SocialGamificationAsset.Controllers
         {
             var groups =
                 await
-                this._context.Players.Where(p => p.Id.Equals(this.session.Player.Id))
-                    .Include(p => p.Groups)
-                    .Select(p => p.Groups)
-                    .FirstOrDefaultAsync();
+                _context.Players.Where(p => p.Id.Equals(session.Player.Id))
+                        .Include(p => p.Groups)
+                        .Select(p => p.Groups)
+                        .FirstOrDefaultAsync();
 
-            return this.Ok(groups);
+            return Ok(groups);
         }
 
         // GET: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpGet("{id:Guid}", Name = "GetGroupInfo")]
         public async Task<IActionResult> GetGroupInfo([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var group =
-                await this._context.Groups.Where(g => g.Id.Equals(id)).Include(g => g.Players).FirstOrDefaultAsync();
+            var group = await _context.Groups.Where(g => g.Id.Equals(id)).Include(g => g.Players).FirstOrDefaultAsync();
 
             if (group == null)
             {
-                return this.HttpNotFound("No Group Found.");
+                return HttpNotFound("No Group Found.");
             }
 
-            return this.Ok(group);
+            return Ok(group);
         }
 
         // PUT: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpPut("{id:Guid}")]
         public async Task<IActionResult> PutGroup([FromRoute] Guid id, [FromBody] Group group)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
             if (id != group.Id)
             {
-                return this.HttpBadRequest("Id & Group.Id does not match.");
+                return HttpBadRequest("Id & Group.Id does not match.");
             }
 
-            this._context.Entry(group).State = EntityState.Modified;
+            _context.Entry(group).State = EntityState.Modified;
 
             if (group.Players != null && group.Players.Count != 0)
             {
-                group.AddPlayers(this._context, group.Players);
+                group.AddPlayers(_context, group.Players);
             }
 
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (!this.GroupExists(id))
+                if (!GroupExists(id))
                 {
-                    return this.HttpNotFound("No Group Found.");
+                    return HttpNotFound("No Group Found.");
                 }
                 throw;
             }
@@ -102,71 +101,71 @@ namespace SocialGamificationAsset.Controllers
         [HttpPost]
         public async Task<IActionResult> PostGroup([FromBody] Group group)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
             if (group.Players != null && group.Players.Count != 0)
             {
-                group.AddPlayers(this._context, group.Players);
+                group.AddPlayers(_context, group.Players);
             }
 
-            this._context.Groups.Add(group);
+            _context.Groups.Add(group);
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (this.GroupExists(group.Id))
+                if (GroupExists(group.Id))
                 {
                     return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
                 }
                 throw;
             }
 
-            return this.CreatedAtRoute("GetGroupInfo", new { id = group.Id }, group);
+            return CreatedAtRoute("GetGroupInfo", new { id = group.Id }, group);
         }
 
         // DELETE: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> DeleteGroup([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var group = await this._context.Groups.FindAsync(id);
+            var group = await _context.Groups.FindAsync(id);
             if (group == null)
             {
-                return this.HttpNotFound("No Group Found.");
+                return HttpNotFound("No Group Found.");
             }
 
             group.IsEnabled = false;
 
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (!this.GroupExists(id))
+                if (!GroupExists(id))
                 {
-                    return this.HttpNotFound("No Group Found.");
+                    return HttpNotFound("No Group Found.");
                 }
                 throw;
             }
 
-            return this.Ok(group);
+            return Ok(group);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                this._context.Dispose();
+                _context.Dispose();
             }
 
             base.Dispose(disposing);
@@ -174,7 +173,7 @@ namespace SocialGamificationAsset.Controllers
 
         private bool GroupExists(Guid id)
         {
-            return this._context.Groups.Count(e => e.Id == id) > 0;
+            return _context.Groups.Count(e => e.Id == id) > 0;
         }
     }
 }

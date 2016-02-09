@@ -12,7 +12,7 @@ namespace SocialGamificationAsset.Models
     {
         public Group()
         {
-            this.Type = GroupVisibility.Public;
+            Type = GroupVisibility.Public;
         }
 
         public string Name { get; set; }
@@ -67,12 +67,12 @@ namespace SocialGamificationAsset.Models
 
             var actors = db.Players.Where(a => actorIds.Contains(a.Id)).ToList();
 
-            this.Players = new List<Player>(actors);
+            Players = new List<Player>(actors);
         }
 
         public async void AddOrUpdateCustomData(SocialGamificationAssetContext db, IList<CustomDataBase> sourceData)
         {
-            await Models.CustomData.AddOrUpdate(db, sourceData, this.Id, CustomDataType.Group);
+            await Models.CustomData.AddOrUpdate(db, sourceData, Id, CustomDataType.Group);
         }
     }
 

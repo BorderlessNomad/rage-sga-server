@@ -10,7 +10,7 @@ namespace SocialGamificationAsset.Models
     {
         public Alliance()
         {
-            this.State = AllianceState.Pending;
+            State = AllianceState.Pending;
         }
 
         public Guid RequesterId { get; set; }

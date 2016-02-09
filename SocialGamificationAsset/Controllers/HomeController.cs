@@ -6,26 +6,26 @@ namespace SocialGamificationAsset.Controllers
     {
         public IActionResult Index()
         {
-            return this.View();
+            return View();
         }
 
         public IActionResult About()
         {
-            this.ViewData["Message"] = "RAGE Social Gamification Asset.";
+            ViewData["Message"] = "RAGE Social Gamification Asset.";
 
-            return this.View();
+            return View();
         }
 
         public IActionResult Contact()
         {
-            this.ViewData["Message"] = "Our HQ Tech City";
+            ViewData["Message"] = "Our HQ Tech City";
 
-            return this.View();
+            return View();
         }
 
         public IActionResult Error()
         {
-            return this.View();
+            return View();
         }
     }
 }

@@ -27,58 +27,58 @@ namespace SocialGamificationAsset.Controllers
         [HttpGet]
         public IEnumerable<Attribute> GetAttribute()
         {
-            return this._context.Attributes;
+            return _context.Attributes;
         }
 
         // GET: api/attributes/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpGet("{id}", Name = "GetAttribute")]
         public async Task<IActionResult> GetAttribute([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var test = await this._context.Attributes.FindAsync(id);
+            var test = await _context.Attributes.FindAsync(id);
 
             if (test == null)
             {
-                return this.HttpNotFound();
+                return HttpNotFound();
             }
 
-            return this.Ok(test);
+            return Ok(test);
         }
 
         // PUT: api/attributes/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAttribute([FromRoute] Guid id, [FromBody] Attribute test)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
             if (id != test.Id)
             {
-                return this.HttpBadRequest();
+                return HttpBadRequest();
             }
 
-            this._context.Entry(test).State = EntityState.Modified;
+            _context.Entry(test).State = EntityState.Modified;
 
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (!this.AttributeExists(id))
+                if (!AttributeExists(id))
                 {
-                    return this.HttpNotFound();
+                    return HttpNotFound();
                 }
                 throw;
             }
 
-            return this.CreatedAtRoute("GetAttribute", new { id = test.Id }, test);
+            return CreatedAtRoute("GetAttribute", new { id = test.Id }, test);
         }
 
         // POST: api/attributes
@@ -86,54 +86,54 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(Attribute))]
         public async Task<IActionResult> PostAttribute([FromBody] Attribute test)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            this._context.Attributes.Add(test);
+            _context.Attributes.Add(test);
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (this.AttributeExists(test.Id))
+                if (AttributeExists(test.Id))
                 {
                     return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
                 }
                 throw;
             }
 
-            return this.CreatedAtRoute("GetAttribute", new { id = test.Id }, test);
+            return CreatedAtRoute("GetAttribute", new { id = test.Id }, test);
         }
 
         // DELETE: api/attributes/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAttribute([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var test = await this._context.Attributes.FindAsync(id);
+            var test = await _context.Attributes.FindAsync(id);
             if (test == null)
             {
-                return this.HttpNotFound();
+                return HttpNotFound();
             }
 
-            this._context.Attributes.Remove(test);
-            await this._context.SaveChangesAsync();
+            _context.Attributes.Remove(test);
+            await _context.SaveChangesAsync();
 
-            return this.Ok(test);
+            return Ok(test);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                this._context.Dispose();
+                _context.Dispose();
             }
 
             base.Dispose(disposing);
@@ -141,7 +141,7 @@ namespace SocialGamificationAsset.Controllers
 
         private bool AttributeExists(Guid id)
         {
-            return this._context.Attributes.Count(e => e.Id == id) > 0;
+            return _context.Attributes.Count(e => e.Id == id) > 0;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace SocialGamificationAsset.Models
     {
         public Session()
         {
-            this.IsExpired = false;
+            IsExpired = false;
         }
 
         public Guid PlayerId { get; set; }

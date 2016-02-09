@@ -31,7 +31,7 @@ namespace SocialGamificationAsset
         {
             this.applicationEnvironment = applicationEnvironment;
             this.hostingEnvironment = hostingEnvironment;
-            this.configuration = ConfigureConfiguration(hostingEnvironment);
+            configuration = ConfigureConfiguration(hostingEnvironment);
         }
 
         #endregion Constructors
@@ -62,74 +62,6 @@ namespace SocialGamificationAsset
         ///         Development, Staging or Production by default. To set the hosting
         ///         environment on Windows:
         ///     </para>
-        ///     <list type="number">
-        ///         <item>
-        ///             <description></description>
-        ///         </item>
-        ///         <item>
-        ///             <description></description>
-        ///         </item>
-        ///         <item>
-        ///             <description></description>
-        ///         </item>
-        ///         <item>
-        ///             <description>
-        ///                 On your server, right click 'Computer' or 'My Computer' and click on
-        ///                 'Properties'.
-        ///             </description>
-        ///         </item>
-        ///         <item>
-        ///             <description></description>
-        ///         </item>
-        ///         <item>
-        ///             <description></description>
-        ///         </item>
-        ///         <item>
-        ///             <description></description>
-        ///         </item>
-        ///         <item>
-        ///             <description>Go to 'Advanced System Settings'.</description>
-        ///         </item>
-        ///         <item>
-        ///             <description></description>
-        ///         </item>
-        ///         <item>
-        ///             <description></description>
-        ///         </item>
-        ///         <item>
-        ///             <description></description>
-        ///         </item>
-        ///         <item>
-        ///             <description>
-        ///                 Click on 'Environment Variables' in the Advanced tab.
-        ///             </description>
-        ///         </item>
-        ///         <item>
-        ///             <description></description>
-        ///         </item>
-        ///         <item>
-        ///             <description></description>
-        ///         </item>
-        ///         <item>
-        ///             <description></description>
-        ///         </item>
-        ///         <item>
-        ///             <description>
-        ///                 Add a new System Variable with the name 'ASPNET_ENV' and a value of
-        ///                 Production, Staging or whatever you want. See
-        ///                 http://docs.asp.net/en/latest/fundamentals/environments.html
-        ///             </description>
-        ///         </item>
-        ///         <item>
-        ///             <description></description>
-        ///         </item>
-        ///         <item>
-        ///             <description></description>
-        ///         </item>
-        ///         <item>
-        ///             <description></description>
-        ///         </item>
-        ///     </list>
         /// </summary>
         private readonly IHostingEnvironment hostingEnvironment;
 
@@ -148,11 +80,11 @@ namespace SocialGamificationAsset
         /// </param>
         public void ConfigureServices(IServiceCollection services)
         {
-            ConfigureDebuggingServices(services, this.hostingEnvironment);
+            ConfigureDebuggingServices(services, hostingEnvironment);
 
-            ConfigureOptionsServices(services, this.configuration);
+            ConfigureOptionsServices(services, configuration);
 
-            ConfigureApplicationServices(services, this.configuration);
+            ConfigureApplicationServices(services, configuration);
 
             ConfigureCachingServices(services);
 
@@ -171,18 +103,18 @@ namespace SocialGamificationAsset
             IMvcBuilder mvcBuilder = services.AddMvc(
                 mvcOptions =>
                     {
-                        ConfigureCacheProfiles(mvcOptions.CacheProfiles, this.configuration);
+                        ConfigureCacheProfiles(mvcOptions.CacheProfiles, configuration);
 
                         ConfigureSearchEngineOptimizationFilters(mvcOptions.Filters, routeOptions);
 
-                        ConfigureSecurityFilters(this.hostingEnvironment, mvcOptions.Filters);
+                        ConfigureSecurityFilters(hostingEnvironment, mvcOptions.Filters);
                     });
 
             ConfigureFormatters(mvcBuilder);
 
             ConfigureSessionServices(services);
 
-            ConfigureDocumentationGeneratorServices(services, this.applicationEnvironment);
+            ConfigureDocumentationGeneratorServices(services, applicationEnvironment);
         }
 
         /// <summary>
@@ -205,15 +137,15 @@ namespace SocialGamificationAsset
             // Add static files to the request pipeline e.g. hello.html or world.css.
             application.UseStaticFiles();
 
-            ConfigureDebugging(application, this.hostingEnvironment);
+            ConfigureDebugging(application, hostingEnvironment);
 
-            ConfigureLogging(application, this.hostingEnvironment, loggerfactory, this.configuration);
+            ConfigureLogging(application, hostingEnvironment, loggerfactory, configuration);
 
-            ConfigureErrorPages(application, this.hostingEnvironment);
+            ConfigureErrorPages(application, hostingEnvironment);
 
             ConfigureHeadersOverride(application);
 
-            ConfigureSecurity(application, this.hostingEnvironment);
+            ConfigureSecurity(application, hostingEnvironment);
 
             ConfigureSession(application);
 
@@ -223,7 +155,7 @@ namespace SocialGamificationAsset
             application.UseMvcWithDefaultRoute();
 
             // Add a 404 Not Found error page for visiting /this-resource-does-not-exist.
-            Configure404NotFoundErrorPage(application, this.hostingEnvironment);
+            Configure404NotFoundErrorPage(application, hostingEnvironment);
 
             ConfigureDocumentationGenerator(application);
 

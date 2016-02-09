@@ -17,7 +17,7 @@ namespace SocialGamificationAsset.Models
     {
         public DbEntity()
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
         }
 
         /*

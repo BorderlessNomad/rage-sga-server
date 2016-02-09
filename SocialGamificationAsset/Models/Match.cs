@@ -10,10 +10,10 @@ namespace SocialGamificationAsset.Models
 
         public Match()
         {
-            this.Title = "Test";
-            this.TotalRounds = 1;
-            this.IsFinished = false;
-            this.IsDeleted = false;
+            Title = "Test";
+            TotalRounds = 1;
+            IsFinished = false;
+            IsDeleted = false;
         }
 
         public Guid TournamentId { get; set; }
@@ -48,18 +48,18 @@ namespace SocialGamificationAsset.Models
     {
         public QuickMatch()
         {
-            this.Type = MatchType.Player;
+            Type = MatchType.Player;
 
-            this.AlliancesOnly = false;
+            AlliancesOnly = false;
 
-            if (this.Actors < 2)
+            if (Actors < 2)
             {
-                this.Actors = 2;
+                Actors = 2;
             }
 
-            if (this.Rounds < 1)
+            if (Rounds < 1)
             {
-                this.Rounds = 1;
+                Rounds = 1;
             }
         }
 

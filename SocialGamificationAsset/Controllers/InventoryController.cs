@@ -24,53 +24,53 @@ namespace SocialGamificationAsset.Controllers
         [HttpGet]
         public IEnumerable<Inventory> GetInventory()
         {
-            return this._context.Inventory;
+            return _context.Inventory;
         }
 
         // GET: api/inventory/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpGet("{id:Guid}", Name = "GetInventory")]
         public async Task<IActionResult> GetInventory([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var inventory = await this._context.Inventory.FindAsync(id);
+            var inventory = await _context.Inventory.FindAsync(id);
 
             if (inventory == null)
             {
-                return this.HttpNotFound();
+                return HttpNotFound();
             }
 
-            return this.Ok(inventory);
+            return Ok(inventory);
         }
 
         // PUT: api/inventory/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpPut("{id:Guid}")]
         public async Task<IActionResult> PutInventory([FromRoute] Guid id, [FromBody] Inventory inventory)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
             if (id != inventory.Id)
             {
-                return this.HttpBadRequest();
+                return HttpBadRequest();
             }
 
-            this._context.Entry(inventory).State = EntityState.Modified;
+            _context.Entry(inventory).State = EntityState.Modified;
 
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (!this.InventoryExists(id))
+                if (!InventoryExists(id))
                 {
-                    return this.HttpNotFound();
+                    return HttpNotFound();
                 }
                 throw;
             }
@@ -82,54 +82,54 @@ namespace SocialGamificationAsset.Controllers
         [HttpPost]
         public async Task<IActionResult> PostInventory([FromBody] Inventory inventory)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            this._context.Inventory.Add(inventory);
+            _context.Inventory.Add(inventory);
             try
             {
-                await this._context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (this.InventoryExists(inventory.Id))
+                if (InventoryExists(inventory.Id))
                 {
                     return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
                 }
                 throw;
             }
 
-            return this.CreatedAtRoute("GetInventory", new { id = inventory.Id }, inventory);
+            return CreatedAtRoute("GetInventory", new { id = inventory.Id }, inventory);
         }
 
         // DELETE: api/inventory/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> DeleteInventory([FromRoute] Guid id)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.HttpBadRequest(this.ModelState);
+                return HttpBadRequest(ModelState);
             }
 
-            var inventory = await this._context.Inventory.FindAsync(id);
+            var inventory = await _context.Inventory.FindAsync(id);
             if (inventory == null)
             {
-                return this.HttpNotFound();
+                return HttpNotFound();
             }
 
-            this._context.Inventory.Remove(inventory);
-            await this._context.SaveChangesAsync();
+            _context.Inventory.Remove(inventory);
+            await _context.SaveChangesAsync();
 
-            return this.Ok(inventory);
+            return Ok(inventory);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                this._context.Dispose();
+                _context.Dispose();
             }
 
             base.Dispose(disposing);
@@ -137,7 +137,7 @@ namespace SocialGamificationAsset.Controllers
 
         private bool InventoryExists(Guid id)
         {
-            return this._context.Inventory.Count(e => e.Id == id) > 0;
+            return _context.Inventory.Count(e => e.Id == id) > 0;
         }
     }
 }
