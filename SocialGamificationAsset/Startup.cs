@@ -67,6 +67,12 @@ namespace SocialGamificationAsset
         ///             <description></description>
         ///         </item>
         ///         <item>
+        ///             <description></description>
+        ///         </item>
+        ///         <item>
+        ///             <description></description>
+        ///         </item>
+        ///         <item>
         ///             <description>
         ///                 On your server, right click 'Computer' or 'My Computer' and click on
         ///                 'Properties'.
@@ -76,7 +82,19 @@ namespace SocialGamificationAsset
         ///             <description></description>
         ///         </item>
         ///         <item>
+        ///             <description></description>
+        ///         </item>
+        ///         <item>
+        ///             <description></description>
+        ///         </item>
+        ///         <item>
         ///             <description>Go to 'Advanced System Settings'.</description>
+        ///         </item>
+        ///         <item>
+        ///             <description></description>
+        ///         </item>
+        ///         <item>
+        ///             <description></description>
         ///         </item>
         ///         <item>
         ///             <description></description>
@@ -90,11 +108,23 @@ namespace SocialGamificationAsset
         ///             <description></description>
         ///         </item>
         ///         <item>
+        ///             <description></description>
+        ///         </item>
+        ///         <item>
+        ///             <description></description>
+        ///         </item>
+        ///         <item>
         ///             <description>
         ///                 Add a new System Variable with the name 'ASPNET_ENV' and a value of
         ///                 Production, Staging or whatever you want. See
         ///                 http://docs.asp.net/en/latest/fundamentals/environments.html
         ///             </description>
+        ///         </item>
+        ///         <item>
+        ///             <description></description>
+        ///         </item>
+        ///         <item>
+        ///             <description></description>
         ///         </item>
         ///         <item>
         ///             <description></description>

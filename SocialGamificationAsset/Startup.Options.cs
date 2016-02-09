@@ -9,10 +9,13 @@ namespace SocialGamificationAsset
     public partial class Startup
     {
         /// <summary>
-        ///     Configures the settings by binding the contents of the config.json file
-        ///     to the specified Plain Old CLR Objects (POCO) and adding
-        ///     <see cref="IOptions{}" /> objects to the <paramref name="services" />
-        ///     collection.
+        ///     <para>
+        ///         Configures the settings by binding the contents of the config.json
+        ///         file to the specified Plain Old CLR Objects (POCO) and adding
+        ///         <see cref="IOptions{}" /> objects to the
+        ///         <paramref name="services" />
+        ///     </para>
+        ///     <para>collection.</para>
         /// </summary>
         /// <param name="services">
         ///     The services collection or IoC container.

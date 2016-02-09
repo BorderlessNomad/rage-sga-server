@@ -102,9 +102,7 @@ namespace SocialGamificationAsset.Policies
                 return;
             }
 
-            var session = await db.Sessions.Where(s => s.Id.Equals(token))
-                                  .Include(s => s.Player)
-                                  .FirstOrDefaultAsync();
+            var session = await db.Sessions.Where(s => s.Id.Equals(token)).Include(s => s.Player).FirstOrDefaultAsync();
 
             // Find Session
             if (session == null)

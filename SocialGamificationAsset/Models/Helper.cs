@@ -31,8 +31,7 @@ namespace SocialGamificationAsset.Models
                 list[j] = value;
             }
 
-            return list.Take(limit)
-                       .ToList();
+            return list.Take(limit).ToList();
         }
 
         public static string GenerateRandomSalt()

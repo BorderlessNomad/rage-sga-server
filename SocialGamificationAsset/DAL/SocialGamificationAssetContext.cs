@@ -134,8 +134,7 @@ namespace SocialGamificationAsset.Models
                 {
                     saveMethod = type.GetMethod("BeforeInsert");
 
-                    if (null != saveMethod && saveMethod.GetParameters()
-                                                        .Length == 0)
+                    if (null != saveMethod && saveMethod.GetParameters().Length == 0)
                     {
                         saveMethod.Invoke(entry.Entity, null);
                     }
@@ -145,8 +144,7 @@ namespace SocialGamificationAsset.Models
                     // Invoke a BeforeUpdate() method on the entity if it exists
                     saveMethod = type.GetMethod("BeforeUpdate");
 
-                    if (null != saveMethod && saveMethod.GetParameters()
-                                                        .Length == 0)
+                    if (null != saveMethod && saveMethod.GetParameters().Length == 0)
                     {
                         saveMethod.Invoke(entry.Entity, null);
                     }
@@ -155,8 +153,7 @@ namespace SocialGamificationAsset.Models
                 // Invoke a BeforeSave() method on the entity if it exists
                 saveMethod = type.GetMethod("BeforeSave");
 
-                if (null != saveMethod && saveMethod.GetParameters()
-                                                    .Length == 0)
+                if (null != saveMethod && saveMethod.GetParameters().Length == 0)
                 {
                     saveMethod.Invoke(entry.Entity, null);
                 }

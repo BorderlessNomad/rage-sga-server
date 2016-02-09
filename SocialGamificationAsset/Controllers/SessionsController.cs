@@ -52,9 +52,8 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest(this.ModelState);
             }
 
-            var playerSession = await this._context.Sessions.Include(s => s.Player)
-                                          .Where(s => s.Id.Equals(id))
-                                          .FirstOrDefaultAsync();
+            var playerSession =
+                await this._context.Sessions.Include(s => s.Player).Where(s => s.Id.Equals(id)).FirstOrDefaultAsync();
 
             if (playerSession == null)
             {

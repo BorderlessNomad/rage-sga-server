@@ -37,7 +37,6 @@ namespace SocialGamificationAsset.Controllers
             }
 
             var achievement = await this._context.Achievements.FindAsync(id);
-
             if (achievement == null)
             {
                 return this.HttpNotFound();
@@ -60,8 +59,7 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest();
             }
 
-            this._context.Entry(achievement)
-                .State = EntityState.Modified;
+            this._context.Entry(achievement).State = EntityState.Modified;
 
             try
             {
@@ -73,6 +71,7 @@ namespace SocialGamificationAsset.Controllers
                 {
                     return this.HttpNotFound();
                 }
+
                 throw;
             }
 
@@ -121,7 +120,19 @@ namespace SocialGamificationAsset.Controllers
             }
 
             this._context.Achievements.Remove(achievement);
-            await this._context.SaveChangesAsync();
+            try
+            {
+                await this._context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (this.AchievementExists(achievement.Id))
+                {
+                    return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
+                }
+
+                throw;
+            }
 
             return this.Ok(achievement);
         }

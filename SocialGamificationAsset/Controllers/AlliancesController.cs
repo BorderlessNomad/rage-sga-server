@@ -24,13 +24,12 @@ namespace SocialGamificationAsset.Controllers
         [Route("all", Name = "GetAllAlliances")]
         public async Task<IActionResult> GetAllAlliances()
         {
-            if (this.session == null || this.session.Player == null)
+            if (this.session?.Player == null)
             {
                 return this.HttpNotFound("Invalid Session.");
             }
 
-            IList<Actor> alliances = await this.session.Player.Alliances(this._context)
-                                               .ToListAsync();
+            IList<Actor> alliances = await this.session.Player.Alliances(this._context).ToListAsync();
 
             return this.Ok(alliances);
         }
@@ -43,7 +42,7 @@ namespace SocialGamificationAsset.Controllers
         [Route("{state?}", Name = "GetMyAlliances")]
         public async Task<IActionResult> GetMyAlliances([FromRoute] string state = "accepted")
         {
-            if (this.session == null || this.session.Player == null)
+            if (this.session?.Player == null)
             {
                 return this.HttpNotFound("Invalid Session.");
             }
@@ -58,8 +57,8 @@ namespace SocialGamificationAsset.Controllers
                 allianceshipStatus = AllianceState.Declined;
             }
 
-            IList<Actor> alliances = await this.session.Player.Alliances(this._context, allianceshipStatus)
-                                               .ToListAsync();
+            IList<Actor> alliances =
+                await this.session.Player.Alliances(this._context, allianceshipStatus).ToListAsync();
 
             return this.Ok(alliances);
         }
@@ -74,16 +73,14 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest(this.ModelState);
             }
 
-            var actor = await this._context.Actors.Where(a => a.Id.Equals(actorId))
-                                  .FirstOrDefaultAsync();
+            var actor = await this._context.Actors.Where(a => a.Id.Equals(actorId)).FirstOrDefaultAsync();
 
             if (actor == null)
             {
                 return this.HttpNotFound("No Actor Found.");
             }
 
-            IList<Actor> alliances = await actor.Alliances(this._context)
-                                                .ToListAsync();
+            IList<Actor> alliances = await actor.Alliances(this._context).ToListAsync();
 
             return this.Ok(alliances);
         }
@@ -93,21 +90,22 @@ namespace SocialGamificationAsset.Controllers
         [Route("{allianceId:Guid}")]
         public async Task<IActionResult> AddAlliance([FromRoute] Guid allianceId)
         {
-            if (this.session == null || this.session.Player == null)
+            if (this.session?.Player == null)
             {
                 return this.HttpBadRequest("Error with your session.");
             }
 
-            var actor = await this._context.Actors.Where(a => a.Id.Equals(allianceId))
-                                  .FirstOrDefaultAsync();
+            var actor = await this._context.Actors.Where(a => a.Id.Equals(allianceId)).FirstOrDefaultAsync();
 
             if (actor == null)
             {
                 return this.HttpNotFound("No such Actor found.");
             }
 
-            var alliance = await this._context.Alliances.Where(Alliance.IsAlliance(allianceId, this.session.Player.Id))
-                                     .FirstOrDefaultAsync();
+            var alliance =
+                await
+                this._context.Alliances.Where(Alliance.IsAlliance(allianceId, this.session.Player.Id))
+                    .FirstOrDefaultAsync();
 
             if (alliance != null)
             {
@@ -139,21 +137,22 @@ namespace SocialGamificationAsset.Controllers
         [Route("{allianceId:Guid}")]
         public async Task<IActionResult> Unalliance([FromRoute] Guid allianceId)
         {
-            if (this.session == null || this.session.Player == null)
+            if (this.session?.Player == null)
             {
                 return this.HttpBadRequest("Error with your session.");
             }
 
-            var actor = await this._context.Actors.Where(a => a.Id.Equals(allianceId))
-                                  .FirstOrDefaultAsync();
+            var actor = await this._context.Actors.Where(a => a.Id.Equals(allianceId)).FirstOrDefaultAsync();
 
             if (actor == null)
             {
                 return this.HttpNotFound("No such Actor found.");
             }
 
-            var alliance = await this._context.Alliances.Where(Alliance.IsAlliance(allianceId, this.session.Player.Id))
-                                     .FirstOrDefaultAsync();
+            var alliance =
+                await
+                this._context.Alliances.Where(Alliance.IsAlliance(allianceId, this.session.Player.Id))
+                    .FirstOrDefaultAsync();
 
             if (alliance == null)
             {
@@ -170,7 +169,7 @@ namespace SocialGamificationAsset.Controllers
                 throw e;
             }
 
-            return this.Ok("Alliance Removed fromt the list.");
+            return this.Ok("Alliance Removed from the list.");
         }
 
         protected override void Dispose(bool disposing)

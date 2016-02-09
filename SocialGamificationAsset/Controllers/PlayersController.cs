@@ -76,16 +76,14 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest(this.ModelState);
             }
 
-            var player = await this._context.Players.Where(p => p.Id.Equals(id))
-                                   .FirstOrDefaultAsync();
+            var player = await this._context.Players.Where(p => p.Id.Equals(id)).FirstOrDefaultAsync();
 
             if (player == null)
             {
                 return this.HttpNotFound("No Player Found.");
             }
 
-            this._context.Entry(player)
-                .State = EntityState.Modified;
+            this._context.Entry(player).State = EntityState.Modified;
 
             if (!string.IsNullOrWhiteSpace(form.Username) && player.Username != form.Username)
             {

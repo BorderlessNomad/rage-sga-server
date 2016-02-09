@@ -14,8 +14,7 @@ namespace SocialGamificationAsset.Models
     {
         public static async Task Initialize(IServiceProvider serviceProvider, bool isAsync = false)
         {
-            using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>()
-                                                     .CreateScope())
+            using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var _context = serviceScope.ServiceProvider.GetService<SocialGamificationAssetContext>();
 
@@ -103,12 +102,9 @@ namespace SocialGamificationAsset.Models
         {
             if (!_context.Sessions.Any())
             {
-                var boardgame = await _context.Groups.Where(a => a.Name.Equals("boardgame"))
-                                              .FirstOrDefaultAsync();
-                var gameideas = await _context.Groups.Where(a => a.Name.Equals("gameideas"))
-                                              .FirstOrDefaultAsync();
-                var rage = await _context.Groups.Where(a => a.Name.Equals("rage"))
-                                         .FirstOrDefaultAsync();
+                var boardgame = await _context.Groups.Where(a => a.Name.Equals("boardgame")).FirstOrDefaultAsync();
+                var gameideas = await _context.Groups.Where(a => a.Name.Equals("gameideas")).FirstOrDefaultAsync();
+                var rage = await _context.Groups.Where(a => a.Name.Equals("rage")).FirstOrDefaultAsync();
 
                 IList<Session> sessions = new List<Session>
                                           {
@@ -237,16 +233,11 @@ namespace SocialGamificationAsset.Models
         {
             if (!_context.Alliances.Any())
             {
-                var mayur = await _context.Players.Where(a => a.Username.Equals("mayur"))
-                                          .FirstOrDefaultAsync();
-                var matt = await _context.Players.Where(a => a.Username.Equals("matt"))
-                                         .FirstOrDefaultAsync();
-                var jack = await _context.Players.Where(a => a.Username.Equals("jack"))
-                                         .FirstOrDefaultAsync();
-                var kam = await _context.Players.Where(a => a.Username.Equals("kam"))
-                                        .FirstOrDefaultAsync();
-                var ben = await _context.Players.Where(a => a.Username.Equals("ben"))
-                                        .FirstOrDefaultAsync();
+                var mayur = await _context.Players.Where(a => a.Username.Equals("mayur")).FirstOrDefaultAsync();
+                var matt = await _context.Players.Where(a => a.Username.Equals("matt")).FirstOrDefaultAsync();
+                var jack = await _context.Players.Where(a => a.Username.Equals("jack")).FirstOrDefaultAsync();
+                var kam = await _context.Players.Where(a => a.Username.Equals("kam")).FirstOrDefaultAsync();
+                var ben = await _context.Players.Where(a => a.Username.Equals("ben")).FirstOrDefaultAsync();
 
                 IList<Alliance> alliances = new List<Alliance>
                                             {
@@ -299,16 +290,11 @@ namespace SocialGamificationAsset.Models
         {
             if (!_context.CustomData.Any())
             {
-                var mayur = await _context.Players.Where(a => a.Username.Equals("mayur"))
-                                          .FirstOrDefaultAsync();
-                var matt = await _context.Players.Where(a => a.Username.Equals("matt"))
-                                         .FirstOrDefaultAsync();
-                var jack = await _context.Players.Where(a => a.Username.Equals("jack"))
-                                         .FirstOrDefaultAsync();
-                var kam = await _context.Players.Where(a => a.Username.Equals("kam"))
-                                        .FirstOrDefaultAsync();
-                var ben = await _context.Players.Where(a => a.Username.Equals("ben"))
-                                        .FirstOrDefaultAsync();
+                var mayur = await _context.Players.Where(a => a.Username.Equals("mayur")).FirstOrDefaultAsync();
+                var matt = await _context.Players.Where(a => a.Username.Equals("matt")).FirstOrDefaultAsync();
+                var jack = await _context.Players.Where(a => a.Username.Equals("jack")).FirstOrDefaultAsync();
+                var kam = await _context.Players.Where(a => a.Username.Equals("kam")).FirstOrDefaultAsync();
+                var ben = await _context.Players.Where(a => a.Username.Equals("ben")).FirstOrDefaultAsync();
 
                 IList<CustomData> customData = new List<CustomData>
                                                {

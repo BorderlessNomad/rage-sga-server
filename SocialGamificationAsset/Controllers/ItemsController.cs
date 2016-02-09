@@ -25,9 +25,11 @@ namespace SocialGamificationAsset.Controllers
         [HttpGet("", Name = "GetItems")]
         public async Task<IList<Item>> GetItems()
         {
-            IList<Item> items = await this._context.Items.Where(i => i.ActorId.Equals(this.session.Player.Id))
-                                          .Include(i => i.Type)
-                                          .ToListAsync();
+            IList<Item> items =
+                await
+                this._context.Items.Where(i => i.ActorId.Equals(this.session.Player.Id))
+                    .Include(i => i.Type)
+                    .ToListAsync();
 
             return items;
         }
@@ -64,13 +66,13 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest("Invalid Item Type");
             }
 
-            var total = await this._context.Items.Where(i => i.ActorId.Equals(this.session.Player.Id))
-                                  .Where(i => i.ItemTypeId.Equals(type.Id))
-                                  .GroupBy(i => i.ItemTypeId)
-                                  .Select(
-                                      g =>
-                                      new { Total = g.Sum(i => i.Quantity), LastUpdated = g.Max(i => i.UpdatedDate) })
-                                  .FirstOrDefaultAsync();
+            var total =
+                await
+                this._context.Items.Where(i => i.ActorId.Equals(this.session.Player.Id))
+                    .Where(i => i.ItemTypeId.Equals(type.Id))
+                    .GroupBy(i => i.ItemTypeId)
+                    .Select(g => new { Total = g.Sum(i => i.Quantity), LastUpdated = g.Max(i => i.UpdatedDate) })
+                    .FirstOrDefaultAsync();
 
             return
                 this.Ok(
@@ -94,9 +96,7 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest(this.ModelState);
             }
 
-            var item = await this._context.Items.Where(i => i.Id.Equals(id))
-                                 .Include(i => i.Type)
-                                 .FirstOrDefaultAsync();
+            var item = await this._context.Items.Where(i => i.Id.Equals(id)).Include(i => i.Type).FirstOrDefaultAsync();
 
             if (item == null)
             {
@@ -116,8 +116,7 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest(this.ModelState);
             }
 
-            var itemType = await this._context.ItemTypes.Where(i => i.Id.Equals(id))
-                                     .FirstOrDefaultAsync();
+            var itemType = await this._context.ItemTypes.Where(i => i.Id.Equals(id)).FirstOrDefaultAsync();
 
             if (itemType == null)
             {
@@ -217,8 +216,7 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest(this.ModelState);
             }
 
-            var type = await this._context.ItemTypes.Where(t => t.Name.Equals(itemType.Name))
-                                 .FirstOrDefaultAsync();
+            var type = await this._context.ItemTypes.Where(t => t.Name.Equals(itemType.Name)).FirstOrDefaultAsync();
             if (type != null)
             {
                 return this.HttpBadRequest("ItemType '" + itemType.Name + "' already exists.");

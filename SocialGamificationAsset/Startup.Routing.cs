@@ -36,12 +36,7 @@ namespace SocialGamificationAsset
                     {
                         options.AddPolicy(
                             "AllowAll",
-                            builder =>
-                                {
-                                    builder.AllowAnyOrigin()
-                                           .AllowAnyMethod()
-                                           .AllowAnyHeader();
-                                });
+                            builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); });
                     });
         }
 

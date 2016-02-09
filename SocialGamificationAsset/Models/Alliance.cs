@@ -40,8 +40,10 @@ namespace SocialGamificationAsset.Models
 
         public static IList<Guid> AlliancesList(IList<Alliance> alliances, Guid actorId)
         {
-            var allianceIds = alliances.Select(alliance => alliance.RequesteeId.Equals(actorId) ? alliance.RequesterId : alliance.RequesteeId)
-                                       .ToList();
+            var allianceIds =
+                alliances.Select(
+                    alliance => alliance.RequesteeId.Equals(actorId) ? alliance.RequesterId : alliance.RequesteeId)
+                         .ToList();
 
             allianceIds.Distinct(); // Test this
 
@@ -50,8 +52,7 @@ namespace SocialGamificationAsset.Models
 
         public static IList<Guid> GetAllianceIds(SocialGamificationAssetContext db, Guid actorId)
         {
-            IList<Alliance> alliances = db.Alliances.Where(IsAlliance(actorId))
-                                          .ToList();
+            IList<Alliance> alliances = db.Alliances.Where(IsAlliance(actorId)).ToList();
 
             return AlliancesList(alliances, actorId);
         }
@@ -61,9 +62,7 @@ namespace SocialGamificationAsset.Models
             Guid actorId,
             AllianceState state = AllianceState.Accepted)
         {
-            IList<Alliance> alliances = db.Alliances.Where(IsAlliance(actorId))
-                                          .Where(f => f.State == state)
-                                          .ToList();
+            IList<Alliance> alliances = db.Alliances.Where(IsAlliance(actorId)).Where(f => f.State == state).ToList();
 
             return AlliancesList(alliances, actorId);
         }

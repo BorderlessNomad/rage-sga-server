@@ -92,8 +92,8 @@ namespace SocialGamificationAsset
         /// </summary>
         /// <param name="application">The application.</param>
         /// <param name="environment">
-        ///     The environment the <paramref name="application" /> is running under.
-        ///     This can be Development, Staging or Production by default.
+        ///     The environment the <paramref name="application" /> is running
+        ///     under. This can be Development, Staging or Production by default.
         /// </param>
         private static void ConfigureSecurity(IApplicationBuilder application, IHostingEnvironment environment)
         {
@@ -113,10 +113,7 @@ namespace SocialGamificationAsset
                 //      Note: You can view preloaded HSTS domains in Chrome here: chrome://net-internals/#hsts
                 //      https://developer.mozilla.org/en-US/docs/Web/Security/HTTP_strict_transport_security
                 //      http://www.troyhunt.com/2015/06/understanding-http-strict-transport.html
-                application.UseHsts(
-                    options => options.MaxAge(18 * 7)
-                                      .IncludeSubdomains()
-                                      .Preload());
+                application.UseHsts(options => options.MaxAge(18 * 7).IncludeSubdomains().Preload());
 
                 // Public-Key-Pins - Adds the Public-Key-Pins HTTP header to responses.
                 //      This HTTP header is only relevant if you are using TLS. It stops man-in-the-middle attacks by

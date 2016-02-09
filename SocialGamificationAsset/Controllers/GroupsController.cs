@@ -31,10 +31,12 @@ namespace SocialGamificationAsset.Controllers
         [HttpGet("", Name = "GetMyGroups")]
         public async Task<IActionResult> GetMyGroups()
         {
-            var groups = await this._context.Players.Where(p => p.Id.Equals(this.session.Player.Id))
-                                   .Include(p => p.Groups)
-                                   .Select(p => p.Groups)
-                                   .FirstOrDefaultAsync();
+            var groups =
+                await
+                this._context.Players.Where(p => p.Id.Equals(this.session.Player.Id))
+                    .Include(p => p.Groups)
+                    .Select(p => p.Groups)
+                    .FirstOrDefaultAsync();
 
             return this.Ok(groups);
         }
@@ -48,9 +50,8 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest(this.ModelState);
             }
 
-            var group = await this._context.Groups.Where(g => g.Id.Equals(id))
-                                  .Include(g => g.Players)
-                                  .FirstOrDefaultAsync();
+            var group =
+                await this._context.Groups.Where(g => g.Id.Equals(id)).Include(g => g.Players).FirstOrDefaultAsync();
 
             if (group == null)
             {
@@ -74,8 +75,7 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest("Id & Group.Id does not match.");
             }
 
-            this._context.Entry(group)
-                .State = EntityState.Modified;
+            this._context.Entry(group).State = EntityState.Modified;
 
             if (group.Players != null && group.Players.Count != 0)
             {

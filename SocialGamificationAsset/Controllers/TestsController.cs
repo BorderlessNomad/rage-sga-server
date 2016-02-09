@@ -82,8 +82,7 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest();
             }
 
-            this._context.Entry(test)
-                .State = EntityState.Modified;
+            this._context.Entry(test).State = EntityState.Modified;
 
             try
             {

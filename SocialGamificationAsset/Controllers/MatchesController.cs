@@ -35,11 +35,13 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(IList<Match>))]
         public async Task<IActionResult> GetOwnedMatches()
         {
-            IList<Match> matches = await this._context.MatchActors.Where(a => a.ActorId.Equals(this.session.Player.Id))
-                                             .Select(m => m.Match)
-                                             .Include(m => m.Tournament)
-                                             .Where(m => m.Tournament.OwnerId.Equals(this.session.Player.Id))
-                                             .ToListAsync();
+            IList<Match> matches =
+                await
+                this._context.MatchActors.Where(a => a.ActorId.Equals(this.session.Player.Id))
+                    .Select(m => m.Match)
+                    .Include(m => m.Tournament)
+                    .Where(m => m.Tournament.OwnerId.Equals(this.session.Player.Id))
+                    .ToListAsync();
 
             return this.Ok(matches);
         }
@@ -51,10 +53,12 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(IList<Match>))]
         public async Task<IActionResult> GetMyMatches()
         {
-            IList<Match> matches = await this._context.MatchActors.Where(a => a.ActorId.Equals(this.session.Player.Id))
-                                             .Select(m => m.Match)
-                                             .Include(m => m.Tournament)
-                                             .ToListAsync();
+            IList<Match> matches =
+                await
+                this._context.MatchActors.Where(a => a.ActorId.Equals(this.session.Player.Id))
+                    .Select(m => m.Match)
+                    .Include(m => m.Tournament)
+                    .ToListAsync();
 
             return this.Ok(matches);
         }
@@ -69,9 +73,8 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest(this.ModelState);
             }
 
-            var match = await this._context.Matches.Where(m => m.Id.Equals(id))
-                                  .Include(m => m.Tournament)
-                                  .FirstOrDefaultAsync();
+            var match =
+                await this._context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament).FirstOrDefaultAsync();
 
             if (match == null)
             {
@@ -91,9 +94,8 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest(this.ModelState);
             }
 
-            IList<MatchActor> matchActors = await this._context.MatchActors.Where(a => a.MatchId.Equals(id))
-                                                      .Include(a => a.Actor)
-                                                      .ToListAsync();
+            IList<MatchActor> matchActors =
+                await this._context.MatchActors.Where(a => a.MatchId.Equals(id)).Include(a => a.Actor).ToListAsync();
 
             if (matchActors == null || matchActors.Count < 1)
             {
@@ -113,22 +115,20 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest(this.ModelState);
             }
 
-            var match = await this._context.Matches.Where(m => m.Id.Equals(id))
-                                  .Include(m => m.Actors)
-                                  .FirstOrDefaultAsync();
+            var match =
+                await this._context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Actors).FirstOrDefaultAsync();
             if (match == null)
             {
                 return this.HttpNotFound("No such Match found.");
             }
 
-            IList<Guid> matchActors = match.Actors.AsEnumerable()
-                                           .Select(a => a.Id)
-                                           .ToList();
+            IList<Guid> matchActors = match.Actors.AsEnumerable().Select(a => a.Id).ToList();
 
             IList<MatchRound> matchRounds =
-                await this._context.MatchRounds.Where(r => matchActors.Contains(r.MatchActorId))
-                          .OrderBy(r => r.RoundNumber)
-                          .ToListAsync();
+                await
+                this._context.MatchRounds.Where(r => matchActors.Contains(r.MatchActorId))
+                    .OrderBy(r => r.RoundNumber)
+                    .ToListAsync();
 
             IList<MatchRoundResponse> matchRoundResponse = new List<MatchRoundResponse>();
             foreach (var round in matchRounds)
@@ -178,9 +178,9 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest(this.ModelState);
             }
 
-            var match = await this._context.Matches.Where(m => m.Id.Equals(id))
-                                  .Include(m => m.Tournament.Owner)
-                                  .FirstOrDefaultAsync();
+            var match =
+                await
+                this._context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament.Owner).FirstOrDefaultAsync();
 
             if (match == null)
             {
@@ -200,9 +200,11 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest(this.ModelState);
             }
 
-            var match = await this._context.Matches.Where(m => m.Id.Equals(id) && m.IsFinished.Equals(false))
-                                  .Include(m => m.Actors)
-                                  .FirstOrDefaultAsync();
+            var match =
+                await
+                this._context.Matches.Where(m => m.Id.Equals(id) && m.IsFinished.Equals(false))
+                    .Include(m => m.Actors)
+                    .FirstOrDefaultAsync();
             if (match == null)
             {
                 return this.HttpNotFound("No running Match found.");
@@ -212,9 +214,11 @@ namespace SocialGamificationAsset.Controllers
             {
                 if (actor.ActorId.Equals(roundForm.ActorId))
                 {
-                    var round = await this._context.MatchRounds.Where(r => r.MatchActorId.Equals(actor.Id))
-                                          .Where(r => r.RoundNumber.Equals(roundForm.RoundNumber))
-                                          .FirstOrDefaultAsync();
+                    var round =
+                        await
+                        this._context.MatchRounds.Where(r => r.MatchActorId.Equals(actor.Id))
+                            .Where(r => r.RoundNumber.Equals(roundForm.RoundNumber))
+                            .FirstOrDefaultAsync();
                     if (round == null)
                     {
                         return
@@ -222,8 +226,7 @@ namespace SocialGamificationAsset.Controllers
                                 "No Round #'" + roundForm.RoundNumber + "' found for Actor '" + roundForm.ActorId + "'");
                     }
 
-                    this._context.Entry(round)
-                        .State = EntityState.Modified;
+                    this._context.Entry(round).State = EntityState.Modified;
                     round.Score = roundForm.Score;
                     round.DateScore = DateTime.Now;
 
@@ -258,8 +261,7 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest();
             }
 
-            this._context.Entry(match)
-                .State = EntityState.Modified;
+            this._context.Entry(match).State = EntityState.Modified;
 
             try
             {

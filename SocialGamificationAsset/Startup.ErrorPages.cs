@@ -13,8 +13,8 @@ namespace SocialGamificationAsset
         /// </summary>
         /// <param name="application">The application.</param>
         /// <param name="environment">
-        ///     The environment the <paramref name="application" /> is running under.
-        ///     This can be Development, Staging or Production by default.
+        ///     The environment the <paramref name="application" /> is running
+        ///     under. This can be Development, Staging or Production by default.
         /// </param>
         private static void ConfigureErrorPages(IApplicationBuilder application, IHostingEnvironment environment)
         {
@@ -38,13 +38,13 @@ namespace SocialGamificationAsset
         }
 
         /// <summary>
-        ///     Configures the 404 Not Found error page for the application. Used when
-        ///     no other route matches.
+        ///     Configures the 404 Not Found error page for the application. Used
+        ///     when no other route matches.
         /// </summary>
         /// <param name="application">The application.</param>
         /// <param name="environment">
-        ///     The environment the <paramref name="application" /> is running under.
-        ///     This can be Development, Staging or Production by default.
+        ///     The environment the <paramref name="application" /> is running
+        ///     under. This can be Development, Staging or Production by default.
         /// </param>
         private static void Configure404NotFoundErrorPage(
             IApplicationBuilder application,

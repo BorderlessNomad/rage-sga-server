@@ -57,8 +57,7 @@ namespace SocialGamificationAsset.Controllers
                 return this.HttpBadRequest(this.ModelState);
             }
 
-            var checkRole = await this._context.Roles.Where(r => r.Name.Equals(role.Name))
-                                      .FirstOrDefaultAsync();
+            var checkRole = await this._context.Roles.Where(r => r.Name.Equals(role.Name)).FirstOrDefaultAsync();
             if (checkRole != null)
             {
                 return this.HttpBadRequest("Role '" + checkRole.Name + "' already exists.");

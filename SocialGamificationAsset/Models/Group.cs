@@ -38,26 +38,22 @@ namespace SocialGamificationAsset.Models
             }
             else
             {
-                query = query.Where(g => g.Id != group.Id)
-                             .Where(g => g.Type == GroupVisibility.Public);
+                query = query.Where(g => g.Id != group.Id).Where(g => g.Type == GroupVisibility.Public);
             }
 
             // CustomData conditions
             var cQuery = Models.CustomData.ConditionBuilder(db, customData, CustomDataType.Group);
-            IList<Guid> similarGroups = await cQuery.Select(c => c.ObjectId)
-                                                    .Distinct()
-                                                    .ToListAsync();
+            IList<Guid> similarGroups = await cQuery.Select(c => c.ObjectId).Distinct().ToListAsync();
 
             // Check if Group satisfy CustomData constraints
-            IList<Group> groups = await query.Where(g => similarGroups.Contains(g.Id))
-                                             .ToListAsync();
+            IList<Group> groups = await query.Where(g => similarGroups.Contains(g.Id)).ToListAsync();
 
             return Helper.Shuffle(groups, limit);
         }
 
         /// <summary>
-        ///     Create the group for the first time. Needs to populate the fake actor
-        ///     and get the list of player actors.
+        ///     Create the group for the first time. Needs to populate the fake
+        ///     actor and get the list of player actors.
         /// </summary>
         public void AddPlayers(SocialGamificationAssetContext db, ICollection<Player> actorsList)
         {
@@ -67,11 +63,9 @@ namespace SocialGamificationAsset.Models
                 return;
             }
 
-            var actorIds = actorsList.Select(a => a.Id)
-                                     .ToList();
+            var actorIds = actorsList.Select(a => a.Id).ToList();
 
-            var actors = db.Players.Where(a => actorIds.Contains(a.Id))
-                           .ToList();
+            var actors = db.Players.Where(a => actorIds.Contains(a.Id)).ToList();
 
             this.Players = new List<Player>(actors);
         }

@@ -59,13 +59,10 @@ namespace SocialGamificationAsset.Models
 
             // CustomData conditions
             var cQuery = Models.CustomData.ConditionBuilder(db, customData, CustomDataType.Player);
-            IList<Guid> similarPlayers = await cQuery.Select(c => c.ObjectId)
-                                                     .Distinct()
-                                                     .ToListAsync();
+            IList<Guid> similarPlayers = await cQuery.Select(c => c.ObjectId).Distinct().ToListAsync();
 
             // Check if Players satisfy CustomData constraints
-            IList<Player> players = await query.Where(p => similarPlayers.Contains(p.Id))
-                                               .ToListAsync();
+            IList<Player> players = await query.Where(p => similarPlayers.Contains(p.Id)).ToListAsync();
 
             return Helper.Shuffle(players, limit);
         }
@@ -78,8 +75,7 @@ namespace SocialGamificationAsset.Models
 
         public static async Task<bool> ExistsUsername(SocialGamificationAssetContext db, string username)
         {
-            var player = await db.Players.Where(p => p.Username.Equals(username))
-                                 .FirstOrDefaultAsync();
+            var player = await db.Players.Where(p => p.Username.Equals(username)).FirstOrDefaultAsync();
 
             if (player != null)
             {
@@ -97,8 +93,7 @@ namespace SocialGamificationAsset.Models
 
         public static async Task<bool> ExistsEmail(SocialGamificationAssetContext db, string email)
         {
-            var player = await db.Players.Where(p => p.Email.Equals(email))
-                                 .FirstOrDefaultAsync();
+            var player = await db.Players.Where(p => p.Email.Equals(email)).FirstOrDefaultAsync();
 
             return player != null;
         }
@@ -129,12 +124,12 @@ namespace SocialGamificationAsset.Models
 
         public static async Task<Session> GetSession(SocialGamificationAssetContext db, Guid playerId)
         {
-            var session = await db.Players.Where(p => p.Id.Equals(playerId))
-                                  .Include(
-                                      p => p.Sessions.Where(s => s.IsExpired.Equals(false))
-                                            .OrderByDescending(s => s.UpdatedDate))
-                                  .Select(p => p.Sessions)
-                                  .FirstOrDefaultAsync() as Session;
+            var session =
+                await
+                db.Players.Where(p => p.Id.Equals(playerId))
+                  .Include(p => p.Sessions.Where(s => s.IsExpired.Equals(false)).OrderByDescending(s => s.UpdatedDate))
+                  .Select(p => p.Sessions)
+                  .FirstOrDefaultAsync() as Session;
 
             return session;
         }

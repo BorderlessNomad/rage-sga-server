@@ -7,11 +7,11 @@ namespace SocialGamificationAsset
         /// <summary>
         ///     <para>
         ///         Configures caching for the application. Registers the
-        ///         <see cref="IDistrbutedCache" /> and <see cref="IMemoryCache" /> types
-        ///         with the <paramref name="services" /> collection or IoC container. The
-        ///         <see cref="IDistrbutedCache" /> is intended to be used in cloud hosted
-        ///         scenarios where there is a shared cache, which is shared between
-        ///         multiple instances of the application. Use the
+        ///         <see cref="IDistrbutedCache" /> and <see cref="IMemoryCache" />
+        ///         types with the <paramref name="services" /> collection or IoC
+        ///         container. The <see cref="IDistrbutedCache" /> is intended to be
+        ///         used in cloud hosted scenarios where there is a shared cache, which
+        ///         is shared between multiple instances of the application. Use the
         ///         <see cref="IMemoryCache" />
         ///     </para>
         ///     <para>otherwise.</para>

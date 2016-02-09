@@ -10,19 +10,19 @@ namespace SocialGamificationAsset
         private const string LoggingConfigurationSectionName = "Logging";
 
         /// <summary>
-        ///     Configure tools used to help with logging <see langword="internal" />
-        ///     <paramref name="application" /> events. See
-        ///     http://docs.asp.net/en/latest/fundamentals/logging.html
+        ///     Configure tools used to help with logging
+        ///     <see langword="internal" /> <paramref name="application" /> events.
+        ///     See http://docs.asp.net/en/latest/fundamentals/logging.html
         /// </summary>
         /// <param name="application">The application.</param>
         /// <param name="environment">
-        ///     The environment the <paramref name="application" /> is running under.
-        ///     This can be Development, Staging or Production by default.
+        ///     The environment the <paramref name="application" /> is running
+        ///     under. This can be Development, Staging or Production by default.
         /// </param>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="configuration">
-        ///     Gets or sets the <paramref name="application" /> configuration, where
-        ///     key value pair settings are stored.
+        ///     Gets or sets the <paramref name="application" /> configuration,
+        ///     where key value pair settings are stored.
         /// </param>
         private static void ConfigureLogging(
             IApplicationBuilder application,

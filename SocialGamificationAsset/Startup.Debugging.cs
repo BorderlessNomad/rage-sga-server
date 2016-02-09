@@ -31,8 +31,8 @@ namespace SocialGamificationAsset
         /// </summary>
         /// <param name="application">The application.</param>
         /// <param name="environment">
-        ///     The environment the <paramref name="application" /> is running under.
-        ///     This can be Development, Staging or Production by default.
+        ///     The environment the <paramref name="application" /> is running
+        ///     under. This can be Development, Staging or Production by default.
         /// </param>
         private static void ConfigureDebugging(IApplicationBuilder application, IHostingEnvironment environment)
         {

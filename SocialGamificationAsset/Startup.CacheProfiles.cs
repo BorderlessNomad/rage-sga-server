@@ -8,7 +8,8 @@ namespace SocialGamificationAsset
     public partial class Startup
     {
         /// <summary>
-        ///     Controls how controller actions cache content in one central location.
+        ///     Controls how controller actions cache content in one central
+        ///     location.
         /// </summary>
         /// <param name="cacheProfiles">
         ///     The settings for the <see cref="ResponseCacheAttribute" /> 's.

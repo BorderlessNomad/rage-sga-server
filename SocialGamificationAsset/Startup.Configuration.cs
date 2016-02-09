@@ -6,8 +6,8 @@ namespace SocialGamificationAsset
     public partial class Startup
     {
         /// <summary>
-        ///     Creates and configures the application configuration, where key value
-        ///     pair settings are stored. See
+        ///     Creates and configures the application configuration, where key
+        ///     value pair settings are stored. See
         ///     http://docs.asp.net/en/latest/fundamentals/configuration.html
         ///     http://weblog.west-wind.com/posts/2015/Jun/03/Strongly-typed-AppSettings-Configuration-in-ASPNET-5
         /// </summary>

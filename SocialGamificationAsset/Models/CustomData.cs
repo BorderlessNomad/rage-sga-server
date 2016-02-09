@@ -61,15 +61,16 @@ namespace SocialGamificationAsset.Models
                 {
                     var data = sourceData[i];
 
-                    var customData = await db.CustomData.Where(c => c.Key.Equals(data.Key))
-                                             .Where(c => c.ObjectId.Equals(objectId))
-                                             .Where(c => c.ObjectType == objectType)
-                                             .FirstOrDefaultAsync();
+                    var customData =
+                        await
+                        db.CustomData.Where(c => c.Key.Equals(data.Key))
+                          .Where(c => c.ObjectId.Equals(objectId))
+                          .Where(c => c.ObjectType == objectType)
+                          .FirstOrDefaultAsync();
 
                     if (customData != null)
                     {
-                        db.Entry(customData)
-                          .State = EntityState.Modified;
+                        db.Entry(customData).State = EntityState.Modified;
                         customData.Value = data.Value;
                     }
                     else
