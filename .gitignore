@@ -2,3 +2,4 @@
 SocialGamificationAsset/Properties/PublishProfiles/
 SocialGamificationAsset/config.development.json
 artifacts/bin/SocialGamificationAsset/Debug/
+SocialGamificationAsset/project.lock.json
