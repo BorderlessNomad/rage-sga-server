@@ -39,25 +39,25 @@ namespace SocialGamificationAsset.Controllers
         // GET: api/alliances/pending
         // GET: api/alliances/declined
         [HttpGet]
-        [Route("{state?}", Name = "GetMyAlliances")]
-        public async Task<IActionResult> GetMyAlliances([FromRoute] string state = "accepted")
+        [Route("{state?}", Name = "GetAlliancesWithState")]
+        public async Task<IActionResult> GetAlliancesWithState([FromRoute] string state = "accepted")
         {
             if (session?.Player == null)
             {
                 return HttpNotFound("Invalid Session.");
             }
 
-            var allianceshipStatus = AllianceState.Accepted;
+            var allianceStatus = AllianceState.Accepted;
             if (state == "pending")
             {
-                allianceshipStatus = AllianceState.Pending;
+                allianceStatus = AllianceState.Pending;
             }
             else if (state == "declined")
             {
-                allianceshipStatus = AllianceState.Declined;
+                allianceStatus = AllianceState.Declined;
             }
 
-            IList<Actor> alliances = await session.Player.Alliances(_context, allianceshipStatus).ToListAsync();
+            IList<Actor> alliances = await session.Player.Alliances(_context, allianceStatus).ToListAsync();
 
             return Ok(alliances);
         }

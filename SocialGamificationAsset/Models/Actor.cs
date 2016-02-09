@@ -41,19 +41,14 @@ namespace SocialGamificationAsset.Models
             return Alliances(db, Id);
         }
 
-        public static IQueryable<Actor> Alliances(
-            SocialGamificationAssetContext db,
-            Guid id,
-            AllianceState state = AllianceState.Accepted)
+        public static IQueryable<Actor> Alliances(SocialGamificationAssetContext db, Guid id, AllianceState state)
         {
             var alliancesList = Alliance.GetAllianceIds(db, id, state);
 
             return db.Actors.Where(a => alliancesList.Contains(a.Id));
         }
 
-        public IQueryable<Actor> Alliances(
-            SocialGamificationAssetContext db,
-            AllianceState state = AllianceState.Accepted)
+        public IQueryable<Actor> Alliances(SocialGamificationAssetContext db, AllianceState state)
         {
             return Alliances(db, Id, state);
         }

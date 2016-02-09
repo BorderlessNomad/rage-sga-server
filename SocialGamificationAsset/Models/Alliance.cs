@@ -56,10 +56,7 @@ namespace SocialGamificationAsset.Models
             return AlliancesList(alliances, actorId);
         }
 
-        public static IList<Guid> GetAllianceIds(
-            SocialGamificationAssetContext db,
-            Guid actorId,
-            AllianceState state = AllianceState.Accepted)
+        public static IList<Guid> GetAllianceIds(SocialGamificationAssetContext db, Guid actorId, AllianceState state)
         {
             IList<Alliance> alliances = db.Alliances.Where(IsAlliance(actorId)).Where(f => f.State == state).ToList();
 
