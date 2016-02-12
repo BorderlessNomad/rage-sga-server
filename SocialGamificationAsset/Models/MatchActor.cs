@@ -33,7 +33,7 @@ namespace SocialGamificationAsset.Models
             }
             catch (DbEntityValidationException e)
             {
-                throw e;
+                throw Helper.ApiException(e);
             }
 
             for (var i = 1; i <= match.TotalRounds; ++i)
@@ -49,7 +49,7 @@ namespace SocialGamificationAsset.Models
                 }
                 catch (DbEntityValidationException e)
                 {
-                    throw e;
+                    throw Helper.ApiException(e);
                 }
             }
         }

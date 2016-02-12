@@ -397,7 +397,7 @@ namespace SocialGamificationAsset.Models
             }
             catch (DbUpdateException e)
             {
-                throw e;
+                throw Helper.ApiException(e);
             }
         }
     }

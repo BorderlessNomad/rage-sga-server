@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
 
 namespace SocialGamificationAsset.Models
 {
@@ -45,6 +48,16 @@ namespace SocialGamificationAsset.Models
         public static bool ValidatePassword(string password, string correctHash)
         {
             return BCrypt.Net.BCrypt.Verify(password, correctHash);
+        }
+
+        public static HttpResponseException ApiException(
+            Exception e,
+            HttpStatusCode StatusCode = HttpStatusCode.InternalServerError)
+        {
+            var response = new HttpResponseMessage(StatusCode);
+            response.Content = new StringContent(e.Message);
+
+            return new HttpResponseException(response);
         }
     }
 }

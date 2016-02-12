@@ -1,8 +1,5 @@
-﻿using System.Net;
-using System.Net.Http;
+﻿using System.Data.Entity.Infrastructure;
 using System.Threading.Tasks;
-using System.Web.Http;
-using System.Data.Entity.Infrastructure;
 
 using Microsoft.AspNet.Mvc;
 
@@ -39,10 +36,7 @@ namespace SocialGamificationAsset.Controllers
             }
             catch (DbUpdateException e)
             {
-                var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
-                response.Content = new StringContent(e.Message);
-
-                throw new HttpResponseException(response);
+                throw Helper.ApiException(e);
             }
         }
     }
