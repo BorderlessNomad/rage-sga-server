@@ -83,6 +83,10 @@ ehthumbs.db
 *.user
 *.lock.json
 *.exe
+
+# ==================== #
+# Application Specific #
+# ==================== #
 SocialGamificationAsset/Properties/PublishProfiles/
 SocialGamificationAsset/config.development.json
 artifacts/bin/SocialGamificationAsset/Debug/
