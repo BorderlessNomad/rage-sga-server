@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
 namespace SocialGamificationAsset.Models
 {
@@ -12,11 +13,13 @@ namespace SocialGamificationAsset.Models
 
         public Guid ActorId { get; set; }
 
+        [IgnoreDataMember]
         [ForeignKey("ActorId")]
         public virtual Actor Actor { get; set; }
 
         public Guid ActivityId { get; set; }
 
+        [IgnoreDataMember]
         [ForeignKey("ActivityId")]
         public virtual Activity Activity { get; set; }
     }
@@ -31,6 +34,7 @@ namespace SocialGamificationAsset.Models
 
         public Guid GoalId { get; set; }
 
+        [IgnoreDataMember]
         [ForeignKey("GoalId")]
         public virtual Goal Goal { get; set; }
     }

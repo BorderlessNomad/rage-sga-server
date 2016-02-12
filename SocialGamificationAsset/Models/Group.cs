@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Models
@@ -19,6 +20,7 @@ namespace SocialGamificationAsset.Models
 
         public GroupVisibility Type { get; set; }
 
+        [IgnoreDataMember]
         public virtual ICollection<Player> Players { get; set; }
 
         public static async Task<IList<Group>> LoadRandom(

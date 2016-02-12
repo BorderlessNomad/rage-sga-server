@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
 namespace SocialGamificationAsset.Models
 {
@@ -13,6 +14,7 @@ namespace SocialGamificationAsset.Models
         [ForeignKey("ActivityId")]
         public virtual Activity Activity { get; set; }
 
+        [IgnoreDataMember]
         public virtual ICollection<ActionRelation> Relations { get; set; }
     }
 
@@ -26,9 +28,11 @@ namespace SocialGamificationAsset.Models
 
         public Guid ActionId { get; set; }
 
+        [IgnoreDataMember]
         [ForeignKey("ActionId")]
         public virtual Action Action { get; set; }
 
+        [IgnoreDataMember]
         public virtual ICollection<Reward> AttributeChanges { get; set; }
     }
 
@@ -36,21 +40,25 @@ namespace SocialGamificationAsset.Models
     {
         public Guid ActorId { get; set; }
 
+        [IgnoreDataMember]
         [ForeignKey("ActorId")]
         public virtual Actor Actor { get; set; }
 
         public Guid ActionId { get; set; }
 
+        [IgnoreDataMember]
         [ForeignKey("ActionId")]
         public virtual Action Action { get; set; }
 
         public Guid ConcernId { get; set; }
 
+        [IgnoreDataMember]
         [ForeignKey("ConcernId")]
         public virtual ConcernMatrix Concern { get; set; }
 
         public Guid RewardResourceId { get; set; }
 
+        [IgnoreDataMember]
         [ForeignKey("RewardResourceId")]
         public virtual RewardResourceMatrix RewardResource { get; set; }
     }

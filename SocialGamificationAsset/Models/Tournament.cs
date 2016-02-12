@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
 namespace SocialGamificationAsset.Models
 {
@@ -14,6 +15,7 @@ namespace SocialGamificationAsset.Models
 
         public Guid OwnerId { get; set; }
 
+        [IgnoreDataMember]
         [ForeignKey("OwnerId")]
         public virtual Actor Owner { get; set; }
 
@@ -23,7 +25,7 @@ namespace SocialGamificationAsset.Models
 
         public DateTime? DateFinished { get; set; }
 
-        [NotMapped]
+        [IgnoreDataMember]
         public virtual ICollection<CustomData> CustomData { get; set; }
     }
 }

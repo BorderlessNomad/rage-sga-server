@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace SocialGamificationAsset.Models
 {
@@ -10,10 +11,13 @@ namespace SocialGamificationAsset.Models
 
         public string Image { get; set; }
 
+        [IgnoreDataMember]
         public virtual ICollection<AttributeType> Skills { get; set; }
 
+        [IgnoreDataMember]
         public virtual ICollection<Goal> Goals { get; set; }
 
+        [IgnoreDataMember]
         public virtual ICollection<Role> Roles { get; set; }
     }
 }

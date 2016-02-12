@@ -28,6 +28,10 @@ namespace SocialGamificationAsset.Controllers
             return _session ?? (_session = HttpContext.Session.GetObjectFromJson<Session>("__session"));
         }
 
+        /// <exception cref="System.Web.Http.HttpResponseException">
+        ///     Throws DB Exception when DbUpdateException (or for any member of
+        ///     DbUpdateException) is raised.
+        /// </exception>
         protected async Task SaveChangesAsync()
         {
             try
