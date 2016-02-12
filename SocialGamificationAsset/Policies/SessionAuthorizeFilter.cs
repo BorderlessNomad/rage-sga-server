@@ -62,10 +62,10 @@ namespace SocialGamificationAsset.Policies
             if (!headerExists)
             {
                 context.Result = new ContentResult
-                                 {
-                                     StatusCode = StatusCodes.Status401Unauthorized,
-                                     Content = "No " + SessionHeaderName + " found."
-                                 };
+                {
+                    StatusCode = StatusCodes.Status401Unauthorized,
+                    Content = "No " + SessionHeaderName + " found."
+                };
                 return;
             }
 
@@ -76,10 +76,10 @@ namespace SocialGamificationAsset.Policies
             if (!isValidGuid)
             {
                 context.Result = new ContentResult
-                                 {
-                                     StatusCode = StatusCodes.Status401Unauthorized,
-                                     Content = "Invalid " + SessionHeaderName + "."
-                                 };
+                {
+                    StatusCode = StatusCodes.Status401Unauthorized,
+                    Content = "Invalid " + SessionHeaderName + "."
+                };
                 return;
             }
 
@@ -95,10 +95,10 @@ namespace SocialGamificationAsset.Policies
             if (db == null)
             {
                 context.Result = new ContentResult
-                                 {
-                                     StatusCode = StatusCodes.Status503ServiceUnavailable,
-                                     Content = "Unable to find requested database service."
-                                 };
+                {
+                    StatusCode = StatusCodes.Status503ServiceUnavailable,
+                    Content = "Unable to find requested database service."
+                };
                 return;
             }
 

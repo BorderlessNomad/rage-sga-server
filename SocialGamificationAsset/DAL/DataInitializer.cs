@@ -37,11 +37,11 @@ namespace SocialGamificationAsset.Models
             if (!_context.Tests.Any())
             {
                 IList<Test> tests = new List<Test>
-                                    {
-                                        new Test { Field1 = "test1", Field2 = "test1" },
-                                        new Test { Field1 = "test2", Field2 = "test2" },
-                                        new Test { Field1 = "test3", Field2 = "test3" }
-                                    };
+                {
+                    new Test { Field1 = "test1", Field2 = "test1" },
+                    new Test { Field1 = "test2", Field2 = "test2" },
+                    new Test { Field1 = "test3", Field2 = "test3" }
+                };
 
                 _context.Tests.AddRange(tests);
 
@@ -56,18 +56,10 @@ namespace SocialGamificationAsset.Models
             if (!_context.GameRegistry.Any())
             {
                 IList<GameRegistry> games = new List<GameRegistry>
-                                            {
-                                                new GameRegistry
-                                                {
-                                                    Name = "ButtonGame",
-                                                    DeveloperName = "PlayGen"
-                                                },
-                                                new GameRegistry
-                                                {
-                                                    Name = "TankGame",
-                                                    DeveloperName = "PlayGen"
-                                                }
-                                            };
+                {
+                    new GameRegistry { Name = "ButtonGame", DeveloperName = "PlayGen" },
+                    new GameRegistry { Name = "TankGame", DeveloperName = "PlayGen" }
+                };
 
                 _context.GameRegistry.AddRange(games);
 
@@ -84,11 +76,11 @@ namespace SocialGamificationAsset.Models
             if (!_context.Alliances.Any())
             {
                 IList<Group> groups = new List<Group>
-                                      {
-                                          new Group { Name = "boardgame" },
-                                          new Group { Name = "gameideas" },
-                                          new Group { Name = "rage" }
-                                      };
+                {
+                    new Group { Name = "boardgame" },
+                    new Group { Name = "gameideas" },
+                    new Group { Name = "rage" }
+                };
 
                 _context.Groups.AddRange(groups);
 
@@ -107,119 +99,78 @@ namespace SocialGamificationAsset.Models
                 var rage = await _context.Groups.Where(a => a.Name.Equals("rage")).FirstOrDefaultAsync();
 
                 IList<Session> sessions = new List<Session>
-                                          {
-                                              new Session
-                                              {
-                                                  Player =
-                                                      new Player
-                                                      {
-                                                          Username = "admin",
-                                                          Password =
-                                                              Helper.HashPassword
-                                                              ("admin"),
-                                                          Role =
-                                                              AccountType.Admin
-                                                      }
-                                              },
-                                              new Session
-                                              {
-                                                  Player =
-                                                      new Player
-                                                      {
-                                                          Username = "playgen",
-                                                          Password =
-                                                              Helper.HashPassword
-                                                              ("playgen"),
-                                                          Role =
-                                                              AccountType.Admin
-                                                      }
-                                              },
-                                              new Session
-                                              {
-                                                  Player =
-                                                      new Player
-                                                      {
-                                                          Username = "mayur",
-                                                          Password =
-                                                              Helper.HashPassword
-                                                              ("mayur"),
-                                                          Groups =
-                                                              new List<Group>
-                                                              {
-                                                                  boardgame,
-                                                                  gameideas,
-                                                                  rage
-                                                              }
-                                                      }
-                                              },
-                                              new Session
-                                              {
-                                                  Player =
-                                                      new Player
-                                                      {
-                                                          Username = "jack",
-                                                          Password =
-                                                              Helper.HashPassword
-                                                              ("jack"),
-                                                          Groups =
-                                                              new List<Group>
-                                                              {
-                                                                  gameideas,
-                                                                  rage
-                                                              }
-                                                      }
-                                              },
-                                              new Session
-                                              {
-                                                  Player =
-                                                      new Player
-                                                      {
-                                                          Username = "matt",
-                                                          Password =
-                                                              Helper.HashPassword
-                                                              ("matt"),
-                                                          Groups =
-                                                              new List<Group>
-                                                              {
-                                                                  boardgame,
-                                                                  rage
-                                                              }
-                                                      }
-                                              },
-                                              new Session
-                                              {
-                                                  Player =
-                                                      new Player
-                                                      {
-                                                          Username = "ben",
-                                                          Password =
-                                                              Helper.HashPassword
-                                                              ("ben"),
-                                                          Groups =
-                                                              new List<Group>
-                                                              {
-                                                                  boardgame,
-                                                                  gameideas
-                                                              }
-                                                      }
-                                              },
-                                              new Session
-                                              {
-                                                  Player =
-                                                      new Player
-                                                      {
-                                                          Username = "kam",
-                                                          Password =
-                                                              Helper.HashPassword
-                                                              ("kam"),
-                                                          Groups =
-                                                              new List<Group>
-                                                              {
-                                                                  gameideas
-                                                              }
-                                                      }
-                                              }
-                                          };
+                {
+                    new Session
+                    {
+                        Player =
+                            new Player
+                            {
+                                Username = "admin",
+                                Password = Helper.HashPassword("admin"),
+                                Role = AccountType.Admin
+                            }
+                    },
+                    new Session
+                    {
+                        Player =
+                            new Player
+                            {
+                                Username = "playgen",
+                                Password = Helper.HashPassword("playgen"),
+                                Role = AccountType.Admin
+                            }
+                    },
+                    new Session
+                    {
+                        Player =
+                            new Player
+                            {
+                                Username = "mayur",
+                                Password = Helper.HashPassword("mayur"),
+                                Groups = new List<Group> { boardgame, gameideas, rage }
+                            }
+                    },
+                    new Session
+                    {
+                        Player =
+                            new Player
+                            {
+                                Username = "jack",
+                                Password = Helper.HashPassword("jack"),
+                                Groups = new List<Group> { gameideas, rage }
+                            }
+                    },
+                    new Session
+                    {
+                        Player =
+                            new Player
+                            {
+                                Username = "matt",
+                                Password = Helper.HashPassword("matt"),
+                                Groups = new List<Group> { boardgame, rage }
+                            }
+                    },
+                    new Session
+                    {
+                        Player =
+                            new Player
+                            {
+                                Username = "ben",
+                                Password = Helper.HashPassword("ben"),
+                                Groups = new List<Group> { boardgame, gameideas }
+                            }
+                    },
+                    new Session
+                    {
+                        Player =
+                            new Player
+                            {
+                                Username = "kam",
+                                Password = Helper.HashPassword("kam"),
+                                Groups = new List<Group> { gameideas }
+                            }
+                    }
+                };
 
                 _context.Sessions.AddRange(sessions);
 
@@ -240,43 +191,15 @@ namespace SocialGamificationAsset.Models
                 var ben = await _context.Players.Where(a => a.Username.Equals("ben")).FirstOrDefaultAsync();
 
                 IList<Alliance> alliances = new List<Alliance>
-                                            {
-                                                new Alliance
-                                                {
-                                                    RequesterId = mayur.Id,
-                                                    RequesteeId = matt.Id
-                                                },
-                                                new Alliance
-                                                {
-                                                    RequesterId = mayur.Id,
-                                                    RequesteeId = jack.Id
-                                                },
-                                                new Alliance
-                                                {
-                                                    RequesterId = jack.Id,
-                                                    RequesteeId = matt.Id
-                                                },
-                                                new Alliance
-                                                {
-                                                    RequesterId = jack.Id,
-                                                    RequesteeId = kam.Id
-                                                },
-                                                new Alliance
-                                                {
-                                                    RequesterId = matt.Id,
-                                                    RequesteeId = ben.Id
-                                                },
-                                                new Alliance
-                                                {
-                                                    RequesterId = kam.Id,
-                                                    RequesteeId = ben.Id
-                                                },
-                                                new Alliance
-                                                {
-                                                    RequesterId = kam.Id,
-                                                    RequesteeId = mayur.Id
-                                                }
-                                            };
+                {
+                    new Alliance { RequesterId = mayur.Id, RequesteeId = matt.Id },
+                    new Alliance { RequesterId = mayur.Id, RequesteeId = jack.Id },
+                    new Alliance { RequesterId = jack.Id, RequesteeId = matt.Id },
+                    new Alliance { RequesterId = jack.Id, RequesteeId = kam.Id },
+                    new Alliance { RequesterId = matt.Id, RequesteeId = ben.Id },
+                    new Alliance { RequesterId = kam.Id, RequesteeId = ben.Id },
+                    new Alliance { RequesterId = kam.Id, RequesteeId = mayur.Id }
+                };
 
                 _context.Alliances.AddRange(alliances);
 
@@ -297,82 +220,71 @@ namespace SocialGamificationAsset.Models
                 var ben = await _context.Players.Where(a => a.Username.Equals("ben")).FirstOrDefaultAsync();
 
                 IList<CustomData> customData = new List<CustomData>
-                                               {
-                                                   new CustomData
-                                                   {
-                                                       Key = "ip",
-                                                       Value = "127.0.0.1",
-                                                       ObjectId = mayur.Id,
-                                                       ObjectType =
-                                                           CustomDataType.Player
-                                                   },
-                                                   new CustomData
-                                                   {
-                                                       Key = "ip",
-                                                       Value = "127.0.0.1",
-                                                       ObjectId = matt.Id,
-                                                       ObjectType =
-                                                           CustomDataType.Player
-                                                   },
-                                                   new CustomData
-                                                   {
-                                                       Key = "ip",
-                                                       Value = "127.0.0.1",
-                                                       ObjectId = jack.Id,
-                                                       ObjectType =
-                                                           CustomDataType.Player
-                                                   },
-                                                   new CustomData
-                                                   {
-                                                       Key = "ip",
-                                                       Value = "127.0.0.1",
-                                                       ObjectId = ben.Id,
-                                                       ObjectType =
-                                                           CustomDataType.Player
-                                                   },
-                                                   new CustomData
-                                                   {
-                                                       Key = "video_id",
-                                                       Value = "1234",
-                                                       ObjectId = mayur.Id,
-                                                       ObjectType =
-                                                           CustomDataType.Player
-                                                   },
-                                                   new CustomData
-                                                   {
-                                                       Key = "video_id",
-                                                       Value = "1234",
-                                                       ObjectId = matt.Id,
-                                                       ObjectType =
-                                                           CustomDataType.Player
-                                                   },
-                                                   new CustomData
-                                                   {
-                                                       Key = "video_id",
-                                                       Value = "1234",
-                                                       ObjectId = jack.Id,
-                                                       ObjectType =
-                                                           CustomDataType.Player
-                                                   },
-                                                   new CustomData
-                                                   {
-                                                       Key = "chat_id",
-                                                       Value =
-                                                           "235f73ea-e54f-4150-8dc3-3eb9995d0728",
-                                                       ObjectId = mayur.Id,
-                                                       ObjectType =
-                                                           CustomDataType.Player
-                                                   },
-                                                   new CustomData
-                                                   {
-                                                       Key = "chat_id",
-                                                       Value =
-                                                           "235f73ea-e54f-4150-8dc3-3eb9995d0728",
-                                                       ObjectId = matt.Id,
-                                                       ObjectType =
-                                                           CustomDataType.Player
-                                                   }
-                                               };
+                {
+                    new CustomData
+                    {
+                        Key = "ip",
+                        Value = "127.0.0.1",
+                        ObjectId = mayur.Id,
+                        ObjectType = CustomDataType.Player
+                    },
+                    new CustomData
+                    {
+                        Key = "ip",
+                        Value = "127.0.0.1",
+                        ObjectId = matt.Id,
+                        ObjectType = CustomDataType.Player
+                    },
+                    new CustomData
+                    {
+                        Key = "ip",
+                        Value = "127.0.0.1",
+                        ObjectId = jack.Id,
+                        ObjectType = CustomDataType.Player
+                    },
+                    new CustomData
+                    {
+                        Key = "ip",
+                        Value = "127.0.0.1",
+                        ObjectId = ben.Id,
+                        ObjectType = CustomDataType.Player
+                    },
+                    new CustomData
+                    {
+                        Key = "video_id",
+                        Value = "1234",
+                        ObjectId = mayur.Id,
+                        ObjectType = CustomDataType.Player
+                    },
+                    new CustomData
+                    {
+                        Key = "video_id",
+                        Value = "1234",
+                        ObjectId = matt.Id,
+                        ObjectType = CustomDataType.Player
+                    },
+                    new CustomData
+                    {
+                        Key = "video_id",
+                        Value = "1234",
+                        ObjectId = jack.Id,
+                        ObjectType = CustomDataType.Player
+                    },
+                    new CustomData
+                    {
+                        Key = "chat_id",
+                        Value = "235f73ea-e54f-4150-8dc3-3eb9995d0728",
+                        ObjectId = mayur.Id,
+                        ObjectType = CustomDataType.Player
+                    },
+                    new CustomData
+                    {
+                        Key = "chat_id",
+                        Value = "235f73ea-e54f-4150-8dc3-3eb9995d0728",
+                        ObjectId = matt.Id,
+                        ObjectType = CustomDataType.Player
+                    }
+                };
 
                 _context.CustomData.AddRange(customData);
 

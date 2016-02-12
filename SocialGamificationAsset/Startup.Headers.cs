@@ -23,7 +23,9 @@ namespace SocialGamificationAsset
             _next = next;
         }
 
-        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="Exception">
+        ///     A <see langword="delegate" /> callback throws an exception.
+        /// </exception>
         public Task Invoke(HttpContext httpContext)
         {
             var headerValue = httpContext.Request.Headers["X-HTTP-Method-Override"];

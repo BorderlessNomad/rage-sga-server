@@ -119,7 +119,7 @@ namespace SocialGamificationAsset.Models
 
         public static async Task<Session> GetSession(SocialGamificationAssetContext db, Guid playerId)
         {
-            Session session =
+            var session =
                 await
                 db.Players.Where(p => p.Id.Equals(playerId))
                   .Include(p => p.Sessions.Where(s => s.IsExpired.Equals(false)).OrderByDescending(s => s.UpdatedDate))

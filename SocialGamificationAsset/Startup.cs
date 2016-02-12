@@ -57,11 +57,9 @@ namespace SocialGamificationAsset
         private readonly IConfiguration configuration;
 
         /// <summary>
-        ///     <para>
-        ///         The environment the application is running under. This can be
-        ///         Development, Staging or Production by default. To set the hosting
-        ///         environment on Windows:
-        ///     </para>
+        ///     The environment the application is running under. This can be
+        ///     Development, Staging or Production by default. To set the hosting
+        ///     environment on Windows:
         /// </summary>
         private readonly IHostingEnvironment hostingEnvironment;
 
@@ -100,7 +98,7 @@ namespace SocialGamificationAsset
                     });
 
             // Add many MVC services to the services container.
-            IMvcBuilder mvcBuilder = services.AddMvc(
+            var mvcBuilder = services.AddMvc(
                 mvcOptions =>
                     {
                         ConfigureCacheProfiles(mvcOptions.CacheProfiles, configuration);

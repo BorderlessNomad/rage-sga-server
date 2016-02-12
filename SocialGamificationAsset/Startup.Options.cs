@@ -3,7 +3,6 @@
 using Microsoft.AspNet.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.OptionsModel;
 
 namespace SocialGamificationAsset
 {
@@ -13,8 +12,8 @@ namespace SocialGamificationAsset
         ///     <para>
         ///         Configures the settings by binding the contents of the config.json
         ///         file to the specified Plain Old CLR Objects (POCO) and adding
-        ///         <see cref="IOptions{TOptions}" /> objects to the
-        ///         <paramref name="services" />
+        ///         <see cref="Microsoft.Extensions.OptionsModel.IOptions`1" /> objects
+        ///         to the <paramref name="services" />
         ///     </para>
         ///     <para>collection.</para>
         /// </summary>

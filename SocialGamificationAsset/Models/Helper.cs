@@ -5,6 +5,8 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
+using Crypto = BCrypt.Net.BCrypt;
+
 namespace SocialGamificationAsset.Models
 {
     public class Helper
@@ -37,17 +39,17 @@ namespace SocialGamificationAsset.Models
 
         public static string GenerateRandomSalt()
         {
-            return BCrypt.Net.BCrypt.GenerateSalt(12);
+            return Crypto.GenerateSalt(12);
         }
 
         public static string HashPassword(string plainTextPassword)
         {
-            return BCrypt.Net.BCrypt.HashPassword(plainTextPassword, GenerateRandomSalt());
+            return Crypto.HashPassword(plainTextPassword, GenerateRandomSalt());
         }
 
         public static bool ValidatePassword(string password, string correctHash)
         {
-            return BCrypt.Net.BCrypt.Verify(password, correctHash);
+            return Crypto.Verify(password, correctHash);
         }
 
         public static HttpResponseException ApiException(

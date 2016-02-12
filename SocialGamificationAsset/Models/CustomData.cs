@@ -74,12 +74,12 @@ namespace SocialGamificationAsset.Models
                     else
                     {
                         customData = new CustomData
-                                     {
-                                         Key = data.Key,
-                                         Value = data.Value,
-                                         ObjectId = objectId,
-                                         ObjectType = objectType
-                                     };
+                        {
+                            Key = data.Key,
+                            Value = data.Value,
+                            ObjectId = objectId,
+                            ObjectType = objectType
+                        };
 
                         db.CustomData.Add(customData);
                     }

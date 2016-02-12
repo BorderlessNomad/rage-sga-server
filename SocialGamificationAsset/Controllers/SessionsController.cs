@@ -131,10 +131,10 @@ namespace SocialGamificationAsset.Controllers
             if (!Helper.ValidatePassword(login.Password, player.Password))
             {
                 return new ContentResult
-                       {
-                           StatusCode = StatusCodes.Status401Unauthorized,
-                           Content = "Invalid Login Details."
-                       };
+                {
+                    StatusCode = StatusCodes.Status401Unauthorized,
+                    Content = "Invalid Login Details."
+                };
             }
 
             var playerSession = new Session { Player = player };
