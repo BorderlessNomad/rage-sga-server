@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -116,15 +115,7 @@ namespace SocialGamificationAsset.Controllers
 
             var newAlliance = new Alliance { RequesterId = session.Player.Id, RequesteeId = allianceId };
 
-            _context.Alliances.Add(newAlliance);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException e)
-            {
-                throw e;
-            }
+            await SaveChangesAsync();
 
             return Ok(newAlliance);
         }
@@ -155,14 +146,8 @@ namespace SocialGamificationAsset.Controllers
             }
 
             _context.Alliances.Remove(alliance);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException e)
-            {
-                throw e;
-            }
+
+            await SaveChangesAsync();
 
             return Ok("Alliance Removed from the list.");
         }
@@ -175,11 +160,6 @@ namespace SocialGamificationAsset.Controllers
             }
 
             base.Dispose(disposing);
-        }
-
-        private bool AllianceExists(Guid id)
-        {
-            return _context.Alliances.Count(e => e.Id == id) > 0;
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -81,18 +80,7 @@ namespace SocialGamificationAsset.Controllers
                 group.AddPlayers(_context, group.Players);
             }
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (!GroupExists(id))
-                {
-                    return HttpNotFound("No Group Found.");
-                }
-                throw;
-            }
+            await SaveChangesAsync();
 
             return new HttpStatusCodeResult(StatusCodes.Status204NoContent);
         }
@@ -112,18 +100,8 @@ namespace SocialGamificationAsset.Controllers
             }
 
             _context.Groups.Add(group);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (GroupExists(group.Id))
-                {
-                    return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                throw;
-            }
+
+            await SaveChangesAsync();
 
             return CreatedAtRoute("GetGroupInfo", new { id = group.Id }, group);
         }
@@ -145,18 +123,7 @@ namespace SocialGamificationAsset.Controllers
 
             group.IsEnabled = false;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (!GroupExists(id))
-                {
-                    return HttpNotFound("No Group Found.");
-                }
-                throw;
-            }
+            await SaveChangesAsync();
 
             return Ok(group);
         }
@@ -169,11 +136,6 @@ namespace SocialGamificationAsset.Controllers
             }
 
             base.Dispose(disposing);
-        }
-
-        private bool GroupExists(Guid id)
-        {
-            return _context.Groups.Count(e => e.Id == id) > 0;
         }
     }
 }

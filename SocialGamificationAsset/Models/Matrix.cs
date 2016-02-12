@@ -41,7 +41,7 @@ namespace SocialGamificationAsset.Models
     {
         HyperCooperation,
 
-        PDC, // TODO
+        Pdc, // TODO
 
         ContrariantCooperation
     }

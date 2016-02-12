@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
@@ -65,11 +64,6 @@ namespace SocialGamificationAsset.Controllers
             }
 
             base.Dispose(disposing);
-        }
-
-        private bool TournamentExists(Guid id)
-        {
-            return _context.Tournaments.Count(e => e.Id.Equals(id)) > 0;
         }
     }
 }

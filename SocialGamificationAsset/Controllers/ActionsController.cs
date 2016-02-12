@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Description;
 
-using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 
 using SocialGamificationAsset.Models;
@@ -64,18 +61,7 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Entry(test).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (!ActionExists(id))
-                {
-                    return HttpNotFound();
-                }
-                throw;
-            }
+            await SaveChangesAsync();
 
             return CreatedAtRoute("GetAction", new { id = test.Id }, test);
         }
@@ -91,18 +77,8 @@ namespace SocialGamificationAsset.Controllers
             }
 
             _context.Actions.Add(test);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (ActionExists(test.Id))
-                {
-                    return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                throw;
-            }
+
+            await SaveChangesAsync();
 
             return CreatedAtRoute("GetAction", new { id = test.Id }, test);
         }
@@ -123,7 +99,8 @@ namespace SocialGamificationAsset.Controllers
             }
 
             _context.Actions.Remove(test);
-            await _context.SaveChangesAsync();
+
+            await SaveChangesAsync();
 
             return Ok(test);
         }
@@ -136,11 +113,6 @@ namespace SocialGamificationAsset.Controllers
             }
 
             base.Dispose(disposing);
-        }
-
-        private bool ActionExists(Guid id)
-        {
-            return _context.Actions.Count(e => e.Id == id) > 0;
         }
     }
 }

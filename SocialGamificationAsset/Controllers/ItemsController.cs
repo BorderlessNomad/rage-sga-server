@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Description;
 
-using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 
 using SocialGamificationAsset.Models;
@@ -133,18 +131,19 @@ namespace SocialGamificationAsset.Controllers
                 return HttpBadRequest(ModelState);
             }
 
-			if ((!form.ItemTypeId.HasValue || form.ItemTypeId == Guid.Empty) && string.IsNullOrWhiteSpace(form.ItemTypeName))
-			{
-				return HttpBadRequest("Either ItemTypeId or ItemTypeName is required.");
-			}
+            if ((!form.ItemTypeId.HasValue || form.ItemTypeId == Guid.Empty)
+                && string.IsNullOrWhiteSpace(form.ItemTypeName))
+            {
+                return HttpBadRequest("Either ItemTypeId or ItemTypeName is required.");
+            }
 
             var searchByName = true;
             IQueryable<ItemType> query = _context.ItemTypes;
-			if (form.ItemTypeId.HasValue && form.ItemTypeId != Guid.Empty)
-			{
-				query = query.Where(t => t.Id.Equals(form.ItemTypeId));
-				searchByName = false;
-			}
+            if (form.ItemTypeId.HasValue && form.ItemTypeId != Guid.Empty)
+            {
+                query = query.Where(t => t.Id.Equals(form.ItemTypeId));
+                searchByName = false;
+            }
 
             if (searchByName && !string.IsNullOrWhiteSpace(form.ItemTypeName))
             {
@@ -179,19 +178,8 @@ namespace SocialGamificationAsset.Controllers
             }
 
             _context.Items.Add(item);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (ItemExists(item.Id))
-                {
-                    return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
-                }
 
-                throw;
-            }
+            await SaveChangesAsync();
 
             return CreatedAtRoute("GetItem", new { id = item.Id }, item);
         }
@@ -213,19 +201,8 @@ namespace SocialGamificationAsset.Controllers
             }
 
             _context.ItemTypes.Add(itemType);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (ItemTypeExists(itemType.Id))
 
-                {
-                    return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                throw;
-            }
+            await SaveChangesAsync();
 
             return CreatedAtRoute("GetItemType", new { id = itemType.Id }, itemType);
         }
@@ -238,16 +215,6 @@ namespace SocialGamificationAsset.Controllers
             }
 
             base.Dispose(disposing);
-        }
-
-        private bool ItemExists(Guid id)
-        {
-            return _context.Items.Count(e => e.Id == id) > 0;
-        }
-
-        private bool ItemTypeExists(Guid id)
-        {
-            return _context.ItemTypes.Count(e => e.Id == id) > 0;
         }
     }
 }

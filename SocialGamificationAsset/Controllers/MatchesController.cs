@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Data.Entity.Validation;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Description;
 
-using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 
 using SocialGamificationAsset.Models;
@@ -229,14 +226,7 @@ namespace SocialGamificationAsset.Controllers
                     round.Score = roundForm.Score;
                     round.DateScore = DateTime.Now;
 
-                    try
-                    {
-                        await _context.SaveChangesAsync();
-                    }
-                    catch (DbUpdateException e)
-                    {
-                        throw e;
-                    }
+                    await SaveChangesAsync();
 
                     return Ok(round);
                 }
@@ -262,19 +252,7 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Entry(match).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex)
-            {
-                if (!MatchExists(id))
-                {
-                    return HttpNotFound();
-                }
-
-                throw ex;
-            }
+            await SaveChangesAsync();
 
             return CreatedAtRoute("GetMatch", new { id = match.Id }, match);
         }
@@ -355,14 +333,7 @@ namespace SocialGamificationAsset.Controllers
 
                 _context.Tournaments.Add(tournament);
 
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbEntityValidationException e)
-                {
-                    throw e;
-                }
+                await SaveChangesAsync();
             }
 
             // Create Match
@@ -370,18 +341,7 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Matches.Add(match);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbEntityValidationException e)
-            {
-                if (MatchExists(match.Id))
-                {
-                    return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                throw e;
-            }
+            await SaveChangesAsync();
 
             if (quickMatch.Type == MatchType.Player)
             {
@@ -419,18 +379,7 @@ namespace SocialGamificationAsset.Controllers
 
             match.IsDeleted = true;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (MatchExists(match.Id))
-                {
-                    return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                throw;
-            }
+            await SaveChangesAsync();
 
             return Ok(match);
         }
@@ -443,11 +392,6 @@ namespace SocialGamificationAsset.Controllers
             }
 
             base.Dispose(disposing);
-        }
-
-        private bool MatchExists(Guid id)
-        {
-            return _context.Matches.Count(e => e.Id.Equals(id)) > 0;
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Description;
@@ -142,18 +141,7 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Sessions.Add(playerSession);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (SessionExists(playerSession.Id))
-                {
-                    return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                throw;
-            }
+            await SaveChangesAsync();
 
             return CreatedAtRoute("GetSession", new { id = playerSession.Id }, playerSession);
         }
@@ -200,18 +188,7 @@ namespace SocialGamificationAsset.Controllers
 
             playerSession.IsExpired = true;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (SessionExists(playerSession.Id))
-                {
-                    return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                throw;
-            }
+            await SaveChangesAsync();
 
             return Ok(playerSession);
         }
@@ -224,11 +201,6 @@ namespace SocialGamificationAsset.Controllers
             }
 
             base.Dispose(disposing);
-        }
-
-        private bool SessionExists(Guid id)
-        {
-            return _context.Sessions.Count(e => e.Id == id) > 0;
         }
     }
 }

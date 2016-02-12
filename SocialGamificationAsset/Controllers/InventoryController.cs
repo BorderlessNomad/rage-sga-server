@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNet.Http;
@@ -62,18 +60,7 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Entry(inventory).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (!InventoryExists(id))
-                {
-                    return HttpNotFound();
-                }
-                throw;
-            }
+            await SaveChangesAsync();
 
             return new HttpStatusCodeResult(StatusCodes.Status204NoContent);
         }
@@ -88,18 +75,8 @@ namespace SocialGamificationAsset.Controllers
             }
 
             _context.Inventory.Add(inventory);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (InventoryExists(inventory.Id))
-                {
-                    return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                throw;
-            }
+
+            await SaveChangesAsync();
 
             return CreatedAtRoute("GetInventory", new { id = inventory.Id }, inventory);
         }
@@ -120,7 +97,8 @@ namespace SocialGamificationAsset.Controllers
             }
 
             _context.Inventory.Remove(inventory);
-            await _context.SaveChangesAsync();
+
+            await SaveChangesAsync();
 
             return Ok(inventory);
         }
@@ -133,11 +111,6 @@ namespace SocialGamificationAsset.Controllers
             }
 
             base.Dispose(disposing);
-        }
-
-        private bool InventoryExists(Guid id)
-        {
-            return _context.Inventory.Count(e => e.Id == id) > 0;
         }
     }
 }

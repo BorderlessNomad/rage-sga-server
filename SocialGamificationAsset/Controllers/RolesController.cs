@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Description;
 
-using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 
 using SocialGamificationAsset.Models;
@@ -64,18 +62,8 @@ namespace SocialGamificationAsset.Controllers
             }
 
             _context.Roles.Add(role);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (RoleExists(role.Id))
-                {
-                    return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                throw;
-            }
+
+            await SaveChangesAsync();
 
             return CreatedAtRoute("GetRole", new { id = role.Id }, role);
         }
@@ -88,11 +76,6 @@ namespace SocialGamificationAsset.Controllers
             }
 
             base.Dispose(disposing);
-        }
-
-        private bool RoleExists(Guid id)
-        {
-            return _context.Roles.Count(e => e.Id == id) > 0;
         }
     }
 }

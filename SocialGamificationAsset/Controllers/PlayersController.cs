@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNet.Authorization;
-using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 
 using SocialGamificationAsset.Models;
@@ -110,18 +108,7 @@ namespace SocialGamificationAsset.Controllers
                 player.Password = Helper.HashPassword(form.Password);
             }
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (!PlayerExists(id))
-                {
-                    return HttpBadRequest("Invalid PlayerId");
-                }
-                throw;
-            }
+            await SaveChangesAsync();
 
             // Add or Update the CustomData
             await player.AddOrUpdateCustomData(_context, form.CustomData);
@@ -177,18 +164,7 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Sessions.Add(entity);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (PlayerExists(player.Id))
-                {
-                    return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                throw;
-            }
+            await SaveChangesAsync();
 
             // Add or Update the CustomData
             await player.AddOrUpdateCustomData(_context, register.CustomData);
@@ -213,18 +189,7 @@ namespace SocialGamificationAsset.Controllers
 
             player.IsEnabled = false;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (!PlayerExists(id))
-                {
-                    return HttpNotFound("No Player Found.");
-                }
-                throw;
-            }
+            await SaveChangesAsync();
 
             return Ok(player);
         }
@@ -237,11 +202,6 @@ namespace SocialGamificationAsset.Controllers
             }
 
             base.Dispose(disposing);
-        }
-
-        private bool PlayerExists(Guid id)
-        {
-            return _context.Players.Count(e => e.Id == id) > 0;
         }
     }
 }

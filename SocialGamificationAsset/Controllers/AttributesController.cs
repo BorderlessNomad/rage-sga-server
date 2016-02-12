@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Description;
 
-using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 
 using SocialGamificationAsset.Models;
@@ -65,18 +62,7 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Entry(test).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (!AttributeExists(id))
-                {
-                    return HttpNotFound();
-                }
-                throw;
-            }
+            await SaveChangesAsync();
 
             return CreatedAtRoute("GetAttribute", new { id = test.Id }, test);
         }
@@ -92,18 +78,8 @@ namespace SocialGamificationAsset.Controllers
             }
 
             _context.Attributes.Add(test);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (AttributeExists(test.Id))
-                {
-                    return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                throw;
-            }
+
+            await SaveChangesAsync();
 
             return CreatedAtRoute("GetAttribute", new { id = test.Id }, test);
         }
@@ -124,7 +100,8 @@ namespace SocialGamificationAsset.Controllers
             }
 
             _context.Attributes.Remove(test);
-            await _context.SaveChangesAsync();
+
+            await SaveChangesAsync();
 
             return Ok(test);
         }
@@ -137,11 +114,6 @@ namespace SocialGamificationAsset.Controllers
             }
 
             base.Dispose(disposing);
-        }
-
-        private bool AttributeExists(Guid id)
-        {
-            return _context.Attributes.Count(e => e.Id == id) > 0;
         }
     }
 }

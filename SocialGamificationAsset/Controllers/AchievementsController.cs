@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNet.Http;
@@ -61,19 +59,7 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Entry(achievement).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (!AchievementExists(id))
-                {
-                    return HttpNotFound();
-                }
-
-                throw;
-            }
+            await SaveChangesAsync();
 
             return new HttpStatusCodeResult(StatusCodes.Status204NoContent);
         }
@@ -88,18 +74,8 @@ namespace SocialGamificationAsset.Controllers
             }
 
             _context.Achievements.Add(achievement);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (AchievementExists(achievement.Id))
-                {
-                    return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                throw;
-            }
+
+            await SaveChangesAsync();
 
             return CreatedAtRoute("GetAchievement", new { id = achievement.Id }, achievement);
         }
@@ -120,19 +96,8 @@ namespace SocialGamificationAsset.Controllers
             }
 
             _context.Achievements.Remove(achievement);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (AchievementExists(achievement.Id))
-                {
-                    return new HttpStatusCodeResult(StatusCodes.Status409Conflict);
-                }
 
-                throw;
-            }
+            await SaveChangesAsync();
 
             return Ok(achievement);
         }
@@ -145,11 +110,6 @@ namespace SocialGamificationAsset.Controllers
             }
 
             base.Dispose(disposing);
-        }
-
-        private bool AchievementExists(Guid id)
-        {
-            return _context.Achievements.Count(e => e.Id == id) > 0;
         }
     }
 }
