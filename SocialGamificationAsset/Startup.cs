@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 
+using Serilog;
+
 namespace SocialGamificationAsset
 {
     /// <summary>
@@ -32,6 +34,8 @@ namespace SocialGamificationAsset
             this.applicationEnvironment = applicationEnvironment;
             this.hostingEnvironment = hostingEnvironment;
             configuration = ConfigureConfiguration(hostingEnvironment);
+
+            Log.Logger = new LoggerConfiguration().WriteTo.LiterateConsole().CreateLogger();
         }
 
         #endregion Constructors
