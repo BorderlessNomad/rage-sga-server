@@ -88,5 +88,6 @@ ehthumbs.db
 # Application Specific #
 # ==================== #
 SocialGamificationAsset/Properties/PublishProfiles/
-SocialGamificationAsset/config.development.json
+SocialGamificationAsset/config.*.json
 artifacts/bin/SocialGamificationAsset/Debug/
+artifacts/bin/SocialGamificationAsset/Release/PublishOutput/
