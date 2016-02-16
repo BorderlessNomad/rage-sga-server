@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Description;
 
@@ -20,13 +21,22 @@ namespace SocialGamificationAsset.Controllers
 
         // GET: api/goals
         [HttpGet]
-        public IEnumerable<Goal> GetGoal()
+        [ResponseType(typeof(IList<Goal>))]
+        public async Task<IActionResult> GetGoals()
         {
-            return _context.Goals;
+            IList<Goal> goals =
+                await
+                _context.ActorGoal.Where(g => g.ActorId.Equals(session.Player.Id))
+                        .Include(g => g.Goal)
+                        .Select(g => g.Goal)
+                        .ToListAsync();
+
+            return Ok(goals);
         }
 
         // GET: api/goals/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpGet("{id}", Name = "GetGoal")]
+        [ResponseType(typeof(Goal))]
         public async Task<IActionResult> GetGoal([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
@@ -46,6 +56,7 @@ namespace SocialGamificationAsset.Controllers
 
         // PUT: api/goals/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpPut("{id}")]
+        [ResponseType(typeof(Goal))]
         public async Task<IActionResult> PutGoal([FromRoute] Guid id, [FromBody] Goal test)
         {
             if (!ModelState.IsValid)
@@ -84,6 +95,7 @@ namespace SocialGamificationAsset.Controllers
 
         // DELETE: api/goals/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpDelete("{id}")]
+        [ResponseType(typeof(Goal))]
         public async Task<IActionResult> DeleteGoal([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)

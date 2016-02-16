@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.Description;
 
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
@@ -22,6 +23,7 @@ namespace SocialGamificationAsset.Controllers
         // GET: api/players/whoami
         [HttpGet]
         [Route("whoami")]
+        [ResponseType(typeof(Player))]
         public async Task<IActionResult> WhoAmI()
         {
             if (session?.Player != null)
@@ -34,6 +36,7 @@ namespace SocialGamificationAsset.Controllers
 
         // GET: api/players
         [HttpGet]
+        [ResponseType(typeof(IList<Player>))]
         public async Task<IActionResult> GetAllPlayers()
         {
             IList<Player> players = await _context.Players.ToListAsync();
@@ -48,6 +51,7 @@ namespace SocialGamificationAsset.Controllers
 
         // GET: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpGet("{id:Guid}", Name = "GetPlayer")]
+        [ResponseType(typeof(Player))]
         public async Task<IActionResult> GetPlayer([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
@@ -55,18 +59,68 @@ namespace SocialGamificationAsset.Controllers
                 return HttpBadRequest(ModelState);
             }
 
-            var player = await _context.Players.FindAsync(id);
-
+            var player = await _context.Players.Where(p => p.Id.Equals(id)).FirstOrDefaultAsync();
             if (player == null)
             {
-                return HttpBadRequest("Invalid PlayerId");
+                return HttpNotFound("No such Player found.");
             }
 
             return Ok(player);
         }
 
+        // GET: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8/achievements
+        [HttpGet("{id:Guid}", Name = "GetPlayerAchievements")]
+        [ResponseType(typeof(IList<Achievement>))]
+        public async Task<IActionResult> GetPlayerAchievements([FromRoute] Guid id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return HttpBadRequest(ModelState);
+            }
+
+            var query = _context.Players.Where(p => p.Id.Equals(id));
+
+            var player = await query.FirstOrDefaultAsync();
+            if (player == null)
+            {
+                return HttpNotFound("No such Player found.");
+            }
+
+            var achievements = await query.Include(p => p.Achievements).Select(p => p.Achievements).ToListAsync();
+
+            return Ok(achievements);
+        }
+
+        // GET: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8/goals
+        [HttpGet("{id:Guid}", Name = "GetPlayerGoals")]
+        [ResponseType(typeof(IList<ActorGoal>))]
+        public async Task<IActionResult> GetPlayerGoals([FromRoute] Guid id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return HttpBadRequest(ModelState);
+            }
+
+            var query = _context.Players.Where(p => p.Id.Equals(id));
+
+            var player = await query.FirstOrDefaultAsync();
+            if (player == null)
+            {
+                return HttpNotFound("No such Player found.");
+            }
+
+
+            IList<ActorGoal> goals =
+                await
+                _context.ActorGoal.Where(g => g.ActorId.Equals(session.Player.Id))
+                        .ToListAsync();
+
+            return Ok(goals);
+        }
+
         // PUT: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpPut("{id:Guid}")]
+        [ResponseType(typeof(Player))]
         public async Task<IActionResult> UpdatePlayer([FromRoute] Guid id, [FromBody] UserForm form)
         {
             if (!ModelState.IsValid)
@@ -119,6 +173,7 @@ namespace SocialGamificationAsset.Controllers
         // POST: api/players
         [HttpPost]
         [AllowAnonymous]
+        [ResponseType(typeof(Player))]
         public async Task<IActionResult> AddPlayer([FromBody] UserForm register)
         {
             if (!ModelState.IsValid)
@@ -174,6 +229,7 @@ namespace SocialGamificationAsset.Controllers
 
         // DELETE: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpDelete("{id:Guid}")]
+        [ResponseType(typeof(Player))]
         public async Task<IActionResult> DeletePlayer([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
