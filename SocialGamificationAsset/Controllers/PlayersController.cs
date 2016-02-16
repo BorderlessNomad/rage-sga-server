@@ -12,17 +12,29 @@ using SocialGamificationAsset.Models;
 
 namespace SocialGamificationAsset.Controllers
 {
+    /// <summary>
+    /// </summary>
     [Route("api/players")]
     public class PlayersController : ApiController
     {
+        /// <summary>
+        ///     <see cref="Player" /> API
+        /// </summary>
+        /// <param name="context"></param>
         public PlayersController(SocialGamificationAssetContext context)
             : base(context)
         {
         }
 
         // GET: api/players/whoami
-        [HttpGet]
-        [Route("whoami")]
+        /// <summary>
+        ///     Get <see cref="Player" /> Details
+        /// </summary>
+        /// <param name="id">GUID of <see cref="Player" /></param>
+        /// <returns>
+        /// </returns>
+        [HttpGet("")]
+        [HttpGet("whoami", Name = "WhoAmI")]
         [ResponseType(typeof(Player))]
         public async Task<IActionResult> WhoAmI()
         {
@@ -31,25 +43,16 @@ namespace SocialGamificationAsset.Controllers
                 return Ok(session.Player);
             }
 
-            return HttpNotFound("No Player Found.");
-        }
-
-        // GET: api/players
-        [HttpGet]
-        [ResponseType(typeof(IList<Player>))]
-        public async Task<IActionResult> GetAllPlayers()
-        {
-            IList<Player> players = await _context.Players.ToListAsync();
-
-            if (players == null || !players.Any())
-            {
-                return HttpNotFound("No Player Found.");
-            }
-
-            return Ok(players);
+            return HttpNotFound("No Player found.");
         }
 
         // GET: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
+        /// <summary>
+        ///     Get <see cref="Player" /> Details
+        /// </summary>
+        /// <param name="id">GUID of <see cref="Player" /></param>
+        /// <returns>
+        /// </returns>
         [HttpGet("{id:Guid}", Name = "GetPlayer")]
         [ResponseType(typeof(Player))]
         public async Task<IActionResult> GetPlayer([FromRoute] Guid id)
@@ -69,7 +72,13 @@ namespace SocialGamificationAsset.Controllers
         }
 
         // GET: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8/achievements
-        [HttpGet("{id:Guid}", Name = "GetPlayerAchievements")]
+        /// <summary>
+        ///     Get <see cref="Player" /> 's Achievements
+        /// </summary>
+        /// <param name="id">GUID of <see cref="Player" /></param>
+        /// <returns>
+        /// </returns>
+        [HttpGet("{id:Guid}/achievements", Name = "GetPlayerAchievements")]
         [ResponseType(typeof(IList<Achievement>))]
         public async Task<IActionResult> GetPlayerAchievements([FromRoute] Guid id)
         {
@@ -92,7 +101,13 @@ namespace SocialGamificationAsset.Controllers
         }
 
         // GET: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8/goals
-        [HttpGet("{id:Guid}", Name = "GetPlayerGoals")]
+        /// <summary>
+        ///     Get <see cref="Player" /> 's Goals
+        /// </summary>
+        /// <param name="id">GUID of <see cref="Player" /></param>
+        /// <returns>
+        /// </returns>
+        [HttpGet("{id:Guid}/goals", Name = "GetPlayerGoals")]
         [ResponseType(typeof(IList<ActorGoal>))]
         public async Task<IActionResult> GetPlayerGoals([FromRoute] Guid id)
         {
@@ -109,17 +124,21 @@ namespace SocialGamificationAsset.Controllers
                 return HttpNotFound("No such Player found.");
             }
 
-
             IList<ActorGoal> goals =
-                await
-                _context.ActorGoal.Where(g => g.ActorId.Equals(session.Player.Id))
-                        .ToListAsync();
+                await _context.ActorGoal.Where(g => g.ActorId.Equals(session.Player.Id)).ToListAsync();
 
             return Ok(goals);
         }
 
         // PUT: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
-        [HttpPut("{id:Guid}")]
+        /// <summary>
+        ///     Update <see cref="Player" /> 's information
+        /// </summary>
+        /// <param name="id">GUID of <see cref="Player" /></param>
+        /// <param name="form">Infomation to be updated</param>
+        /// <returns>
+        /// </returns>
+        [HttpPut("{id:Guid}", Name = "UpdatePlayer")]
         [ResponseType(typeof(Player))]
         public async Task<IActionResult> UpdatePlayer([FromRoute] Guid id, [FromBody] UserForm form)
         {
@@ -171,7 +190,13 @@ namespace SocialGamificationAsset.Controllers
         }
 
         // POST: api/players
-        [HttpPost]
+        /// <summary>
+        ///     Add new <see cref="Player" />
+        /// </summary>
+        /// <param name="register"><see cref="UserForm" /> details.</param>
+        /// <returns>
+        /// </returns>
+        [HttpPost("", Name = "AddPlayer")]
         [AllowAnonymous]
         [ResponseType(typeof(Player))]
         public async Task<IActionResult> AddPlayer([FromBody] UserForm register)
@@ -228,6 +253,12 @@ namespace SocialGamificationAsset.Controllers
         }
 
         // DELETE: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
+        /// <summary>
+        ///     Delete a <see cref="Player" />
+        /// </summary>
+        /// <param name="id">GUID of <see cref="Player" /></param>
+        /// <returns>
+        /// </returns>
         [HttpDelete("{id:Guid}")]
         [ResponseType(typeof(Player))]
         public async Task<IActionResult> DeletePlayer([FromRoute] Guid id)
