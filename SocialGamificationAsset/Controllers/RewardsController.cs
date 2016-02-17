@@ -34,52 +34,52 @@ namespace SocialGamificationAsset.Controllers
                 return HttpBadRequest(ModelState);
             }
 
-            var test = await _context.Rewards.FindAsync(id);
+            var reward = await _context.Rewards.FindAsync(id);
 
-            if (test == null)
+            if (reward == null)
             {
                 return HttpNotFound();
             }
 
-            return Ok(test);
+            return Ok(reward);
         }
 
         // PUT: api/rewards/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutReward([FromRoute] Guid id, [FromBody] Reward test)
+        public async Task<IActionResult> PutReward([FromRoute] Guid id, [FromBody] Reward reward)
         {
             if (!ModelState.IsValid)
             {
                 return HttpBadRequest(ModelState);
             }
 
-            if (id != test.Id)
+            if (id != reward.Id)
             {
                 return HttpBadRequest();
             }
 
-            _context.Entry(test).State = EntityState.Modified;
+            _context.Entry(reward).State = EntityState.Modified;
 
             await SaveChangesAsync();
 
-            return CreatedAtRoute("GetReward", new { id = test.Id }, test);
+            return CreatedAtRoute("GetReward", new { id = reward.Id }, reward);
         }
 
         // POST: api/rewards
         [HttpPost]
         [ResponseType(typeof(Reward))]
-        public async Task<IActionResult> PostReward([FromBody] Reward test)
+        public async Task<IActionResult> PostReward([FromBody] Reward reward)
         {
             if (!ModelState.IsValid)
             {
                 return HttpBadRequest(ModelState);
             }
 
-            _context.Rewards.Add(test);
+            _context.Rewards.Add(reward);
 
             await SaveChangesAsync();
 
-            return CreatedAtRoute("GetReward", new { id = test.Id }, test);
+            return CreatedAtRoute("GetReward", new { id = reward.Id }, reward);
         }
 
         // DELETE: api/rewards/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -91,17 +91,17 @@ namespace SocialGamificationAsset.Controllers
                 return HttpBadRequest(ModelState);
             }
 
-            var test = await _context.Rewards.FindAsync(id);
-            if (test == null)
+            var reward = await _context.Rewards.FindAsync(id);
+            if (reward == null)
             {
                 return HttpNotFound();
             }
 
-            _context.Rewards.Remove(test);
+            _context.Rewards.Remove(reward);
 
             await SaveChangesAsync();
 
-            return Ok(test);
+            return Ok(reward);
         }
 
         protected override void Dispose(bool disposing)

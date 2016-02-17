@@ -34,52 +34,52 @@ namespace SocialGamificationAsset.Controllers
                 return HttpBadRequest(ModelState);
             }
 
-            var test = await _context.Activities.FindAsync(id);
+            var activity = await _context.Activities.FindAsync(id);
 
-            if (test == null)
+            if (activity == null)
             {
                 return HttpNotFound();
             }
 
-            return Ok(test);
+            return Ok(activity);
         }
 
         // PUT: api/activities/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutActivity([FromRoute] Guid id, [FromBody] Activity test)
+        public async Task<IActionResult> PutActivity([FromRoute] Guid id, [FromBody] Activity activity)
         {
             if (!ModelState.IsValid)
             {
                 return HttpBadRequest(ModelState);
             }
 
-            if (id != test.Id)
+            if (id != activity.Id)
             {
                 return HttpBadRequest();
             }
 
-            _context.Entry(test).State = EntityState.Modified;
+            _context.Entry(activity).State = EntityState.Modified;
 
             await SaveChangesAsync();
 
-            return CreatedAtRoute("GetActivity", new { id = test.Id }, test);
+            return CreatedAtRoute("GetActivity", new { id = activity.Id }, activity);
         }
 
         // POST: api/activities
         [HttpPost]
         [ResponseType(typeof(Activity))]
-        public async Task<IActionResult> PostActivity([FromBody] Activity test)
+        public async Task<IActionResult> PostActivity([FromBody] Activity activity)
         {
             if (!ModelState.IsValid)
             {
                 return HttpBadRequest(ModelState);
             }
 
-            _context.Activities.Add(test);
+            _context.Activities.Add(activity);
 
             await SaveChangesAsync();
 
-            return CreatedAtRoute("GetActivity", new { id = test.Id }, test);
+            return CreatedAtRoute("GetActivity", new { id = activity.Id }, activity);
         }
 
         // DELETE: api/activities/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -91,17 +91,17 @@ namespace SocialGamificationAsset.Controllers
                 return HttpBadRequest(ModelState);
             }
 
-            var test = await _context.Activities.FindAsync(id);
-            if (test == null)
+            var activity = await _context.Activities.FindAsync(id);
+            if (activity == null)
             {
                 return HttpNotFound();
             }
 
-            _context.Activities.Remove(test);
+            _context.Activities.Remove(activity);
 
             await SaveChangesAsync();
 
-            return Ok(test);
+            return Ok(activity);
         }
 
         protected override void Dispose(bool disposing)

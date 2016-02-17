@@ -62,7 +62,7 @@ namespace SocialGamificationAsset.Controllers
                 return HttpBadRequest(ModelState);
             }
 
-            var player = await _context.Players.Where(p => p.Id.Equals(id)).FirstOrDefaultAsync();
+            var player = await _context.Players.FindAsync(id);
             if (player == null)
             {
                 return HttpNotFound("No such Player found.");
@@ -147,7 +147,7 @@ namespace SocialGamificationAsset.Controllers
                 return HttpBadRequest(ModelState);
             }
 
-            var player = await _context.Players.Where(p => p.Id.Equals(id)).FirstOrDefaultAsync();
+            var player = await _context.Players.FindAsync(id);
 
             if (player == null)
             {

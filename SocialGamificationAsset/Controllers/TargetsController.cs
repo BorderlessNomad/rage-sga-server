@@ -34,52 +34,52 @@ namespace SocialGamificationAsset.Controllers
                 return HttpBadRequest(ModelState);
             }
 
-            var test = await _context.Targets.FindAsync(id);
+            var target = await _context.Targets.FindAsync(id);
 
-            if (test == null)
+            if (target == null)
             {
                 return HttpNotFound();
             }
 
-            return Ok(test);
+            return Ok(target);
         }
 
         // PUT: api/targets/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTarget([FromRoute] Guid id, [FromBody] Target test)
+        public async Task<IActionResult> PutTarget([FromRoute] Guid id, [FromBody] Target target)
         {
             if (!ModelState.IsValid)
             {
                 return HttpBadRequest(ModelState);
             }
 
-            if (id != test.Id)
+            if (id != target.Id)
             {
                 return HttpBadRequest();
             }
 
-            _context.Entry(test).State = EntityState.Modified;
+            _context.Entry(target).State = EntityState.Modified;
 
             await SaveChangesAsync();
 
-            return CreatedAtRoute("GetTarget", new { id = test.Id }, test);
+            return CreatedAtRoute("GetTarget", new { id = target.Id }, target);
         }
 
         // POST: api/targets
         [HttpPost]
         [ResponseType(typeof(Target))]
-        public async Task<IActionResult> PostTarget([FromBody] Target test)
+        public async Task<IActionResult> PostTarget([FromBody] Target target)
         {
             if (!ModelState.IsValid)
             {
                 return HttpBadRequest(ModelState);
             }
 
-            _context.Targets.Add(test);
+            _context.Targets.Add(target);
 
             await SaveChangesAsync();
 
-            return CreatedAtRoute("GetTarget", new { id = test.Id }, test);
+            return CreatedAtRoute("GetTarget", new { id = target.Id }, target);
         }
 
         // DELETE: api/targets/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -91,17 +91,17 @@ namespace SocialGamificationAsset.Controllers
                 return HttpBadRequest(ModelState);
             }
 
-            var test = await _context.Targets.FindAsync(id);
-            if (test == null)
+            var target = await _context.Targets.FindAsync(id);
+            if (target == null)
             {
                 return HttpNotFound();
             }
 
-            _context.Targets.Remove(test);
+            _context.Targets.Remove(target);
 
             await SaveChangesAsync();
 
-            return Ok(test);
+            return Ok(target);
         }
 
         protected override void Dispose(bool disposing)

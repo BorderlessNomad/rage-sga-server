@@ -71,7 +71,7 @@ namespace SocialGamificationAsset.Controllers
                 return HttpBadRequest(ModelState);
             }
 
-            var actor = await _context.Actors.Where(a => a.Id.Equals(actorId)).FirstOrDefaultAsync();
+            var actor = await _context.Actors.FindAsync(actorId);
 
             if (actor == null)
             {
@@ -93,7 +93,7 @@ namespace SocialGamificationAsset.Controllers
                 return HttpBadRequest("Error with your session.");
             }
 
-            var actor = await _context.Actors.Where(a => a.Id.Equals(allianceId)).FirstOrDefaultAsync();
+            var actor = await _context.Actors.FindAsync(allianceId);
 
             if (actor == null)
             {
@@ -130,7 +130,7 @@ namespace SocialGamificationAsset.Controllers
                 return HttpBadRequest("Error with your session.");
             }
 
-            var actor = await _context.Actors.Where(a => a.Id.Equals(allianceId)).FirstOrDefaultAsync();
+            var actor = await _context.Actors.FindAsync(allianceId);
 
             if (actor == null)
             {

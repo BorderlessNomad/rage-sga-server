@@ -92,7 +92,6 @@ namespace SocialGamificationAsset.Controllers
             }
 
             var item = await _context.Items.Where(i => i.Id.Equals(id)).Include(i => i.Type).FirstOrDefaultAsync();
-
             if (item == null)
             {
                 return HttpNotFound("No such Item found.");
@@ -111,7 +110,7 @@ namespace SocialGamificationAsset.Controllers
                 return HttpBadRequest(ModelState);
             }
 
-            var itemType = await _context.ItemTypes.Where(i => i.Id.Equals(id)).FirstOrDefaultAsync();
+            var itemType = await _context.ItemTypes.FindAsync(id);
 
             if (itemType == null)
             {

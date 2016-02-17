@@ -34,52 +34,52 @@ namespace SocialGamificationAsset.Controllers
                 return HttpBadRequest(ModelState);
             }
 
-            var test = await _context.AttributeTypes.FindAsync(id);
+            var type = await _context.AttributeTypes.FindAsync(id);
 
-            if (test == null)
+            if (type == null)
             {
                 return HttpNotFound();
             }
 
-            return Ok(test);
+            return Ok(type);
         }
 
         // PUT: api/attributes/types/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAttributeType([FromRoute] Guid id, [FromBody] AttributeType test)
+        public async Task<IActionResult> PutAttributeType([FromRoute] Guid id, [FromBody] AttributeType type)
         {
             if (!ModelState.IsValid)
             {
                 return HttpBadRequest(ModelState);
             }
 
-            if (id != test.Id)
+            if (id != type.Id)
             {
                 return HttpBadRequest();
             }
 
-            _context.Entry(test).State = EntityState.Modified;
+            _context.Entry(type).State = EntityState.Modified;
 
             await SaveChangesAsync();
 
-            return CreatedAtRoute("GetAttributeType", new { id = test.Id }, test);
+            return CreatedAtRoute("GetAttributeType", new { id = type.Id }, type);
         }
 
         // POST: api/attributes/types
         [HttpPost]
         [ResponseType(typeof(AttributeType))]
-        public async Task<IActionResult> PostAttributeType([FromBody] AttributeType test)
+        public async Task<IActionResult> PostAttributeType([FromBody] AttributeType type)
         {
             if (!ModelState.IsValid)
             {
                 return HttpBadRequest(ModelState);
             }
 
-            _context.AttributeTypes.Add(test);
+            _context.AttributeTypes.Add(type);
 
             await SaveChangesAsync();
 
-            return CreatedAtRoute("GetAttributeType", new { id = test.Id }, test);
+            return CreatedAtRoute("GetAttributeType", new { id = type.Id }, type);
         }
 
         // DELETE: api/attributes/types/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -91,17 +91,17 @@ namespace SocialGamificationAsset.Controllers
                 return HttpBadRequest(ModelState);
             }
 
-            var test = await _context.AttributeTypes.FindAsync(id);
-            if (test == null)
+            var type = await _context.AttributeTypes.FindAsync(id);
+            if (type == null)
             {
                 return HttpNotFound();
             }
 
-            _context.AttributeTypes.Remove(test);
+            _context.AttributeTypes.Remove(type);
 
             await SaveChangesAsync();
 
-            return Ok(test);
+            return Ok(type);
         }
 
         protected override void Dispose(bool disposing)
