@@ -1,5 +1,10 @@
 {
-	"version": "1.0.0-*",
+    "version": "1.0.0-*",
+    "description": "",
+    "authors": [ "" ],
+    "tags": [ "" ],
+    "projectUrl": "",
+    "licenseUrl": "",
 	"compilationOptions": {
 		"emitEntryPoint": true
 	},
@@ -45,21 +50,21 @@
         "System.Linq": "4.0.0",
         "System.Linq.Queryable": "4.0.0"
     },
-	"commands": {
-		"gen": "Microsoft.Extensions.CodeGeneration",
-		"run": "run server.urls=http://localhost:5003",
-		"web": "Microsoft.AspNet.Server.Kestrel",
-		"kestrel": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.Kestrel --server.urls http://localhost:5004",
-		"weblistener": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.WebListener --server.urls http://localhost:5002"
-	},
-	"frameworks": {
-		"dnx451": {
-			"frameworkAssemblies": {
-				"System.Data": "4.0.0.0",
-				"System.Configuration": "4.0.0.0"
-			}
-		}
-	},
+    "commands": {
+        "gen": "Microsoft.Extensions.CodeGeneration",
+        "run": "run server.urls=http://localhost:5003",
+        "web": "Microsoft.AspNet.Server.Kestrel",
+        "kestrel": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.Kestrel --server.urls http://localhost:5004",
+        "weblistener": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.WebListener --server.urls http://localhost:5002"
+    },
+    "frameworks": {
+        "dnx451": {
+            "frameworkAssemblies": {
+                "System.Data": "4.0.0.0",
+                "System.Configuration": "4.0.0.0"
+            }
+        },
+    },
 	"exclude": [
 		"wwwroot",
 		"node_modules",
