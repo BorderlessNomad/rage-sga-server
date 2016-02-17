@@ -1,4 +1,5 @@
-﻿using System.Data.Entity.Infrastructure;
+﻿using System;
+using System.Data.Entity.Infrastructure;
 using System.Threading.Tasks;
 
 using Microsoft.AspNet.Mvc;
@@ -18,6 +19,11 @@ namespace SocialGamificationAsset.Controllers
 
         public ApiController(SocialGamificationAssetContext context)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             _context = context;
         }
 

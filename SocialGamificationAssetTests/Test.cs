@@ -1,9 +1,24 @@
 ﻿using Xunit;
+using Xunit.Abstractions;
 
 namespace SocialGamificationAssetTests
 {
-    public class Test
+    public class TestClass
     {
+        private readonly ITestOutputHelper output;
+
+        public TestClass(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
+
+        [Fact]
+        public void MyTest()
+        {
+            var temp = "my class!";
+            output.WriteLine("This is output from {0}", temp);
+        }
+
         [Fact]
         public void PassingTest()
         {
