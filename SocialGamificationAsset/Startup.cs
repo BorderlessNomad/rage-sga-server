@@ -1,4 +1,6 @@
-﻿using Boilerplate.Web.Mvc;
+﻿using System.IO;
+
+using Boilerplate.Web.Mvc;
 
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
@@ -22,20 +24,23 @@ namespace SocialGamificationAsset
         /// <summary>
         ///     Initializes a new instance of the <see cref="Startup" /> class.
         /// </summary>
-        /// <param name="applicationEnvironment">
+        /// <param name="appEnv">
         ///     The location the application is running in.
         /// </param>
-        /// <param name="hostingEnvironment">
+        /// <param name="hostingEnv">
         ///     The environment the application is running under. This can be
         ///     Development, Staging or Production by default.
         /// </param>
-        public Startup(IApplicationEnvironment applicationEnvironment, IHostingEnvironment hostingEnvironment)
+        public Startup(IApplicationEnvironment appEnv, IHostingEnvironment hostingEnv)
         {
-            this.applicationEnvironment = applicationEnvironment;
-            this.hostingEnvironment = hostingEnvironment;
-            configuration = ConfigureConfiguration(hostingEnvironment);
+            this.appEnv = appEnv;
+            this.hostingEnv = hostingEnv;
+            configuration = ConfigureConfiguration(hostingEnv);
 
-            Log.Logger = new LoggerConfiguration().WriteTo.LiterateConsole().CreateLogger();
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.LiterateConsole()
+                .CreateLogger();
         }
 
         #endregion Constructors
@@ -50,7 +55,7 @@ namespace SocialGamificationAsset
         /// <summary>
         ///     The location the application is running in.
         /// </summary>
-        private readonly IApplicationEnvironment applicationEnvironment;
+        private readonly IApplicationEnvironment appEnv;
 
         /// <summary>
         ///     Gets or sets the application configuration, where key value pair
@@ -65,7 +70,7 @@ namespace SocialGamificationAsset
         ///     Development, Staging or Production by default. To set the hosting
         ///     environment on Windows:
         /// </summary>
-        private readonly IHostingEnvironment hostingEnvironment;
+        private readonly IHostingEnvironment hostingEnv;
 
         #endregion Fields
 
@@ -82,7 +87,7 @@ namespace SocialGamificationAsset
         /// </param>
         public void ConfigureServices(IServiceCollection services)
         {
-            ConfigureDebuggingServices(services, hostingEnvironment);
+            ConfigureDebuggingServices(services, hostingEnv);
 
             ConfigureOptionsServices(services, configuration);
 
@@ -107,16 +112,16 @@ namespace SocialGamificationAsset
                     {
                         ConfigureCacheProfiles(mvcOptions.CacheProfiles, configuration);
 
-                        ConfigureSearchEngineOptimizationFilters(mvcOptions.Filters, routeOptions);
+                        ConfigureSecurityFilters(hostingEnv, mvcOptions.Filters);
 
-                        ConfigureSecurityFilters(hostingEnvironment, mvcOptions.Filters);
+                        ConfigureFormatters(mvcOptions);
                     });
 
             ConfigureFormatters(mvcBuilder);
 
             ConfigureSessionServices(services);
 
-            ConfigureDocumentationGeneratorServices(services, applicationEnvironment);
+            ConfigureDocumentationGeneratorServices(services, appEnv);
         }
 
         /// <summary>
@@ -139,15 +144,17 @@ namespace SocialGamificationAsset
             // Add static files to the request pipeline e.g. hello.html or world.css.
             application.UseStaticFiles();
 
-            ConfigureDebugging(application, hostingEnvironment);
+            ConfigureDebugging(application, hostingEnv);
 
-            ConfigureLogging(application, hostingEnvironment, loggerfactory, configuration);
+            ConfigureLogging(application, hostingEnv, loggerfactory, configuration);
 
-            ConfigureErrorPages(application, hostingEnvironment);
+            ConfigureErrorPages(application, hostingEnv);
+
+            ConfigureFormatters(application);
 
             ConfigureHeadersOverride(application);
 
-            ConfigureSecurity(application, hostingEnvironment);
+            ConfigureSecurity(application, hostingEnv);
 
             ConfigureSession(application);
 
@@ -157,7 +164,7 @@ namespace SocialGamificationAsset
             application.UseMvcWithDefaultRoute();
 
             // Add a 404 Not Found error page for visiting /this-resource-does-not-exist.
-            Configure404NotFoundErrorPage(application, hostingEnvironment);
+            Configure404NotFoundErrorPage(application, hostingEnv);
 
             ConfigureDocumentationGenerator(application);
 

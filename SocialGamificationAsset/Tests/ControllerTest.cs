@@ -1,33 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using Microsoft.AspNet.TestHost;
-
-using SocialGamificationAsset.Models;
+using System.Net.Http;
 
 namespace SocialGamificationAsset.Tests
 {
     public class ControllerTest
     {
-        protected SocialGamificationAssetContext _context;
+        protected readonly HttpClient _server;
 
-        protected readonly TestServer server;
-
-        public ControllerTest(SocialGamificationAssetContext context)
+        public ControllerTest()
         {
-            if (context == null)
+            _server = new HttpClient
             {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            _context = context;
-
-            server = new TestServer(TestServer.CreateBuilder().UseStartup<Startup>());
+                BaseAddress = new Uri("https://localhost:44363/api"),
+            };
 
             /**
              * http://dotnetliberty.com/index.php/2015/10/22/unit-testing-mvc6-and-entityframework-7-with-xunit/
+             *
+             * http://docs.asp.net/en/latest/testing/integration-testing.html 
              *
              * http://dotnetliberty.com/index.php/2015/12/17/asp-net-5-web-api-integration-testing/
              *

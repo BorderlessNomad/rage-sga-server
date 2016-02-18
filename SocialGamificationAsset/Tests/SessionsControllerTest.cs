@@ -1,24 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 
-using Microsoft.AspNet.Mvc;
-using Microsoft.Data.Entity;
-using Microsoft.Extensions.DependencyInjection;
-
-using SocialGamificationAsset.Controllers;
 using SocialGamificationAsset.Models;
+
+using Xunit;
 
 namespace SocialGamificationAsset.Tests.Controllers
 {
     public class SessionsControllerTest : ControllerTest
     {
-        private SessionsController _controller;
-
-        public SessionsControllerTest(SocialGamificationAssetContext context)
-            : base(context)
+        [Fact]
+        public async Task Login()
         {
+            using (var client = _server.AcceptJson())
+            {
+                var response = await client.GetAsync("/sessions");
+                var result = await response.Content.ReadAsStringAsync();
+                //var result = await response.Content.ReadAsJsonAsync<Session>();
+
+                Assert.NotNull(result);
+            }
         }
     }
 }

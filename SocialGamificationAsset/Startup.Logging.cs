@@ -3,8 +3,6 @@ using Microsoft.AspNet.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-using Serilog;
-
 namespace SocialGamificationAsset
 {
     public partial class Startup
@@ -61,13 +59,13 @@ namespace SocialGamificationAsset
                 //     or catastrophic failure that requires immediate attention.
                 //     Examples: 'data loss scenarios', 'stack overflows', 'out of disk space'.
 
-                loggerFactory.AddSerilog();
+                // loggerFactory.AddSerilog();
 
                 // Add the console logger.
-                // loggerFactory.AddConsole(configuration.GetSection(LoggingConfigurationSectionName));
+                loggerFactory.AddConsole(configuration.GetSection(LoggingConfigurationSectionName));
 
                 // Add the debug logger.
-                // loggerFactory.AddDebug();
+                loggerFactory.AddDebug();
             }
             else
             {

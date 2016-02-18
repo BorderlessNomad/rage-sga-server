@@ -4,7 +4,6 @@ using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Filters;
-using Microsoft.AspNet.Routing;
 
 using NWebsec.Mvc.HttpHeaders;
 
@@ -12,22 +11,6 @@ namespace SocialGamificationAsset
 {
     public partial class Startup
     {
-        /// <summary>
-        ///     Adds <paramref name="filters" /> which help improve search engine
-        ///     optimization (SEO).
-        /// </summary>
-        private static void ConfigureSearchEngineOptimizationFilters(
-            ICollection<IFilterMetadata> filters,
-            RouteOptions routeOptions)
-        {
-            /*
-			filters.Add(new RedirectToCanonicalUrlAttribute(
-				appendTrailingSlash: routeOptions.AppendTrailingSlash,
-				lowercaseUrls: routeOptions.LowercaseUrls
-			));
-			*/
-        }
-
         /// <summary>
         ///     Adds <paramref name="filters" /> which help improve security.
         /// </summary>

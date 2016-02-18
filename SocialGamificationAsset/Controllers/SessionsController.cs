@@ -173,6 +173,7 @@ namespace SocialGamificationAsset.Controllers
         /// </response>
         [HttpDelete("{id:Guid}")]
         [ResponseType(typeof(Session))]
+        [AllowAnonymous]
         public async Task<IActionResult> Logout([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)

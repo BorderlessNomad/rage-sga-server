@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Web.Http;
+
+using Newtonsoft.Json;
 
 using Crypto = BCrypt.Net.BCrypt;
 
@@ -53,13 +57,25 @@ namespace SocialGamificationAsset.Models
         }
 
         public static HttpResponseException ApiException(
-            Exception e,
+            string message,
             HttpStatusCode StatusCode = HttpStatusCode.InternalServerError)
         {
             var response = new HttpResponseMessage(StatusCode);
-            response.Content = new StringContent(e.Message);
+            response.Content = new StringContent(
+                JsonConvert.SerializeObject(new { Message = message }),
+                Encoding.UTF8,
+                "application/json");
+
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
             return new HttpResponseException(response);
+        }
+
+        public static HttpResponseException ApiException(
+            Exception e,
+            HttpStatusCode StatusCode = HttpStatusCode.InternalServerError)
+        {
+            return ApiException(e.Message, StatusCode);
         }
     }
 }
