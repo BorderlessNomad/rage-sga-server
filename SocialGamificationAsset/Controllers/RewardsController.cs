@@ -31,14 +31,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var reward = await _context.Rewards.FindAsync(id);
 
             if (reward == null)
             {
-                return HttpNotFound();
+                return Helper.HttpNotFound("No Reward found.");
             }
 
             return Ok(reward);
@@ -50,12 +50,12 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             if (id != reward.Id)
             {
-                return HttpBadRequest();
+                return Helper.HttpBadRequest("Invalid Reward Id.");
             }
 
             _context.Entry(reward).State = EntityState.Modified;
@@ -72,7 +72,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             _context.Rewards.Add(reward);
@@ -88,13 +88,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var reward = await _context.Rewards.FindAsync(id);
             if (reward == null)
             {
-                return HttpNotFound();
+                return Helper.HttpNotFound("No Reward found.");
             }
 
             _context.Rewards.Remove(reward);

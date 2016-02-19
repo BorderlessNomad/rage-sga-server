@@ -32,14 +32,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var role = await _context.Roles.FindAsync(id);
 
             if (role == null)
             {
-                return HttpNotFound("No such Role found.");
+                return Helper.HttpNotFound("No such Role found.");
             }
 
             return Ok(role);
@@ -52,13 +52,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var checkRole = await _context.Roles.Where(r => r.Name.Equals(role.Name)).FirstOrDefaultAsync();
             if (checkRole != null)
             {
-                return HttpBadRequest("Role '" + checkRole.Name + "' already exists.");
+                return Helper.HttpBadRequest("Role '" + checkRole.Name + "' already exists.");
             }
 
             _context.Roles.Add(role);

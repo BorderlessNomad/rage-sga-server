@@ -43,7 +43,7 @@ namespace SocialGamificationAsset.Controllers
                 return Ok(session.Player);
             }
 
-            return HttpNotFound("No Player found.");
+            return Helper.HttpNotFound("No Player found.");
         }
 
         // GET: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -59,13 +59,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var player = await _context.Players.FindAsync(id);
             if (player == null)
             {
-                return HttpNotFound("No such Player found.");
+                return Helper.HttpNotFound("No such Player found.");
             }
 
             return Ok(player);
@@ -84,7 +84,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var query = _context.Players.Where(p => p.Id.Equals(id));
@@ -92,7 +92,7 @@ namespace SocialGamificationAsset.Controllers
             var player = await query.FirstOrDefaultAsync();
             if (player == null)
             {
-                return HttpNotFound("No such Player found.");
+                return Helper.HttpNotFound("No such Player found.");
             }
 
             var achievements = await query.Include(p => p.Achievements).Select(p => p.Achievements).ToListAsync();
@@ -113,7 +113,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var query = _context.Players.Where(p => p.Id.Equals(id));
@@ -121,7 +121,7 @@ namespace SocialGamificationAsset.Controllers
             var player = await query.FirstOrDefaultAsync();
             if (player == null)
             {
-                return HttpNotFound("No such Player found.");
+                return Helper.HttpNotFound("No such Player found.");
             }
 
             IList<ActorGoal> goals =
@@ -144,14 +144,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var player = await _context.Players.FindAsync(id);
 
             if (player == null)
             {
-                return HttpNotFound("No Player Found.");
+                return Helper.HttpNotFound("No Player found.");
             }
 
             _context.Entry(player).State = EntityState.Modified;
@@ -160,7 +160,7 @@ namespace SocialGamificationAsset.Controllers
             {
                 if (await Player.ExistsUsername(_context, form.Username))
                 {
-                    return HttpBadRequest("Player with this Username already exists.");
+                    return Helper.HttpBadRequest("Player with this Username already exists.");
                 }
 
                 player.Username = form.Username;
@@ -170,7 +170,7 @@ namespace SocialGamificationAsset.Controllers
             {
                 if (await Player.ExistsEmail(_context, form.Email))
                 {
-                    return HttpBadRequest("Player with this Email already exists.");
+                    return Helper.HttpBadRequest("Player with this Email already exists.");
                 }
 
                 player.Email = form.Email;
@@ -203,17 +203,17 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             if (string.IsNullOrWhiteSpace(register.Username) && string.IsNullOrWhiteSpace(register.Email))
             {
-                return HttpBadRequest("Either Username or Email is required.");
+                return Helper.HttpBadRequest("Either Username or Email is required.");
             }
 
             if (string.IsNullOrWhiteSpace(register.Password))
             {
-                return HttpBadRequest("Password is required.");
+                return Helper.HttpBadRequest("Password is required.");
             }
 
             var player = new Player();
@@ -222,7 +222,7 @@ namespace SocialGamificationAsset.Controllers
             {
                 if (await Player.ExistsUsername(_context, register.Username))
                 {
-                    return HttpBadRequest("Player with this Username already exists.");
+                    return Helper.HttpBadRequest("Player with this Username already exists.");
                 }
 
                 player.Username = register.Username;
@@ -232,7 +232,7 @@ namespace SocialGamificationAsset.Controllers
             {
                 if (await Player.ExistsEmail(_context, register.Email))
                 {
-                    return HttpBadRequest("Player with this Email already exists.");
+                    return Helper.HttpBadRequest("Player with this Email already exists.");
                 }
 
                 player.Email = register.Email;
@@ -265,13 +265,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var player = await _context.Players.FindAsync(id);
             if (player == null)
             {
-                return HttpBadRequest("Invalid PlayerId");
+                return Helper.HttpBadRequest("Invalid PlayerId");
             }
 
             player.IsEnabled = false;

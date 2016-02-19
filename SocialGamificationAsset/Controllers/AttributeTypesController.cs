@@ -31,14 +31,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var type = await _context.AttributeTypes.FindAsync(id);
 
             if (type == null)
             {
-                return HttpNotFound();
+                return Helper.HttpNotFound("No Attribute Type found.");
             }
 
             return Ok(type);
@@ -50,12 +50,12 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             if (id != type.Id)
             {
-                return HttpBadRequest();
+                return Helper.HttpBadRequest("Invalid Attribute Type Id.");
             }
 
             _context.Entry(type).State = EntityState.Modified;
@@ -72,7 +72,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             _context.AttributeTypes.Add(type);
@@ -88,13 +88,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var type = await _context.AttributeTypes.FindAsync(id);
             if (type == null)
             {
-                return HttpNotFound();
+                return Helper.HttpNotFound("No Attribute Type found.");
             }
 
             _context.AttributeTypes.Remove(type);

@@ -58,7 +58,7 @@ namespace SocialGamificationAsset.Controllers
             var type = await query.FirstOrDefaultAsync();
             if (type == null)
             {
-                return HttpBadRequest("Invalid Item Type");
+                return Helper.HttpBadRequest("Invalid Item Type");
             }
 
             var total =
@@ -88,13 +88,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var item = await _context.Items.Where(i => i.Id.Equals(id)).Include(i => i.Type).FirstOrDefaultAsync();
             if (item == null)
             {
-                return HttpNotFound("No such Item found.");
+                return Helper.HttpNotFound("No such Item found.");
             }
 
             return Ok(item);
@@ -107,14 +107,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var itemType = await _context.ItemTypes.FindAsync(id);
 
             if (itemType == null)
             {
-                return HttpNotFound("No such Item Type found.");
+                return Helper.HttpNotFound("No such Item Type found.");
             }
 
             return Ok(itemType);
@@ -127,13 +127,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             if ((!form.ItemTypeId.HasValue || form.ItemTypeId == Guid.Empty)
                 && string.IsNullOrWhiteSpace(form.ItemTypeName))
             {
-                return HttpBadRequest("Either ItemTypeId or ItemTypeName is required.");
+                return Helper.HttpBadRequest("Either ItemTypeId or ItemTypeName is required.");
             }
 
             var searchByName = true;
@@ -152,7 +152,7 @@ namespace SocialGamificationAsset.Controllers
             var itemType = await query.FirstOrDefaultAsync();
             if (itemType == null)
             {
-                return HttpBadRequest("Invalid Item Type.");
+                return Helper.HttpBadRequest("Invalid Item Type.");
             }
 
             var item = new Item { ItemTypeId = itemType.Id };
@@ -190,13 +190,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var type = await _context.ItemTypes.Where(t => t.Name.Equals(itemType.Name)).FirstOrDefaultAsync();
             if (type != null)
             {
-                return HttpBadRequest("ItemType '" + itemType.Name + "' already exists.");
+                return Helper.HttpBadRequest("ItemType '" + itemType.Name + "' already exists.");
             }
 
             _context.ItemTypes.Add(itemType);

@@ -32,14 +32,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var action = await _context.Actions.FindAsync(id);
 
             if (action == null)
             {
-                return HttpNotFound();
+                return Helper.HttpNotFound("No Action found.");
             }
 
             return Ok(action);
@@ -51,12 +51,12 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             if (id != action.Id)
             {
-                return HttpBadRequest();
+                return Helper.HttpBadRequest("Invalid Action Id.");
             }
 
             _context.Entry(action).State = EntityState.Modified;
@@ -73,7 +73,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             _context.Actions.Add(action);
@@ -89,13 +89,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var action = await _context.Actions.FindAsync(id);
             if (action == null)
             {
-                return HttpNotFound();
+                return Helper.HttpNotFound("No Action found.");
             }
 
             _context.Actions.Remove(action);

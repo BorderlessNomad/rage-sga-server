@@ -41,13 +41,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var goal = await _context.Goals.FindAsync(id);
             if (goal == null)
             {
-                return HttpNotFound();
+                return Helper.HttpNotFound("No Goal found.");
             }
 
             return Ok(goal);
@@ -60,12 +60,12 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             if (id != goal.Id)
             {
-                return HttpBadRequest();
+                return Helper.HttpBadRequest("Invalid Goal Id.");
             }
 
             _context.Entry(goal).State = EntityState.Modified;
@@ -82,7 +82,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             _context.Goals.Add(goal);
@@ -99,13 +99,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var goal = await _context.Goals.FindAsync(id);
             if (goal == null)
             {
-                return HttpNotFound();
+                return Helper.HttpNotFound("No Goal found.");
             }
 
             _context.Goals.Remove(goal);

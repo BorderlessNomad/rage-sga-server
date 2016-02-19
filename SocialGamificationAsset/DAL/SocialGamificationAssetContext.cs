@@ -107,8 +107,6 @@ namespace SocialGamificationAsset.Models
 
         public virtual DbSet<Tournament> Tournaments { get; set; }
 
-        public virtual DbSet<Test> Tests { get; set; }
-
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

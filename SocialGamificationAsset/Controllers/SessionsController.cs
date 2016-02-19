@@ -48,7 +48,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var playerSession =
@@ -56,7 +56,7 @@ namespace SocialGamificationAsset.Controllers
 
             if (playerSession == null)
             {
-                return HttpNotFound("No such Session found.");
+                return Helper.HttpNotFound("No such Session found.");
             }
 
             return Ok(playerSession);
@@ -96,17 +96,17 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             if (string.IsNullOrWhiteSpace(login.Username) && string.IsNullOrWhiteSpace(login.Email))
             {
-                return HttpBadRequest("Either Username or Email is required.");
+                return Helper.HttpBadRequest("Either Username or Email is required.");
             }
 
             if (string.IsNullOrWhiteSpace(login.Password))
             {
-                return HttpBadRequest("Password is required.");
+                return Helper.HttpBadRequest("Password is required.");
             }
 
             IQueryable<Player> query = _context.Players;
@@ -125,16 +125,12 @@ namespace SocialGamificationAsset.Controllers
 
             if (player == null)
             {
-                return HttpNotFound("No such Player found.");
+                return Helper.HttpNotFound("No such Player found.");
             }
 
             if (!Helper.ValidatePassword(login.Password, player.Password))
             {
-                return new ContentResult
-                {
-                    StatusCode = StatusCodes.Status401Unauthorized,
-                    Content = "Invalid Login Details."
-                };
+                return Helper.HttpUnauthorized("Invalid Login Details.");
             }
 
             var playerSession = new Session { Player = player };
@@ -178,13 +174,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var playerSession = await _context.Sessions.FindAsync(id);
             if (playerSession == null)
             {
-                return HttpNotFound("No such Session found.");
+                return Helper.HttpNotFound("No such Session found.");
             }
 
             playerSession.IsExpired = true;

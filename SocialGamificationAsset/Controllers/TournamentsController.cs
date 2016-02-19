@@ -33,7 +33,7 @@ namespace SocialGamificationAsset.Controllers
 
             if (tournaments == null || !tournaments.Any())
             {
-                return HttpNotFound("No Tournament Found.");
+                return Helper.HttpNotFound("No Tournament found.");
             }
 
             return Ok(tournaments);
@@ -50,7 +50,7 @@ namespace SocialGamificationAsset.Controllers
 
             if (tournaments == null || !tournaments.Any())
             {
-                return HttpNotFound("No Tournament Found.");
+                return Helper.HttpNotFound("No Tournament found.");
             }
 
             return Ok(tournaments);

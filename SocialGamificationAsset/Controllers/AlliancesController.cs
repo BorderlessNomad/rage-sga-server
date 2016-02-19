@@ -25,7 +25,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (session?.Player == null)
             {
-                return HttpNotFound("Invalid Session.");
+                return Helper.HttpNotFound("Invalid Session.");
             }
 
             IList<Actor> alliances = await session.Player.Alliances(_context).ToListAsync();
@@ -43,7 +43,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (session?.Player == null)
             {
-                return HttpNotFound("Invalid Session.");
+                return Helper.HttpNotFound("Invalid Session.");
             }
 
             var allianceStatus = AllianceState.Accepted;
@@ -68,14 +68,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var actor = await _context.Actors.FindAsync(actorId);
 
             if (actor == null)
             {
-                return HttpNotFound("No Actor Found.");
+                return Helper.HttpNotFound("No Actor found.");
             }
 
             IList<Actor> alliances = await actor.Alliances(_context).ToListAsync();
@@ -90,14 +90,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (session?.Player == null)
             {
-                return HttpBadRequest("Error with your session.");
+                return Helper.HttpBadRequest("Error with your session.");
             }
 
             var actor = await _context.Actors.FindAsync(allianceId);
 
             if (actor == null)
             {
-                return HttpNotFound("No such Actor found.");
+                return Helper.HttpNotFound("No such Actor found.");
             }
 
             var alliance =
@@ -107,10 +107,10 @@ namespace SocialGamificationAsset.Controllers
             {
                 if (alliance.State != AllianceState.Accepted)
                 {
-                    return HttpBadRequest("Alliance Request already sent.");
+                    return Helper.HttpBadRequest("Alliance Request already sent.");
                 }
 
-                return HttpBadRequest("You are already alliance with this Actor.");
+                return Helper.HttpBadRequest("You are already alliance with this Actor.");
             }
 
             var newAlliance = new Alliance { RequesterId = session.Player.Id, RequesteeId = allianceId };
@@ -127,14 +127,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (session?.Player == null)
             {
-                return HttpBadRequest("Error with your session.");
+                return Helper.HttpBadRequest("Error with your session.");
             }
 
             var actor = await _context.Actors.FindAsync(allianceId);
 
             if (actor == null)
             {
-                return HttpNotFound("No such Actor found.");
+                return Helper.HttpNotFound("No such Actor found.");
             }
 
             var alliance =
@@ -142,7 +142,7 @@ namespace SocialGamificationAsset.Controllers
 
             if (alliance == null)
             {
-                return HttpBadRequest("Alliance is not in list.");
+                return Helper.HttpBadRequest("Alliance is not in list.");
             }
 
             _context.Alliances.Remove(alliance);

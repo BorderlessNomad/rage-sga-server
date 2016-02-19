@@ -38,13 +38,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var achievement = await _context.Achievements.FindAsync(id);
             if (achievement == null)
             {
-                return HttpNotFound();
+                return Helper.HttpNotFound("No Achievement found.");
             }
 
             return Ok(achievement);
@@ -57,12 +57,12 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             if (id != achievement.Id)
             {
-                return HttpBadRequest();
+                return Helper.HttpBadRequest("Invalid Achievement Id.");
             }
 
             _context.Entry(achievement).State = EntityState.Modified;
@@ -79,7 +79,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             _context.Achievements.Add(achievement);
@@ -96,13 +96,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var achievement = await _context.Achievements.FindAsync(id);
             if (achievement == null)
             {
-                return HttpNotFound();
+                return Helper.HttpNotFound("No Achievement found.");
             }
 
             _context.Achievements.Remove(achievement);

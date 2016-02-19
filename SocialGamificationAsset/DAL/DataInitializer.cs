@@ -18,8 +18,6 @@ namespace SocialGamificationAsset.Models
             {
                 var _context = serviceScope.ServiceProvider.GetService<SocialGamificationAssetContext>();
 
-                await SeedTests(_context, isAsync);
-
                 await SeedGames(_context, isAsync);
 
                 await SeedGroups(_context, isAsync);
@@ -29,25 +27,6 @@ namespace SocialGamificationAsset.Models
                 await SeedAlliances(_context, isAsync);
 
                 await SeedCustomData(_context, isAsync);
-            }
-        }
-
-        protected static async Task SeedTests(SocialGamificationAssetContext _context, bool isAsync = false)
-        {
-            if (!_context.Tests.Any())
-            {
-                IList<Test> tests = new List<Test>
-                {
-                    new Test { Field1 = "test1", Field2 = "test1" },
-                    new Test { Field1 = "test2", Field2 = "test2" },
-                    new Test { Field1 = "test3", Field2 = "test3" }
-                };
-
-                _context.Tests.AddRange(tests);
-
-                await SaveChanges(_context, isAsync);
-
-                Debug.WriteLine("Tests Seeded.");
             }
         }
 

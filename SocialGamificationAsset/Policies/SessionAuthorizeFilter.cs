@@ -51,7 +51,9 @@ namespace SocialGamificationAsset.Policies
                 {
                     return;
                 }
-                context.Result = new BadRequestObjectResult("Invalid value for " + DocumentationApiKey);
+
+                context.Result = Helper.HttpBadRequest("Invalid value for " + DocumentationApiKey);
+
                 return;
             }
 
@@ -61,11 +63,8 @@ namespace SocialGamificationAsset.Policies
             // Check if Session Header exists
             if (!headerExists)
             {
-                context.Result = new ContentResult
-                {
-                    StatusCode = StatusCodes.Status401Unauthorized,
-                    Content = "No " + SessionHeaderName + " found."
-                };
+                context.Result = Helper.HttpUnauthorized("No " + SessionHeaderName + " Header found.");
+
                 return;
             }
 
@@ -75,11 +74,8 @@ namespace SocialGamificationAsset.Policies
             // Token value must be valid Guid
             if (!isValidGuid)
             {
-                context.Result = new ContentResult
-                {
-                    StatusCode = StatusCodes.Status401Unauthorized,
-                    Content = "Invalid " + SessionHeaderName + "."
-                };
+                context.Result = Helper.HttpUnauthorized("Invalid " + SessionHeaderName + " Header.");
+
                 return;
             }
 
@@ -94,11 +90,10 @@ namespace SocialGamificationAsset.Policies
             var db = httpContext.RequestServices.GetRequiredService<SocialGamificationAssetContext>();
             if (db == null)
             {
-                context.Result = new ContentResult
-                {
-                    StatusCode = StatusCodes.Status503ServiceUnavailable,
-                    Content = "Unable to find requested database service."
-                };
+                context.Result = Helper.JsonErrorContentResult(
+                    "Unable to connect with requested Database service.",
+                    StatusCodes.Status503ServiceUnavailable);
+
                 return;
             }
 
@@ -107,7 +102,8 @@ namespace SocialGamificationAsset.Policies
             // Find Session
             if (session == null)
             {
-                context.Result = new HttpNotFoundObjectResult("Session " + token + " is Invalid.");
+                context.Result = Helper.HttpNotFound("Session " + token + " is Invalid.");
+
                 return;
             }
 

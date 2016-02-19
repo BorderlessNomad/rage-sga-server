@@ -46,14 +46,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var group = await _context.Groups.Where(g => g.Id.Equals(id)).Include(g => g.Players).FirstOrDefaultAsync();
 
             if (group == null)
             {
-                return HttpNotFound("No Group Found.");
+                return Helper.HttpNotFound("No Group found.");
             }
 
             return Ok(group);
@@ -65,12 +65,12 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             if (id != group.Id)
             {
-                return HttpBadRequest("Id & Group.Id does not match.");
+                return Helper.HttpBadRequest("Id & Group.Id does not match.");
             }
 
             _context.Entry(group).State = EntityState.Modified;
@@ -91,7 +91,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             if (group.Players != null && group.Players.Count != 0)
@@ -112,13 +112,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var group = await _context.Groups.FindAsync(id);
             if (group == null)
             {
-                return HttpNotFound("No Group Found.");
+                return Helper.HttpNotFound("No Group found.");
             }
 
             group.IsEnabled = false;

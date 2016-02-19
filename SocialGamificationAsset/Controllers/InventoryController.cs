@@ -31,14 +31,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var inventory = await _context.Inventory.FindAsync(id);
 
             if (inventory == null)
             {
-                return HttpNotFound();
+                return Helper.HttpNotFound("No Inventory found.");
             }
 
             return Ok(inventory);
@@ -50,12 +50,12 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             if (id != inventory.Id)
             {
-                return HttpBadRequest();
+                return Helper.HttpBadRequest("Invalid Inventory Id.");
             }
 
             _context.Entry(inventory).State = EntityState.Modified;
@@ -71,7 +71,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             _context.Inventory.Add(inventory);
@@ -87,13 +87,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return HttpBadRequest(ModelState);
+                return Helper.HttpBadRequest(ModelState);
             }
 
             var inventory = await _context.Inventory.FindAsync(id);
             if (inventory == null)
             {
-                return HttpNotFound();
+                return Helper.HttpNotFound("No Inventory found.");
             }
 
             _context.Inventory.Remove(inventory);

@@ -7,7 +7,11 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Web.Http;
 
+using Microsoft.AspNet.Http;
+using Microsoft.AspNet.Mvc;
+
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 using Crypto = BCrypt.Net.BCrypt;
 
@@ -56,13 +60,21 @@ namespace SocialGamificationAsset.Models
             return Crypto.Verify(password, correctHash);
         }
 
+        public static JsonSerializerSettings JsonSerializerSettings()
+        {
+            var settings = new JsonSerializerSettings();
+            settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
+            return settings;
+        }
+
         public static HttpResponseException ApiException(
             string message,
             HttpStatusCode StatusCode = HttpStatusCode.InternalServerError)
         {
             var response = new HttpResponseMessage(StatusCode);
             response.Content = new StringContent(
-                JsonConvert.SerializeObject(new { Message = message }),
+                JsonConvert.SerializeObject(new { Message = message }, JsonSerializerSettings()),
                 Encoding.UTF8,
                 "application/json");
 
@@ -76,6 +88,42 @@ namespace SocialGamificationAsset.Models
             HttpStatusCode StatusCode = HttpStatusCode.InternalServerError)
         {
             return ApiException(e.Message, StatusCode);
+        }
+
+        public static ContentResult JsonErrorContentResult(object value, int status = StatusCodes.Status500InternalServerError)
+        {
+            string content;
+
+            if (value is string)
+            {
+                content = JsonConvert.SerializeObject(new { Error = value }, JsonSerializerSettings());
+            }
+            else
+            {
+                content = JsonConvert.SerializeObject(value, JsonSerializerSettings());
+            }
+
+            return new ContentResult
+            {
+                StatusCode = status,
+                Content = content,
+                ContentType = new Microsoft.Net.Http.Headers.MediaTypeHeaderValue("application/json")
+            };
+        }
+
+        public static ContentResult HttpNotFound(object value)
+        {
+            return JsonErrorContentResult(value, StatusCodes.Status404NotFound);
+        }
+
+        public static ContentResult HttpBadRequest(object value)
+        {
+            return JsonErrorContentResult(value, StatusCodes.Status400BadRequest);
+        }
+
+        public static ContentResult HttpUnauthorized(object value)
+        {
+            return JsonErrorContentResult(value, StatusCodes.Status401Unauthorized);
         }
     }
 }
