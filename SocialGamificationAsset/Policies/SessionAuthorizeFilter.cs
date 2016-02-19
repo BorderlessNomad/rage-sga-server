@@ -51,7 +51,7 @@ namespace SocialGamificationAsset.Policies
                     return;
                 }
 
-                context.Result = Helper.HttpBadRequest("Invalid value for " + DocumentationApiKey);
+                context.Result = Helper.HttpBadRequest($"Invalid value for {DocumentationApiKey}.");
 
                 return;
             }
@@ -62,7 +62,7 @@ namespace SocialGamificationAsset.Policies
             // Check if Session Header exists
             if (!headerExists)
             {
-                context.Result = Helper.HttpUnauthorized("No " + SessionHeaderName + " Header found.");
+                context.Result = Helper.HttpUnauthorized($"No {SessionHeaderName} Header found.");
 
                 return;
             }
@@ -73,7 +73,7 @@ namespace SocialGamificationAsset.Policies
             // Token value must be valid Guid
             if (!isValidGuid)
             {
-                context.Result = Helper.HttpUnauthorized("Invalid " + SessionHeaderName + " Header.");
+                context.Result = Helper.HttpUnauthorized($"Invalid {SessionHeaderName} Header.");
 
                 return;
             }
@@ -101,7 +101,7 @@ namespace SocialGamificationAsset.Policies
             // Find Session
             if (session == null)
             {
-                context.Result = Helper.HttpNotFound("Session " + token + " is Invalid.");
+                context.Result = Helper.HttpNotFound($"Session {token} is Invalid.");
 
                 return;
             }

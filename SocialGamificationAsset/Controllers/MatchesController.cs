@@ -75,7 +75,7 @@ namespace SocialGamificationAsset.Controllers
 
             if (match == null)
             {
-                return Helper.HttpNotFound("No Match found for ID " + id);
+                return Helper.HttpNotFound($"No Match found for ID {id}");
             }
 
             return Ok(match);
@@ -96,7 +96,7 @@ namespace SocialGamificationAsset.Controllers
 
             if (matchActors == null || matchActors.Count < 1)
             {
-                return Helper.HttpNotFound("No Actor found for Match " + id);
+                return Helper.HttpNotFound($"No Actor found for Match {id}");
             }
 
             return Ok(matchActors);
@@ -180,7 +180,7 @@ namespace SocialGamificationAsset.Controllers
 
             if (match == null)
             {
-                return Helper.HttpNotFound("No Match found for ID " + id);
+                return Helper.HttpNotFound($"No Match found for ID {id}");
             }
 
             return Ok(match.Tournament.Owner);
@@ -189,7 +189,7 @@ namespace SocialGamificationAsset.Controllers
         // PUT: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpPut("{id:Guid}/rounds", Name = "UpdateMatchRoundScore")]
         [ResponseType(typeof(MatchRound))]
-        public async Task<IActionResult> UpdateMatchRoundScore([FromRoute] Guid id, [FromBody] MatchRoundForm roundForm)
+        public async Task<IActionResult> UpdateMatchRoundScore([FromRoute] Guid id, [FromBody] MatchRoundForm form)
         {
             if (!ModelState.IsValid)
             {
@@ -206,37 +206,33 @@ namespace SocialGamificationAsset.Controllers
                 return Helper.HttpNotFound("No running Match found.");
             }
 
-            foreach (var actor in match.Actors)
+            foreach (var actor in match.Actors.Where(actor => actor.ActorId.Equals(form.ActorId)))
             {
-                if (actor.ActorId.Equals(roundForm.ActorId))
+                var round =
+                    await
+                    _context.MatchRounds.Where(r => r.MatchActorId.Equals(actor.Id))
+                            .Where(r => r.RoundNumber.Equals(form.RoundNumber))
+                            .FirstOrDefaultAsync();
+
+                if (round == null)
                 {
-                    var round =
-                        await
-                        _context.MatchRounds.Where(r => r.MatchActorId.Equals(actor.Id))
-                                .Where(r => r.RoundNumber.Equals(roundForm.RoundNumber))
-                                .FirstOrDefaultAsync();
-                    if (round == null)
-                    {
-                        return
-                            Helper.HttpNotFound(
-                                "No Round #'" + roundForm.RoundNumber + "' found for Actor '" + roundForm.ActorId + "'");
-                    }
-
-                    _context.Entry(round).State = EntityState.Modified;
-                    round.Score = roundForm.Score;
-                    round.DateScore = DateTime.Now;
-
-                    var error = await SaveChangesAsync();
-                    if (error != null)
-                    {
-                        return error;
-                    }
-
-                    return Ok(round);
+                    return Helper.HttpNotFound($"No Round #{form.RoundNumber} found for Actor {form.ActorId}");
                 }
+
+                _context.Entry(round).State = EntityState.Modified;
+                round.Score = form.Score;
+                round.DateScore = DateTime.Now;
+
+                var error = await SaveChangesAsync();
+                if (error != null)
+                {
+                    return error;
+                }
+
+                return Ok(round);
             }
 
-            return Helper.HttpNotFound("No Actor '" + roundForm.ActorId + "' found for this Match.");
+            return Helper.HttpNotFound($"No Actor {form.ActorId} found for this Match.");
         }
 
         // PUT: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -266,8 +262,8 @@ namespace SocialGamificationAsset.Controllers
         }
 
         // Creates a Quick Match between logged account and given actors
-        // POST: api/matches
-        [HttpPost("", Name = "CreateQuickMatchActors")]
+        // POST: api/matches/actors
+        [HttpPost("actors", Name = "CreateQuickMatchActors")]
         [ResponseType(typeof(Match))]
         public async Task<IActionResult> CreateQuickMatch([FromBody] QuickMatchActors quickMatch)
         {
@@ -288,8 +284,6 @@ namespace SocialGamificationAsset.Controllers
 
             var result = new QuickMatchResult();
 
-            // Build the filter by CustomData
-            var customData = CustomDataBase.Parse(quickMatch.CustomData);
             IList<Player> players = new List<Player>();
             IList<Group> groups = new List<Group>();
 
@@ -300,7 +294,7 @@ namespace SocialGamificationAsset.Controllers
                     var player = await _context.Players.FindAsync(actorId);
                     if (player == null)
                     {
-                        return Helper.HttpNotFound("No Player with Id " + actorId + " exists.");
+                        return Helper.HttpNotFound($"No Player with Id {actorId} exists.");
                     }
 
                     players.Add(player);
@@ -308,14 +302,14 @@ namespace SocialGamificationAsset.Controllers
 
                 result = await QuickMatch(quickMatch, players);
             }
-            else if (quickMatch.Type == MatchType.Group)
+            else
             {
                 foreach (var actorId in quickMatch.Actors)
                 {
                     var group = await _context.Groups.FindAsync(actorId);
                     if (group == null)
                     {
-                        return Helper.HttpNotFound("No Group with Id " + actorId + " exists.");
+                        return Helper.HttpNotFound($"No Group with Id {actorId} exists.");
                     }
 
                     groups.Add(group);
@@ -352,12 +346,10 @@ namespace SocialGamificationAsset.Controllers
 
             // Build the filter by CustomData
             var customData = CustomDataBase.Parse(quickMatch.CustomData);
-            IList<Player> players = new List<Player>();
-            IList<Group> groups = new List<Group>();
 
             if (quickMatch.Type == MatchType.Player)
             {
-                players =
+                var players =
                     await
                     Player.LoadRandom(
                         _context,
@@ -387,7 +379,7 @@ namespace SocialGamificationAsset.Controllers
                     return Helper.HttpNotFound("No such Group found for Player.");
                 }
 
-                groups =
+                var groups =
                     await Group.LoadRandom(_context, group, customData, quickMatch.AlliancesOnly, quickMatch.Actors - 1);
                 groups.Add(group);
 
@@ -407,7 +399,7 @@ namespace SocialGamificationAsset.Controllers
             return CreatedAtRoute("GetMatch", new { id = result.match.Id }, result.match);
         }
 
-        private async Task<QuickMatchResult> QuickMatch(QuickMatch quickMatch, IList<Player> players)
+        private async Task<QuickMatchResult> QuickMatch(QuickMatch quickMatch, IEnumerable<Player> players)
         {
             Tournament tournament;
             ContentResult error;
@@ -455,7 +447,7 @@ namespace SocialGamificationAsset.Controllers
             return new QuickMatchResult { match = match, error = null };
         }
 
-        private async Task<QuickMatchResult> QuickMatch(QuickMatch quickMatch, IList<Group> groups)
+        private async Task<QuickMatchResult> QuickMatch(QuickMatch quickMatch, IEnumerable<Group> groups)
         {
             Tournament tournament;
             ContentResult error;
