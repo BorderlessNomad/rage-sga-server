@@ -1,8 +1,4 @@
-﻿using System.IO;
-
-using Boilerplate.Web.Mvc;
-
-using Microsoft.AspNet.Builder;
+﻿using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Routing;
 using Microsoft.Extensions.Configuration;
@@ -37,10 +33,7 @@ namespace SocialGamificationAsset
             this.hostingEnv = hostingEnv;
             configuration = ConfigureConfiguration(hostingEnv);
 
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.LiterateConsole()
-                .CreateLogger();
+            Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.LiterateConsole().CreateLogger();
         }
 
         #endregion Constructors
@@ -114,7 +107,7 @@ namespace SocialGamificationAsset
 
                         ConfigureSecurityFilters(hostingEnv, mvcOptions.Filters);
 
-                        ConfigureFormatters(mvcOptions);
+                        // ConfigureFormatters(mvcOptions);
                     });
 
             ConfigureFormatters(mvcBuilder);
@@ -134,10 +127,6 @@ namespace SocialGamificationAsset
         /// <param name="loggerfactory">The logger factory.</param>
         public void Configure(IApplicationBuilder application, ILoggerFactory loggerfactory)
         {
-            // Give the ASP.NET MVC Boilerplate NuGet package assembly access to the HttpContext, so it can generate
-            // absolute URL's and get the current request path.
-            application.UseBoilerplate();
-
             // Add the IIS platform handler to the request pipeline.
             application.UseIISPlatformHandler();
 

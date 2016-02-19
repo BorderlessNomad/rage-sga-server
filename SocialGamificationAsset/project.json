@@ -10,7 +10,6 @@
     },
     "dependencies": {
         "BCrypt-Official": "0.1.107-*",
-        "Boilerplate.Web.Mvc6": "2.0.0-*",
         "EntityFramework": "6.1.3-*",
         "Glimpse": "2.0.0-*",
         "Microsoft.AspNet.Antiforgery": "1.0.0-rc1-final",
