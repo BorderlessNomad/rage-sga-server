@@ -1,5 +1,4 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 using SocialGamificationAsset.Models;
 
@@ -15,8 +14,8 @@ namespace SocialGamificationAsset.Tests.Controllers
             using (var client = _server.AcceptJson())
             {
                 var response = await client.GetAsync("/sessions");
-                var result = await response.Content.ReadAsStringAsync();
-                //var result = await response.Content.ReadAsJsonAsync<Session>();
+                // var result = await response.Content.ReadAsStringAsync();
+                var result = await response.Content.ReadAsJsonAsync<Session>();
 
                 Assert.NotNull(result);
             }

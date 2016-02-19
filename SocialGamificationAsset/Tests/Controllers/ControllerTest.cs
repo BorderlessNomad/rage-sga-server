@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace SocialGamificationAsset.Tests
+namespace SocialGamificationAsset.Tests.Controllers
 {
     public class ControllerTest
     {

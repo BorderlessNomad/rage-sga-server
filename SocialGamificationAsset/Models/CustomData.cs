@@ -21,18 +21,13 @@ namespace SocialGamificationAsset.Models
         {
             // Build the filter by CustomData
             IList<CustomDataBase> customData = new List<CustomDataBase>();
-            if (sourceData == null || sourceData.Count <= 0)
+            if (sourceData == null || !sourceData.Any())
             {
                 return customData;
             }
 
-            foreach (var data in sourceData)
+            foreach (var data in sourceData.Where(data => Helper.AllowedOperators.Contains(data.Operator)))
             {
-                if (!Helper.AllowedOperators.Contains(data.Operator))
-                {
-                    continue;
-                }
-
                 customData.Add(data);
             }
 
@@ -107,31 +102,31 @@ namespace SocialGamificationAsset.Models
         {
             var query = db.CustomData.Where(c => c.ObjectType == objectType);
 
-            if (sourceData != null && sourceData.Count > 0)
+            if (sourceData == null || sourceData.Count <= 0)
             {
-                foreach (var data in sourceData)
+                return query;
+            }
+
+            foreach (var data in sourceData)
+            {
+                query = query.Where(c => c.Key.Equals(data.Key));
+
+                if (!Helper.AllowedOperators.Contains(data.Operator))
                 {
-                    query = query.Where(c => c.Key.Equals(data.Key));
+                    continue;
+                }
 
-                    if (!Helper.AllowedOperators.Contains(data.Operator))
-                    {
-                        continue;
-                    }
-
-                    switch (data.Operator)
-                    {
-                        case "=":
-                            query = query.Where(c => c.Value.Equals(data.Value));
-                            break;
-
-                        case "!":
-                            query = query.Where(c => c.Value != data.Value);
-                            break;
-
-                        case "%":
-                            query = query.Where(c => c.Value.Contains(data.Value));
-                            break;
-                    }
+                if (data.Operator == "=")
+                {
+                    query = query.Where(c => c.Value.Equals(data.Value));
+                }
+                else if (data.Operator == "!")
+                {
+                    query = query.Where(c => c.Value != data.Value);
+                }
+                else if (data.Operator == "%")
+                {
+                    query = query.Where(c => c.Value.Contains(data.Value));
                 }
             }
 

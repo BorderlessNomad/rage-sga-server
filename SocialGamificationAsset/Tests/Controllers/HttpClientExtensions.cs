@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace SocialGamificationAsset.Tests
+namespace SocialGamificationAsset.Tests.Controllers
 {
     public static class HttpClientExtensions
     {
