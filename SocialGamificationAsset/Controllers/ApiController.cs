@@ -35,8 +35,9 @@ namespace SocialGamificationAsset.Controllers
         }
 
         /// <exception cref="System.Web.Http.HttpResponseException">
-        ///     Throws DB Exception when <see cref="DbUpdateException" /> (or for
-        ///     any member of DbUpdateException) is raised.
+        ///     Throws DB <see cref="Exception" /> when
+        ///     <see cref="DbUpdateException" /> (or for any member of
+        ///     DbUpdateException) is raised.
         /// </exception>
         protected async Task SaveChangesAsync()
         {

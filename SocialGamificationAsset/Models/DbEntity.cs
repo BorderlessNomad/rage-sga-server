@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 namespace SocialGamificationAsset.Models
 {
     /// <summary>
-    /// DBEntity Interface
+    ///     DBEntity Interface
     /// </summary>
     public interface IDbEntity
     {
@@ -15,14 +15,15 @@ namespace SocialGamificationAsset.Models
     }
 
     /// <summary>
-    /// DbEntity class handling Primary Key creation & other default parameters.
+    ///     DbEntity class handling Primary Key creation & other default parameters.
     /// </summary>
     [JsonObject(IsReference = true)]
     [DataContract]
     public class DbEntity : IDbEntity
     {
         /// <summary>
-        /// Default constructor initialising <see cref="Id"/>.
+        ///     Default constructor initialising
+        ///     <see cref="SocialGamificationAsset.Models.DbEntity.Id" /> .
         /// </summary>
         public DbEntity()
         {
@@ -37,17 +38,17 @@ namespace SocialGamificationAsset.Models
 		*/
 
         /// <summary>
-        /// Set default Updated Date field.
+        ///     Set default Updated Date field.
         /// </summary>
         public DateTime? UpdatedDate { get; set; }
 
         /// <summary>
-        /// Set defauly Created Date field.
+        ///     Set defauly Created Date field.
         /// </summary>
         public DateTime CreatedDate { get; set; }
 
         /// <summary>
-        /// Custom Primary Key set to <see cref="Guid"/>.
+        ///     Custom Primary Key set to <see cref="Guid" /> .
         /// </summary>
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }

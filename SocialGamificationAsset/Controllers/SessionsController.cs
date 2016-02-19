@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Web.Http.Description;
 
 using Microsoft.AspNet.Authorization;
-using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 
 using SocialGamificationAsset.Models;

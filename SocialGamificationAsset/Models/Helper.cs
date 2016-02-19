@@ -73,10 +73,11 @@ namespace SocialGamificationAsset.Models
             HttpStatusCode StatusCode = HttpStatusCode.InternalServerError)
         {
             var response = new HttpResponseMessage(StatusCode);
-            response.Content = new StringContent(
-                JsonConvert.SerializeObject(new { Message = message }, JsonSerializerSettings()),
-                Encoding.UTF8,
-                "application/json");
+            response.Content =
+                new StringContent(
+                    JsonConvert.SerializeObject(new { Message = message }, JsonSerializerSettings()),
+                    Encoding.UTF8,
+                    "application/json");
 
             response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
@@ -90,7 +91,9 @@ namespace SocialGamificationAsset.Models
             return ApiException(e.Message, StatusCode);
         }
 
-        public static ContentResult JsonErrorContentResult(object value, int status = StatusCodes.Status500InternalServerError)
+        public static ContentResult JsonErrorContentResult(
+            object value,
+            int status = StatusCodes.Status500InternalServerError)
         {
             string content;
 

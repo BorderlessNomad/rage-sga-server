@@ -217,7 +217,9 @@ namespace SocialGamificationAsset.Controllers
                                 .FirstOrDefaultAsync();
                     if (round == null)
                     {
-                        return Helper.HttpNotFound("No Round #'" + roundForm.RoundNumber + "' found for Actor '" + roundForm.ActorId + "'");
+                        return
+                            Helper.HttpNotFound(
+                                "No Round #'" + roundForm.RoundNumber + "' found for Actor '" + roundForm.ActorId + "'");
                     }
 
                     _context.Entry(round).State = EntityState.Modified;
