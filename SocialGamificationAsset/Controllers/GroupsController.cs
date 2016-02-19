@@ -80,7 +80,11 @@ namespace SocialGamificationAsset.Controllers
                 group.AddPlayers(_context, group.Players);
             }
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return new HttpStatusCodeResult(StatusCodes.Status204NoContent);
         }
@@ -101,7 +105,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Groups.Add(group);
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return CreatedAtRoute("GetGroupInfo", new { id = group.Id }, group);
         }
@@ -123,7 +131,11 @@ namespace SocialGamificationAsset.Controllers
 
             group.IsEnabled = false;
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return Ok(group);
         }

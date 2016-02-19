@@ -178,7 +178,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Items.Add(item);
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return CreatedAtRoute("GetItem", new { id = item.Id }, item);
         }
@@ -201,7 +205,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.ItemTypes.Add(itemType);
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return CreatedAtRoute("GetItemType", new { id = itemType.Id }, itemType);
         }

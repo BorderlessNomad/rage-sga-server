@@ -60,7 +60,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Entry(inventory).State = EntityState.Modified;
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return new HttpStatusCodeResult(StatusCodes.Status204NoContent);
         }
@@ -76,7 +80,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Inventory.Add(inventory);
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return CreatedAtRoute("GetInventory", new { id = inventory.Id }, inventory);
         }
@@ -98,7 +106,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Inventory.Remove(inventory);
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return Ok(inventory);
         }

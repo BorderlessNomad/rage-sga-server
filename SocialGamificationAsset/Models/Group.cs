@@ -6,6 +6,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
+using Microsoft.AspNet.Mvc;
+
 namespace SocialGamificationAsset.Models
 {
     [Table(SocialGamificationAssetContext.GroupsTableName)]
@@ -72,9 +74,11 @@ namespace SocialGamificationAsset.Models
             Players = new List<Player>(actors);
         }
 
-        public async Task AddOrUpdateCustomData(SocialGamificationAssetContext db, IList<CustomDataBase> sourceData)
+        public async Task<ContentResult> AddOrUpdateCustomData(
+            SocialGamificationAssetContext db,
+            IList<CustomDataBase> sourceData)
         {
-            await Models.CustomData.AddOrUpdate(db, sourceData, Id, CustomDataType.Group);
+            return await Models.CustomData.AddOrUpdate(db, sourceData, Id, CustomDataType.Group);
         }
     }
 

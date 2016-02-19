@@ -115,7 +115,11 @@ namespace SocialGamificationAsset.Controllers
 
             var newAlliance = new Alliance { RequesterId = session.Player.Id, RequesteeId = allianceId };
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return Ok(newAlliance);
         }
@@ -147,7 +151,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Alliances.Remove(alliance);
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return Ok("Alliance Removed from the list.");
         }

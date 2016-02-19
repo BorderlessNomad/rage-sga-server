@@ -226,7 +226,11 @@ namespace SocialGamificationAsset.Controllers
                     round.Score = roundForm.Score;
                     round.DateScore = DateTime.Now;
 
-                    await SaveChangesAsync();
+                    var error = await SaveChangesAsync();
+                    if (error != null)
+                    {
+                        return error;
+                    }
 
                     return Ok(round);
                 }
@@ -252,7 +256,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Entry(match).State = EntityState.Modified;
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return CreatedAtRoute("GetMatch", new { id = match.Id }, match);
         }
@@ -319,6 +327,7 @@ namespace SocialGamificationAsset.Controllers
             }
 
             Tournament tournament;
+            ContentResult error;
             if (quickMatch.Tournament.HasValue && quickMatch.Tournament != Guid.Empty)
             {
                 tournament = await _context.Tournaments.FindAsync(quickMatch.Tournament);
@@ -333,7 +342,11 @@ namespace SocialGamificationAsset.Controllers
 
                 _context.Tournaments.Add(tournament);
 
-                await SaveChangesAsync();
+                error = await SaveChangesAsync();
+                if (error != null)
+                {
+                    return error;
+                }
             }
 
             // Create Match
@@ -341,20 +354,32 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Matches.Add(match);
 
-            await SaveChangesAsync();
+            error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             if (quickMatch.Type == MatchType.Player)
             {
                 foreach (var actor in players)
                 {
-                    await MatchActor.Add(_context, match, actor);
+                    error = await MatchActor.Add(_context, match, actor);
+                    if (error != null)
+                    {
+                        return error;
+                    }
                 }
             }
             else
             {
                 foreach (var actor in groups)
                 {
-                    await MatchActor.Add(_context, match, actor);
+                    error = await MatchActor.Add(_context, match, actor);
+                    if (error != null)
+                    {
+                        return error;
+                    }
                 }
             }
 
@@ -379,7 +404,11 @@ namespace SocialGamificationAsset.Controllers
 
             match.IsDeleted = true;
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return Ok(match);
         }

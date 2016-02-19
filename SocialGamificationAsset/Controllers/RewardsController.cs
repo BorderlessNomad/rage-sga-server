@@ -60,7 +60,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Entry(reward).State = EntityState.Modified;
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return CreatedAtRoute("GetReward", new { id = reward.Id }, reward);
         }
@@ -77,7 +81,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Rewards.Add(reward);
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return CreatedAtRoute("GetReward", new { id = reward.Id }, reward);
         }
@@ -99,7 +107,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Rewards.Remove(reward);
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return Ok(reward);
         }

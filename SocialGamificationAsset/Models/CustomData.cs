@@ -5,6 +5,8 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Microsoft.AspNet.Mvc;
+
 namespace SocialGamificationAsset.Models
 {
     public struct CustomDataBase
@@ -48,7 +50,7 @@ namespace SocialGamificationAsset.Models
 
         public CustomDataType ObjectType { get; set; }
 
-        public static async Task AddOrUpdate(
+        public static async Task<ContentResult> AddOrUpdate(
             SocialGamificationAssetContext db,
             IList<CustomDataBase> sourceData,
             Guid objectId,
@@ -92,8 +94,10 @@ namespace SocialGamificationAsset.Models
             }
             catch (DbUpdateException e)
             {
-                throw Helper.ApiException(e);
+                return Helper.JsonErrorContentResult(e.Message);
             }
+
+            return null;
         }
 
         public static IQueryable<CustomData> ConditionBuilder(

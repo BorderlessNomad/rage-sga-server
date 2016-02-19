@@ -67,7 +67,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Entry(achievement).State = EntityState.Modified;
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return new HttpStatusCodeResult(StatusCodes.Status204NoContent);
         }
@@ -84,7 +88,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Achievements.Add(achievement);
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return CreatedAtRoute("GetAchievement", new { id = achievement.Id }, achievement);
         }
@@ -107,7 +115,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Achievements.Remove(achievement);
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return Ok(achievement);
         }

@@ -63,7 +63,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Roles.Add(role);
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return CreatedAtRoute("GetRole", new { id = role.Id }, role);
         }

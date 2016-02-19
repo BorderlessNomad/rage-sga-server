@@ -60,7 +60,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Entry(activity).State = EntityState.Modified;
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return CreatedAtRoute("GetActivity", new { id = activity.Id }, activity);
         }
@@ -77,7 +81,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Activities.Add(activity);
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return CreatedAtRoute("GetActivity", new { id = activity.Id }, activity);
         }
@@ -99,7 +107,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Activities.Remove(activity);
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return Ok(activity);
         }

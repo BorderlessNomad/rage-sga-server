@@ -34,12 +34,14 @@ namespace SocialGamificationAsset.Controllers
             return _session ?? (_session = HttpContext.Session.GetObjectFromJson<Session>("__session"));
         }
 
-        /// <exception cref="System.Web.Http.HttpResponseException">
-        ///     Throws DB <see cref="Exception" /> when
-        ///     <see cref="DbUpdateException" /> (or for any member of
-        ///     DbUpdateException) is raised.
-        /// </exception>
-        protected async Task SaveChangesAsync()
+        /// <summary>
+        ///     Asynchronously save data
+        /// </summary>
+        /// <returns>
+        ///     JsonErrorContentResult if <see cref="DbUpdateException" /> exception
+        ///     occurs
+        /// </returns>
+        protected async Task<ContentResult> SaveChangesAsync()
         {
             try
             {
@@ -47,8 +49,10 @@ namespace SocialGamificationAsset.Controllers
             }
             catch (DbUpdateException e)
             {
-                throw Helper.ApiException(e);
+                return Helper.JsonErrorContentResult(e.Message);
             }
+
+            return null;
         }
     }
 }

@@ -181,10 +181,18 @@ namespace SocialGamificationAsset.Controllers
                 player.Password = Helper.HashPassword(form.Password);
             }
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             // Add or Update the CustomData
-            await player.AddOrUpdateCustomData(_context, form.CustomData);
+            error = await player.AddOrUpdateCustomData(_context, form.CustomData);
+            if (error != null)
+            {
+                return error;
+            }
 
             return CreatedAtRoute("GetPlayer", new { id = player.Id }, player);
         }
@@ -244,10 +252,18 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Sessions.Add(entity);
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             // Add or Update the CustomData
-            await player.AddOrUpdateCustomData(_context, register.CustomData);
+            error = await player.AddOrUpdateCustomData(_context, register.CustomData);
+            if (error != null)
+            {
+                return error;
+            }
 
             return CreatedAtRoute("GetPlayer", new { id = entity.Id }, entity);
         }
@@ -276,7 +292,11 @@ namespace SocialGamificationAsset.Controllers
 
             player.IsEnabled = false;
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return Ok(player);
         }

@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.Validation;
 using System.Threading.Tasks;
 
+using Microsoft.AspNet.Mvc;
+
 namespace SocialGamificationAsset.Models
 {
     public class MatchActor : DbEntity
@@ -20,7 +22,7 @@ namespace SocialGamificationAsset.Models
 
         public ICollection<CustomData> CustomData { get; set; }
 
-        public static async Task Add(SocialGamificationAssetContext db, Match match, Actor actor)
+        public static async Task<ContentResult> Add(SocialGamificationAssetContext db, Match match, Actor actor)
         {
             // Add actors to this match
             var matchActor = new MatchActor { MatchId = match.Id, ActorId = actor.Id };
@@ -33,7 +35,7 @@ namespace SocialGamificationAsset.Models
             }
             catch (DbEntityValidationException e)
             {
-                throw Helper.ApiException(e);
+                return Helper.JsonErrorContentResult(e.Message);
             }
 
             for (var i = 1; i <= match.TotalRounds; ++i)
@@ -49,9 +51,11 @@ namespace SocialGamificationAsset.Models
                 }
                 catch (DbEntityValidationException e)
                 {
-                    throw Helper.ApiException(e);
+                    return Helper.JsonErrorContentResult(e.Message);
                 }
             }
+
+            return null;
         }
     }
 }

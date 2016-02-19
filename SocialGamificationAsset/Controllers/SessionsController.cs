@@ -136,7 +136,11 @@ namespace SocialGamificationAsset.Controllers
 
             _context.Sessions.Add(playerSession);
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return CreatedAtRoute("GetSession", new { id = playerSession.Id }, playerSession);
         }
@@ -184,7 +188,11 @@ namespace SocialGamificationAsset.Controllers
 
             playerSession.IsExpired = true;
 
-            await SaveChangesAsync();
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
 
             return Ok(playerSession);
         }

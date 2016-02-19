@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Web.Http;
 
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
+using Microsoft.Net.Http.Headers;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -68,29 +64,6 @@ namespace SocialGamificationAsset.Models
             return settings;
         }
 
-        public static HttpResponseException ApiException(
-            string message,
-            HttpStatusCode StatusCode = HttpStatusCode.InternalServerError)
-        {
-            var response = new HttpResponseMessage(StatusCode);
-            response.Content =
-                new StringContent(
-                    JsonConvert.SerializeObject(new { Message = message }, JsonSerializerSettings()),
-                    Encoding.UTF8,
-                    "application/json");
-
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            return new HttpResponseException(response);
-        }
-
-        public static HttpResponseException ApiException(
-            Exception e,
-            HttpStatusCode StatusCode = HttpStatusCode.InternalServerError)
-        {
-            return ApiException(e.Message, StatusCode);
-        }
-
         public static ContentResult JsonErrorContentResult(
             object value,
             int status = StatusCodes.Status500InternalServerError)
@@ -110,7 +83,7 @@ namespace SocialGamificationAsset.Models
             {
                 StatusCode = status,
                 Content = content,
-                ContentType = new Microsoft.Net.Http.Headers.MediaTypeHeaderValue("application/json")
+                ContentType = new MediaTypeHeaderValue("application/json")
             };
         }
 
