@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using Microsoft.AspNet.Mvc;
+
 namespace SocialGamificationAsset.Models
 {
     public class Match : DbEntity
@@ -76,5 +78,29 @@ namespace SocialGamificationAsset.Models
         public Guid? Tournament { get; set; }
 
         public IList<CustomDataBase> CustomData { get; set; }
+    }
+
+    public class QuickMatchActors : QuickMatch
+    {
+        public QuickMatchActors()
+        {
+            Type = MatchType.Player;
+
+            AlliancesOnly = false;
+
+            if (Rounds < 1)
+            {
+                Rounds = 1;
+            }
+        }
+
+        public IList<Guid> Actors { get; set; }
+    }
+
+    public struct QuickMatchResult
+    {
+        public Match match;
+
+        public ContentResult error;
     }
 }

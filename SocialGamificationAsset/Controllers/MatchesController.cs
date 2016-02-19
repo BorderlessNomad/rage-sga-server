@@ -265,6 +265,73 @@ namespace SocialGamificationAsset.Controllers
             return CreatedAtRoute("GetMatch", new { id = match.Id }, match);
         }
 
+        // Creates a Quick Match between logged account and given actors
+        // POST: api/matches
+        [HttpPost("", Name = "CreateQuickMatchActors")]
+        [ResponseType(typeof(Match))]
+        public async Task<IActionResult> CreateQuickMatch([FromBody] QuickMatchActors quickMatch)
+        {
+            if (session?.Player == null)
+            {
+                return Helper.HttpNotFound("No Session/Player found.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Helper.HttpBadRequest(ModelState);
+            }
+
+            if (quickMatch.Actors.Count < 2)
+            {
+                return Helper.HttpBadRequest("Minimum 2 Actors are required for a Match");
+            }
+
+            var result = new QuickMatchResult();
+
+            // Build the filter by CustomData
+            var customData = CustomDataBase.Parse(quickMatch.CustomData);
+            IList<Player> players = new List<Player>();
+            IList<Group> groups = new List<Group>();
+
+            if (quickMatch.Type == MatchType.Player)
+            {
+                foreach (var actorId in quickMatch.Actors)
+                {
+                    var player = await _context.Players.FindAsync(actorId);
+                    if (player == null)
+                    {
+                        return Helper.HttpNotFound("No Player with Id " + actorId + " exists.");
+                    }
+
+                    players.Add(player);
+                }
+
+                result = await QuickMatch(quickMatch, players);
+            }
+            else if (quickMatch.Type == MatchType.Group)
+            {
+                foreach (var actorId in quickMatch.Actors)
+                {
+                    var group = await _context.Groups.FindAsync(actorId);
+                    if (group == null)
+                    {
+                        return Helper.HttpNotFound("No Group with Id " + actorId + " exists.");
+                    }
+
+                    groups.Add(group);
+                }
+
+                result = await QuickMatch(quickMatch, groups);
+            }
+
+            if (result.error != null)
+            {
+                return result.error;
+            }
+
+            return CreatedAtRoute("GetMatch", new { id = result.match.Id }, result.match);
+        }
+
         // Creates a Quick Match between logged account and a random user
         // POST: api/matches
         [HttpPost("", Name = "CreateQuickMatch")]
@@ -280,6 +347,8 @@ namespace SocialGamificationAsset.Controllers
             {
                 return Helper.HttpBadRequest(ModelState);
             }
+
+            var result = new QuickMatchResult();
 
             // Build the filter by CustomData
             var customData = CustomDataBase.Parse(quickMatch.CustomData);
@@ -302,6 +371,8 @@ namespace SocialGamificationAsset.Controllers
                 {
                     return Helper.HttpNotFound("No Players available for match at this moment.");
                 }
+
+                result = await QuickMatch(quickMatch, players);
             }
             else if (quickMatch.Type == MatchType.Group)
             {
@@ -324,8 +395,20 @@ namespace SocialGamificationAsset.Controllers
                 {
                     return Helper.HttpNotFound("No Groups available for match at this moment.");
                 }
+
+                result = await QuickMatch(quickMatch, groups);
             }
 
+            if (result.error != null)
+            {
+                return result.error;
+            }
+
+            return CreatedAtRoute("GetMatch", new { id = result.match.Id }, result.match);
+        }
+
+        private async Task<QuickMatchResult> QuickMatch(QuickMatch quickMatch, IList<Player> players)
+        {
             Tournament tournament;
             ContentResult error;
             if (quickMatch.Tournament.HasValue && quickMatch.Tournament != Guid.Empty)
@@ -333,7 +416,7 @@ namespace SocialGamificationAsset.Controllers
                 tournament = await _context.Tournaments.FindAsync(quickMatch.Tournament);
                 if (tournament == null)
                 {
-                    return Helper.HttpBadRequest("Invalid Tournament.");
+                    return new QuickMatchResult { match = null, error = Helper.HttpBadRequest("Invalid Tournament.") };
                 }
             }
             else
@@ -345,7 +428,7 @@ namespace SocialGamificationAsset.Controllers
                 error = await SaveChangesAsync();
                 if (error != null)
                 {
-                    return error;
+                    return new QuickMatchResult { match = null, error = error };
                 }
             }
 
@@ -357,33 +440,67 @@ namespace SocialGamificationAsset.Controllers
             error = await SaveChangesAsync();
             if (error != null)
             {
-                return error;
+                return new QuickMatchResult { match = match, error = error };
             }
 
-            if (quickMatch.Type == MatchType.Player)
+            foreach (var actor in players)
             {
-                foreach (var actor in players)
+                error = await MatchActor.Add(_context, match, actor);
+                if (error != null)
                 {
-                    error = await MatchActor.Add(_context, match, actor);
-                    if (error != null)
-                    {
-                        return error;
-                    }
+                    return new QuickMatchResult { match = match, error = error };
+                }
+            }
+
+            return new QuickMatchResult { match = match, error = null };
+        }
+
+        private async Task<QuickMatchResult> QuickMatch(QuickMatch quickMatch, IList<Group> groups)
+        {
+            Tournament tournament;
+            ContentResult error;
+            if (quickMatch.Tournament.HasValue && quickMatch.Tournament != Guid.Empty)
+            {
+                tournament = await _context.Tournaments.FindAsync(quickMatch.Tournament);
+                if (tournament == null)
+                {
+                    return new QuickMatchResult { match = null, error = Helper.HttpBadRequest("Invalid Tournament.") };
                 }
             }
             else
             {
-                foreach (var actor in groups)
+                tournament = new Tournament { OwnerId = session.Player.Id };
+
+                _context.Tournaments.Add(tournament);
+
+                error = await SaveChangesAsync();
+                if (error != null)
                 {
-                    error = await MatchActor.Add(_context, match, actor);
-                    if (error != null)
-                    {
-                        return error;
-                    }
+                    return new QuickMatchResult { match = null, error = error };
                 }
             }
 
-            return CreatedAtRoute("GetMatch", new { id = match.Id }, match);
+            // Create Match
+            var match = new Match { TournamentId = tournament.Id, TotalRounds = quickMatch.Rounds };
+
+            _context.Matches.Add(match);
+
+            error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return new QuickMatchResult { match = match, error = error };
+            }
+
+            foreach (var actor in groups)
+            {
+                error = await MatchActor.Add(_context, match, actor);
+                if (error != null)
+                {
+                    return new QuickMatchResult { match = match, error = error };
+                }
+            }
+
+            return new QuickMatchResult { match = match, error = null };
         }
 
         // DELETE: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
