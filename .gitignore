@@ -91,3 +91,4 @@ SocialGamificationAsset/Properties/PublishProfiles/
 SocialGamificationAsset/config.*.json
 artifacts/bin/SocialGamificationAsset/Debug/
 artifacts/bin/SocialGamificationAsset/Release/PublishOutput/
+UpdateLog*
