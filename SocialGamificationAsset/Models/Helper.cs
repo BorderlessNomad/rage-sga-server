@@ -64,25 +64,24 @@ namespace SocialGamificationAsset.Models
             return settings;
         }
 
+        public static string SerializeToJson(object value)
+        {
+            return JsonConvert.SerializeObject(value, JsonSerializerSettings());
+        }
+
         public static ContentResult JsonErrorContentResult(
             object value,
             int status = StatusCodes.Status500InternalServerError)
         {
-            string content;
-
             if (value is string)
             {
-                content = JsonConvert.SerializeObject(new { Error = value }, JsonSerializerSettings());
-            }
-            else
-            {
-                content = JsonConvert.SerializeObject(value, JsonSerializerSettings());
+                value = new { Error = value };
             }
 
             return new ContentResult
             {
                 StatusCode = status,
-                Content = content,
+                Content = SerializeToJson(value),
                 ContentType = new MediaTypeHeaderValue("application/json")
             };
         }

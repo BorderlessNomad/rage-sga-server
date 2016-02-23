@@ -115,7 +115,7 @@ namespace SocialGamificationAsset.Policies
     {
         public static void SetObjectAsJson(this ISession session, string key, object value)
         {
-            session.SetString(key, JsonConvert.SerializeObject(value));
+            session.SetString(key, Helper.SerializeToJson(value));
         }
 
         public static T GetObjectFromJson<T>(this ISession session, string key)
