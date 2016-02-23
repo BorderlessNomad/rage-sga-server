@@ -75,7 +75,7 @@ namespace SocialGamificationAsset.Models
         {
             if (value is string)
             {
-                value = new { Error = value };
+                value = new ApiError { Error = value.ToString() };
             }
 
             return new ContentResult

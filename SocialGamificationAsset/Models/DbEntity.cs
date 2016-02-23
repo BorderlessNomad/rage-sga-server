@@ -53,4 +53,9 @@ namespace SocialGamificationAsset.Models
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
     }
+
+    public struct ApiError
+    {
+        public string Error;
+    }
 }

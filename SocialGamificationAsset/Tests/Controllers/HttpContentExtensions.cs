@@ -17,6 +17,5 @@ namespace SocialGamificationAsset.Tests
         {
             yield return new JsonMediaTypeFormatter();
         }
-
     }
 }

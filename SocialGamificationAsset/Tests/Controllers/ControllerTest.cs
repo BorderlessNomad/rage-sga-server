@@ -9,10 +9,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
         public ControllerTest()
         {
-            _server = new HttpClient
-            {
-                BaseAddress = new Uri("https://localhost:44363/api"),
-            };
+            _server = new HttpClient { BaseAddress = new Uri("https://localhost:44363") };
 
             /**
              * http://dotnetliberty.com/index.php/2015/10/22/unit-testing-mvc6-and-entityframework-7-with-xunit/
