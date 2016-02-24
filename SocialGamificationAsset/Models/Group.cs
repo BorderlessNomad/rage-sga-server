@@ -18,7 +18,7 @@ namespace SocialGamificationAsset.Models
             Type = GroupVisibility.Public;
         }
 
-        public string Name { get; set; }
+        public string Username { get; set; }
 
         public GroupVisibility Type { get; set; }
 

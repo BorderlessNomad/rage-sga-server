@@ -167,5 +167,97 @@ namespace SocialGamificationAsset.Tests.Controllers
                 Assert.False(match.IsDeleted);
             }
         }
+
+        [Fact]
+        public async Task GetMatchInvalidMatch()
+        {
+            var session = await Login();
+            var invalidId = Guid.NewGuid();
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+
+                // Get Match with Invalid Id
+                var matchResponse = await client.GetAsync($"/api/matches/{invalidId}");
+                Assert.Equal(HttpStatusCode.NotFound, matchResponse.StatusCode);
+
+                var content = await matchResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal($"No Match found with Id {invalidId}.", content.Error);
+            }
+        }
+
+        [Fact]
+        public async Task GetMatchValid()
+        {
+            var mayur = await Login();
+            var matt = await Login("matt", "matt");
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+
+                var quickMatch = new QuickMatchActors
+                {
+                    Actors = new List<Guid>(new[] { mayur.Player.Id, matt.Player.Id })
+                };
+
+                var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
+                Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
+
+                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
+                Assert.False(match.IsFinished);
+                Assert.False(match.IsDeleted);
+
+                // Get Match with Valid Id
+                matchResponse = await client.GetAsync($"/api/matches/{match.Id}");
+                Assert.Equal(HttpStatusCode.OK, matchResponse.StatusCode);
+
+                var matchGet = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                Assert.Equal(mayur.Player.Id, matchGet.Tournament.OwnerId);
+                Assert.Equal(match.Id, matchGet.Id);
+            }
+        }
+
+        [Fact]
+        public async Task GetMatchActors()
+        {
+            var mayur = await Login();
+            var matt = await Login("matt", "matt");
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+
+                var quickMatch = new QuickMatchActors
+                {
+                    Actors = new List<Guid>(new[] { mayur.Player.Id, matt.Player.Id })
+                };
+
+                var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
+                Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
+
+                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
+                Assert.False(match.IsFinished);
+                Assert.False(match.IsDeleted);
+
+                // Get Match with Valid Id
+                matchResponse = await client.GetAsync($"/api/matches/{match.Id}");
+                Assert.Equal(HttpStatusCode.OK, matchResponse.StatusCode);
+
+                var matchGet = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                Assert.Equal(mayur.Player.Id, matchGet.Tournament.OwnerId);
+                Assert.Equal(match.Id, matchGet.Id);
+
+                // Get Match Actors with Valid Id
+                var matchActorResponse = await client.GetAsync($"/api/matches/{match.Id}/actors");
+                Assert.Equal(HttpStatusCode.OK, matchActorResponse.StatusCode);
+
+                var matchActorGet = await matchActorResponse.Content.ReadAsJsonAsync<IList<MatchActor>>();
+                Assert.IsType(typeof(List<MatchActor>), matchActorGet);
+            }
+        }
     }
 }

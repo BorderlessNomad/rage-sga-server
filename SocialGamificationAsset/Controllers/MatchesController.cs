@@ -67,7 +67,7 @@ namespace SocialGamificationAsset.Controllers
 
             if (match == null)
             {
-                return Helper.HttpNotFound($"No Match found for ID {id}");
+                return Helper.HttpNotFound($"No Match found with Id {id}.");
             }
 
             return Ok(match);
@@ -85,11 +85,6 @@ namespace SocialGamificationAsset.Controllers
 
             IList<MatchActor> matchActors =
                 await _context.MatchActors.Where(a => a.MatchId.Equals(id)).Include(a => a.Actor).ToListAsync();
-
-            if (matchActors == null || matchActors.Count < 1)
-            {
-                return Helper.HttpNotFound($"No Actor found for Match {id}");
-            }
 
             return Ok(matchActors);
         }

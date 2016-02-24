@@ -46,7 +46,7 @@ namespace SocialGamificationAsset.Models
 
                 Debug.WriteLine("Games Seeded.");
 
-                // GameRegistry Game = await _context.GameRegistry.Where(g => g.Name.Equals("ButtonGame")).FirstOrDefaultAsync();
+                // GameRegistry Game = await _context.GameRegistry.Where(g => g.Username.Equals("ButtonGame")).FirstOrDefaultAsync();
             }
         }
 
@@ -56,9 +56,9 @@ namespace SocialGamificationAsset.Models
             {
                 IList<Group> groups = new List<Group>
                 {
-                    new Group { Name = "boardgame" },
-                    new Group { Name = "gameideas" },
-                    new Group { Name = "rage" }
+                    new Group { Username = "boardgame" },
+                    new Group { Username = "gameideas" },
+                    new Group { Username = "rage" }
                 };
 
                 _context.Groups.AddRange(groups);
@@ -73,9 +73,9 @@ namespace SocialGamificationAsset.Models
         {
             if (!_context.Sessions.Any())
             {
-                var boardgame = await _context.Groups.Where(a => a.Name.Equals("boardgame")).FirstOrDefaultAsync();
-                var gameideas = await _context.Groups.Where(a => a.Name.Equals("gameideas")).FirstOrDefaultAsync();
-                var rage = await _context.Groups.Where(a => a.Name.Equals("rage")).FirstOrDefaultAsync();
+                var boardgame = await _context.Groups.Where(a => a.Username.Equals("boardgame")).FirstOrDefaultAsync();
+                var gameideas = await _context.Groups.Where(a => a.Username.Equals("gameideas")).FirstOrDefaultAsync();
+                var rage = await _context.Groups.Where(a => a.Username.Equals("rage")).FirstOrDefaultAsync();
 
                 IList<Session> sessions = new List<Session>
                 {
