@@ -17,7 +17,7 @@ namespace SocialGamificationAsset.Tests.Controllers
             using (var client = _server.AcceptJson())
             {
                 // login with Empty UserForm
-                var loginFormEmpty = new UserForm { };
+                var loginFormEmpty = new UserForm();
 
                 var loginResponse = await client.PostAsJsonAsync("/api/sessions", loginFormEmpty);
                 Assert.Equal(HttpStatusCode.BadRequest, loginResponse.StatusCode);

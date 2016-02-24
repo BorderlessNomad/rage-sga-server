@@ -19,14 +19,6 @@ namespace SocialGamificationAsset.Controllers
         {
         }
 
-        // GET: api/matches/all
-        [HttpGet("all", Name = "GetAllMatches")]
-        [ResponseType(typeof(ItemTypeResponse))]
-        public IEnumerable<Match> GetAllMatches()
-        {
-            return _context.Matches.Include(m => m.Tournament);
-        }
-
         // GET: api/matches/owned
         [HttpGet("owned", Name = "GetOwnedMatches")]
         [ResponseType(typeof(IList<Match>))]
