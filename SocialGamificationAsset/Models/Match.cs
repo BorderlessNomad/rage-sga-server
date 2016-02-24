@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
 using Microsoft.AspNet.Mvc;
 
@@ -33,6 +34,7 @@ namespace SocialGamificationAsset.Models
 
         public bool IsDeleted { get; set; }
 
+        [IgnoreDataMember]
         public virtual ICollection<MatchActor> Actors { get; set; }
 
         [NotMapped]
@@ -64,6 +66,8 @@ namespace SocialGamificationAsset.Models
                 Rounds = 1;
             }
         }
+
+        public string Title { get; set; }
 
         public MatchType Type { get; set; }
 

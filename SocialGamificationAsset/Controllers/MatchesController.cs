@@ -19,22 +19,6 @@ namespace SocialGamificationAsset.Controllers
         {
         }
 
-        // GET: api/matches/owned
-        [HttpGet("owned", Name = "GetOwnedMatches")]
-        [ResponseType(typeof(IList<Match>))]
-        public async Task<IActionResult> GetOwnedMatches()
-        {
-            IList<Match> matches =
-                await
-                _context.MatchActors.Where(a => a.ActorId.Equals(session.Player.Id))
-                        .Select(m => m.Match)
-                        .Include(m => m.Tournament)
-                        .Where(m => m.Tournament.OwnerId.Equals(session.Player.Id))
-                        .ToListAsync();
-
-            return Ok(matches);
-        }
-
         // GET: api/matches
         // GET: api/matches/participated
         [HttpGet("", Name = "GetMyMatches")]
@@ -47,6 +31,22 @@ namespace SocialGamificationAsset.Controllers
                 _context.MatchActors.Where(a => a.ActorId.Equals(session.Player.Id))
                         .Select(m => m.Match)
                         .Include(m => m.Tournament)
+                        .ToListAsync();
+
+            return Ok(matches);
+        }
+
+        // GET: api/matches/owned
+        [HttpGet("owned", Name = "GetOwnedMatches")]
+        [ResponseType(typeof(IList<Match>))]
+        public async Task<IActionResult> GetOwnedMatches()
+        {
+            IList<Match> matches =
+                await
+                _context.MatchActors.Where(a => a.ActorId.Equals(session.Player.Id))
+                        .Select(m => m.Match)
+                        .Include(m => m.Tournament)
+                        .Where(m => m.Tournament.OwnerId.Equals(session.Player.Id))
                         .ToListAsync();
 
             return Ok(matches);
@@ -253,7 +253,7 @@ namespace SocialGamificationAsset.Controllers
             return CreatedAtRoute("GetMatch", new { id = match.Id }, match);
         }
 
-        // Creates a Quick Match between logged account and given actors
+        // Creates a Quick Match between given actors
         // POST: api/matches/actors
         [HttpPost("actors", Name = "CreateQuickMatchActors")]
         [ResponseType(typeof(Match))]
@@ -418,6 +418,11 @@ namespace SocialGamificationAsset.Controllers
 
             // Create Match
             var match = new Match { TournamentId = tournament.Id, TotalRounds = quickMatch.Rounds };
+
+            if (!string.IsNullOrWhiteSpace(quickMatch.Title) && Helper.SanitizeString(quickMatch.Title).Length > 0)
+            {
+                match.Title = Helper.SanitizeString(quickMatch.Title);
+            }
 
             _context.Matches.Add(match);
 

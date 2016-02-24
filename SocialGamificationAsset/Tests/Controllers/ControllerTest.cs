@@ -29,12 +29,14 @@ namespace SocialGamificationAsset.Tests.Controllers
              */
         }
 
-        protected async Task<Session> Login()
+        protected async Task<Session> Login(string username = "mayur", string password = "mayur")
         {
-            using (var client = _server.AcceptJson())
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
+                client.AcceptJson();
+
                 // login 
-                var loginForm = new UserForm { Username = "mayur", Password = "mayur" };
+                var loginForm = new UserForm { Username = username, Password = password };
 
                 var loginResponse = await client.PostAsJsonAsync("/api/sessions", loginForm);
                 Assert.True(loginResponse.IsSuccessStatusCode);

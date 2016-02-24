@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
 
 using SocialGamificationAsset.Policies;
@@ -16,9 +15,9 @@ namespace SocialGamificationAsset.Tests.Controllers
             return client;
         }
 
-        public static HttpClient AddSessionHeader(this HttpClient client, Guid session)
+        public static HttpClient AddSessionHeader(this HttpClient client, string sessionId)
         {
-            client.DefaultRequestHeaders.Add(SessionAuthorizeFilter.SessionHeaderName, session.ToString());
+            client.DefaultRequestHeaders.Add(SessionAuthorizeFilter.SessionHeaderName, sessionId);
 
             return client;
         }

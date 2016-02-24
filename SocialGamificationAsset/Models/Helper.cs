@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 using Microsoft.AspNet.Http;
@@ -39,6 +40,12 @@ namespace SocialGamificationAsset.Models
             }
 
             return list.Take(limit).ToList();
+        }
+
+        public static string SanitizeString(string str)
+        {
+            return Path.GetInvalidFileNameChars()
+                       .Aggregate(str, (current, c) => current.Replace(c.ToString(), string.Empty));
         }
 
         public static string GenerateRandomSalt()
