@@ -179,7 +179,7 @@ namespace SocialGamificationAsset.Controllers
             return Ok(matchRoundResponse);
         }
 
-        // PUT: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
+        // PUT: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8/rounds
         [HttpPut("{id:Guid}/rounds", Name = "UpdateMatchRoundScore")]
         [ResponseType(typeof(MatchRound))]
         public async Task<IActionResult> UpdateMatchRoundScore([FromRoute] Guid id, [FromBody] MatchRoundForm form)

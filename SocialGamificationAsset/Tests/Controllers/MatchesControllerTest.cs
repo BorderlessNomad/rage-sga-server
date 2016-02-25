@@ -292,14 +292,6 @@ namespace SocialGamificationAsset.Tests.Controllers
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
 
-                // Get Match with Valid Id
-                matchResponse = await client.GetAsync($"/api/matches/{match.Id}");
-                Assert.Equal(HttpStatusCode.OK, matchResponse.StatusCode);
-
-                var matchGet = await matchResponse.Content.ReadAsJsonAsync<Match>();
-                Assert.Equal(mayur.Player.Id, matchGet.Tournament.OwnerId);
-                Assert.Equal(match.Id, matchGet.Id);
-
                 // Get Match Owner with Valid Id
                 var matchOwnerResponse = await client.GetAsync($"/api/matches/{match.Id}/owner");
                 Assert.Equal(HttpStatusCode.OK, matchOwnerResponse.StatusCode);
@@ -385,14 +377,6 @@ namespace SocialGamificationAsset.Tests.Controllers
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
 
-                // Get Match with Valid Id
-                matchResponse = await client.GetAsync($"/api/matches/{match.Id}");
-                Assert.Equal(HttpStatusCode.OK, matchResponse.StatusCode);
-
-                var matchGet = await matchResponse.Content.ReadAsJsonAsync<Match>();
-                Assert.Equal(mayur.Player.Id, matchGet.Tournament.OwnerId);
-                Assert.Equal(match.Id, matchGet.Id);
-
                 // Get Match Actors with Valid Id
                 var matchActorResponse = await client.GetAsync($"/api/matches/{match.Id}/actors");
                 Assert.Equal(HttpStatusCode.OK, matchActorResponse.StatusCode);
@@ -447,20 +431,12 @@ namespace SocialGamificationAsset.Tests.Controllers
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
 
-                // Get Match with Valid Id
-                matchResponse = await client.GetAsync($"/api/matches/{match.Id}");
-                Assert.Equal(HttpStatusCode.OK, matchResponse.StatusCode);
-
-                var matchGet = await matchResponse.Content.ReadAsJsonAsync<Match>();
-                Assert.Equal(mayur.Player.Id, matchGet.Tournament.OwnerId);
-                Assert.Equal(match.Id, matchGet.Id);
-
                 // Get Match Rounds with Valid Id
                 var matchRoundsResponse = await client.GetAsync($"/api/matches/{match.Id}/rounds");
                 Assert.Equal(HttpStatusCode.OK, matchRoundsResponse.StatusCode);
 
-                var matchRounds = await matchRoundsResponse.Content.ReadAsJsonAsync<List<MatchRound>>();
-                Assert.IsType(typeof(List<MatchRound>), matchRounds);
+                var matchRounds = await matchRoundsResponse.Content.ReadAsJsonAsync<List<MatchRoundResponse>>();
+                Assert.IsType(typeof(List<MatchRoundResponse>), matchRounds);
             }
         }
 
@@ -506,20 +482,45 @@ namespace SocialGamificationAsset.Tests.Controllers
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
 
-                // Get Match with Valid Id
-                matchResponse = await client.GetAsync($"/api/matches/{match.Id}");
-                Assert.Equal(HttpStatusCode.OK, matchResponse.StatusCode);
-
-                var matchGet = await matchResponse.Content.ReadAsJsonAsync<Match>();
-                Assert.Equal(mayur.Player.Id, matchGet.Tournament.OwnerId);
-                Assert.Equal(match.Id, matchGet.Id);
-
                 // Finish Match with Valid Id
                 var response = await client.DeleteAsync($"/api/matches/{match.Id}");
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
                 var finishedMatch = await response.Content.ReadAsJsonAsync<Match>();
                 Assert.True(finishedMatch.IsFinished);
+            }
+        }
+
+
+        [Fact]
+        public async Task UpdateMatchRoundScore()
+        {
+            var mayur = await Login();
+            var matt = await Login("matt", "matt");
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+
+                var quickMatch = new QuickMatchActors
+                {
+                    Actors = new List<Guid>(new[] { mayur.Player.Id, matt.Player.Id })
+                };
+
+                var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
+                Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
+
+                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
+                Assert.False(match.IsFinished);
+                Assert.False(match.IsDeleted);
+
+                // Get Match Rounds with Valid Id
+                var matchRoundsResponse = await client.GetAsync($"/api/matches/{match.Id}/rounds");
+                Assert.Equal(HttpStatusCode.OK, matchRoundsResponse.StatusCode);
+
+                var matchRounds = await matchRoundsResponse.Content.ReadAsJsonAsync<List<MatchRoundResponse>>();
+                Assert.IsType(typeof(List<MatchRoundResponse>), matchRounds);
             }
         }
     }
