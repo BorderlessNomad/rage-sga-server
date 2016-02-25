@@ -1,5 +1,15 @@
 {
   "version": "1.0.0-*",
+  "description": "RAGE Social Gamification Asset",
+  "authors": [
+    "Mayur Ahir <mayur@playgen.com>",
+    "Mathew Lepinay <matt@playgen.com>"
+  ],
+  "tags": [
+    ""
+  ],
+  "projectUrl": "",
+  "licenseUrl": "",
   "compilationOptions": {
     "emitEntryPoint": true
   },
@@ -11,6 +21,7 @@
     "run": "run server.urls=http://localhost:5003",
     "web": "Microsoft.AspNet.Server.Kestrel",
     "kestrel": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.Kestrel --server.urls http://localhost:5004",
+    "test": "xunit.runner.dnx",
     "weblistener": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.WebListener --server.urls http://localhost:5002"
   },
   "frameworks": {

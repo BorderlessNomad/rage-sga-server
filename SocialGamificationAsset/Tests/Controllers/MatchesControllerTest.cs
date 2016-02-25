@@ -215,11 +215,11 @@ namespace SocialGamificationAsset.Tests.Controllers
         [Fact]
         public async Task CreateQuickMatchWithAllianceForNonAlliedPlayer()
         {
-            var kam = await Login("ben", "ben");
+            var ben = await Login("ben", "ben");
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(kam.Id.ToString());
+                client.AcceptJson().AddSessionHeader(ben.Id.ToString());
 
                 var quickMatch = new QuickMatch { AlliancesOnly = true };
 

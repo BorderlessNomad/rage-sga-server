@@ -15,8 +15,7 @@
                 location.
             </summary>
             <param name="cacheProfiles">
-                The settings for the
-                <see cref="T:Microsoft.AspNet.Mvc.ResponseCacheAttribute" /> 's.
+                The settings for the <see cref="T:Microsoft.AspNet.Mvc.ResponseCacheAttribute" /> 's.
             </param>
             <param name="configuration">
                 Gets or sets the application configuration, where key value pair
@@ -64,10 +63,10 @@
             <summary>
                 Initializes a new instance of the <see cref="T:SocialGamificationAsset.Startup" /> class.
             </summary>
-            <param name="applicationEnvironment">
+            <param name="appEnv">
                 The location the application is running in.
             </param>
-            <param name="hostingEnvironment">
+            <param name="hostingEnv">
                 The environment the application is running under. This can be
                 Development, Staging or Production by default.
             </param>
@@ -77,7 +76,7 @@
                 Entry point for the application.
             </summary>
         </member>
-        <member name="F:SocialGamificationAsset.Startup.applicationEnvironment">
+        <member name="F:SocialGamificationAsset.Startup.appEnv">
             <summary>
                 The location the application is running in.
             </summary>
@@ -90,7 +89,7 @@
                 http://weblog.west-wind.com/posts/2015/Jun/03/Strongly-typed-AppSettings-Configuration-in-ASPNET-5
             </summary>
         </member>
-        <member name="F:SocialGamificationAsset.Startup.hostingEnvironment">
+        <member name="F:SocialGamificationAsset.Startup.hostingEnv">
             <summary>
                 The environment the application is running under. This can be
                 Development, Staging or Production by default. To set the hosting
@@ -161,12 +160,6 @@
                 under. This can be Development, Staging or Production by default.
             </param>
         </member>
-        <member name="M:SocialGamificationAsset.Startup.ConfigureSearchEngineOptimizationFilters(System.Collections.Generic.ICollection{Microsoft.AspNet.Mvc.Filters.IFilterMetadata},Microsoft.AspNet.Routing.RouteOptions)">
-            <summary>
-                Adds <paramref name="filters" /> which help improve search engine
-                optimization (SEO).
-            </summary>
-        </member>
         <member name="M:SocialGamificationAsset.Startup.ConfigureSecurityFilters(Microsoft.AspNet.Hosting.IHostingEnvironment,System.Collections.Generic.ICollection{Microsoft.AspNet.Mvc.Filters.IFilterMetadata})">
             <summary>
                 Adds <paramref name="filters" /> which help improve security.
@@ -186,6 +179,11 @@
                 The environment the <paramref name="application" /> is running
                 under. This can be Development, Staging or Production by default.
             </param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureFormatters(Microsoft.AspNet.Mvc.MvcOptions)">
+            <summary>
+                Configures the input and output formatters.
+            </summary>
         </member>
         <member name="M:SocialGamificationAsset.Startup.ConfigureFormatters(Microsoft.Extensions.DependencyInjection.IMvcBuilder)">
             <summary>
@@ -263,10 +261,80 @@
             </summary>
         </member>
         <member name="M:SocialGamificationAsset.Controllers.ApiController.SaveChangesAsync">
-            <exception cref="T:System.Web.Http.HttpResponseException">
-                Throws DB Exception when DbUpdateException (or for any member of
-                DbUpdateException) is raised.
-            </exception>
+            <summary>
+                Asynchronously save data
+            </summary>
+            <returns>
+                JsonErrorContentResult if <see cref="T:System.Data.Entity.Infrastructure.DbUpdateException" /> exception
+                occurs
+            </returns>
+        </member>
+        <member name="T:SocialGamificationAsset.Controllers.PlayersController">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:SocialGamificationAsset.Controllers.PlayersController.#ctor(SocialGamificationAsset.Models.SocialGamificationAssetContext)">
+            <summary>
+                <see cref="T:SocialGamificationAsset.Models.Player" /> API
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="M:SocialGamificationAsset.Controllers.PlayersController.WhoAmI">
+            <summary>
+                Get <see cref="T:SocialGamificationAsset.Models.Player" /> Details
+            </summary>
+            <param name="id">GUID of <see cref="T:SocialGamificationAsset.Models.Player" /></param>
+            <returns>
+            </returns>
+        </member>
+        <member name="M:SocialGamificationAsset.Controllers.PlayersController.GetPlayer(System.Guid)">
+            <summary>
+                Get <see cref="T:SocialGamificationAsset.Models.Player" /> Details
+            </summary>
+            <param name="id">GUID of <see cref="T:SocialGamificationAsset.Models.Player" /></param>
+            <returns>
+            </returns>
+        </member>
+        <member name="M:SocialGamificationAsset.Controllers.PlayersController.GetPlayerAchievements(System.Guid)">
+            <summary>
+                Get <see cref="T:SocialGamificationAsset.Models.Player" /> 's Achievements
+            </summary>
+            <param name="id">GUID of <see cref="T:SocialGamificationAsset.Models.Player" /></param>
+            <returns>
+            </returns>
+        </member>
+        <member name="M:SocialGamificationAsset.Controllers.PlayersController.GetPlayerGoals(System.Guid)">
+            <summary>
+                Get <see cref="T:SocialGamificationAsset.Models.Player" /> 's Goals
+            </summary>
+            <param name="id">GUID of <see cref="T:SocialGamificationAsset.Models.Player" /></param>
+            <returns>
+            </returns>
+        </member>
+        <member name="M:SocialGamificationAsset.Controllers.PlayersController.UpdatePlayer(System.Guid,SocialGamificationAsset.Models.UserForm)">
+            <summary>
+                Update <see cref="T:SocialGamificationAsset.Models.Player" /> 's information
+            </summary>
+            <param name="id">GUID of <see cref="T:SocialGamificationAsset.Models.Player" /></param>
+            <param name="form">Infomation to be updated</param>
+            <returns>
+            </returns>
+        </member>
+        <member name="M:SocialGamificationAsset.Controllers.PlayersController.AddPlayer(SocialGamificationAsset.Models.UserForm)">
+            <summary>
+                Add new <see cref="T:SocialGamificationAsset.Models.Player" />
+            </summary>
+            <param name="register"><see cref="T:SocialGamificationAsset.Models.UserForm" /> details.</param>
+            <returns>
+            </returns>
+        </member>
+        <member name="M:SocialGamificationAsset.Controllers.PlayersController.DeletePlayer(System.Guid)">
+            <summary>
+                Delete a <see cref="T:SocialGamificationAsset.Models.Player" />
+            </summary>
+            <param name="id">GUID of <see cref="T:SocialGamificationAsset.Models.Player" /></param>
+            <returns>
+            </returns>
         </member>
         <member name="M:SocialGamificationAsset.Controllers.SessionsController.GetSession(System.Guid)">
             <summary>
@@ -344,27 +412,32 @@
                 Internal Server Error
             </response>
         </member>
-        <member name="M:SocialGamificationAsset.Controllers.TestsController.GetTest">
+        <member name="T:SocialGamificationAsset.Models.IDbEntity">
             <summary>
-                <para>
-                    This method returns all available records from <see cref="T:SocialGamificationAsset.Models.Test" />
-                </para>
-                <para>Table</para>
+                DBEntity Interface
             </summary>
-            <returns>
-                All the test records which were found
-            </returns>
         </member>
-        <member name="M:SocialGamificationAsset.Controllers.TestsController.GetTest(System.Guid)">
+        <!-- Badly formed XML comment ignored for member "T:SocialGamificationAsset.Models.DbEntity" -->
+        <member name="M:SocialGamificationAsset.Models.DbEntity.#ctor">
             <summary>
-                This method returns specific record from <see cref="T:SocialGamificationAsset.Models.Test" /> Table
+                Default constructor initialising
+                <see cref="P:SocialGamificationAsset.Models.DbEntity.Id" /> .
             </summary>
-            <param name="id">
-                <see cref="T:System.Guid" />
-            </param>
-            <returns>
-                <see cref="T:SocialGamificationAsset.Models.Test" /> record that was found
-            </returns>
+        </member>
+        <member name="P:SocialGamificationAsset.Models.DbEntity.UpdatedDate">
+            <summary>
+                Set default Updated Date field.
+            </summary>
+        </member>
+        <member name="P:SocialGamificationAsset.Models.DbEntity.CreatedDate">
+            <summary>
+                Set defauly Created Date field.
+            </summary>
+        </member>
+        <member name="P:SocialGamificationAsset.Models.DbEntity.Id">
+            <summary>
+                Custom Primary Key set to <see cref="T:System.Guid" /> .
+            </summary>
         </member>
         <member name="M:SocialGamificationAsset.Models.Group.AddPlayers(SocialGamificationAsset.Models.SocialGamificationAssetContext,System.Collections.Generic.ICollection{SocialGamificationAsset.Models.Player})">
             <summary>
