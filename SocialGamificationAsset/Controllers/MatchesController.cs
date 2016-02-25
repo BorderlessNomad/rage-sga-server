@@ -83,6 +83,12 @@ namespace SocialGamificationAsset.Controllers
                 return Helper.HttpBadRequest(ModelState);
             }
 
+            var match = await _context.Matches.Where(m => m.Id.Equals(id)).FirstOrDefaultAsync();
+            if (match == null)
+            {
+                return Helper.HttpNotFound("No such Match found.");
+            }
+
             IList<MatchActor> matchActors =
                 await _context.MatchActors.Where(a => a.MatchId.Equals(id)).Include(a => a.Actor).ToListAsync();
 

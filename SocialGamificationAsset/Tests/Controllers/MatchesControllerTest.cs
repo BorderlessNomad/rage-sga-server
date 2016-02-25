@@ -223,7 +223,26 @@ namespace SocialGamificationAsset.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetMatchActors()
+        public async Task GetMatchActorsWithInvalidMatch()
+        {
+            var session = await Login();
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+
+                // Get Match Actors with Invalid Id
+                var invalidMatchId = Guid.NewGuid();
+                var matchActorResponse = await client.GetAsync($"/api/matches/{invalidMatchId}/actors");
+                Assert.Equal(HttpStatusCode.NotFound, matchActorResponse.StatusCode);
+
+                var content = await matchActorResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal($"No such Match found.", content.Error);
+            }
+        }
+
+        [Fact]
+        public async Task GetMatchActorsWithValidMatch()
         {
             var mayur = await Login();
             var matt = await Login("matt", "matt");
@@ -260,6 +279,65 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchActorGet = await matchActorResponse.Content.ReadAsStringAsync();
                 var matchActors = JsonConvert.DeserializeObject<List<MatchActor>>(matchActorGet, Actor.JsonSerializerSettings());
                 Assert.IsType(typeof(List<MatchActor>), matchActors);
+            }
+        }
+
+        [Fact]
+        public async Task GetMatchRoundsInvalidMatch()
+        {
+            var session = await Login();
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+
+                // Get Match Actors with Invalid Id
+                var invalidMatchId = Guid.NewGuid();
+                var matchRoundsResponse = await client.GetAsync($"/api/matches/{invalidMatchId}/rounds");
+                Assert.Equal(HttpStatusCode.NotFound, matchRoundsResponse.StatusCode);
+
+                var content = await matchRoundsResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal($"No such Match found.", content.Error);
+            }
+        }
+
+        [Fact]
+        public async Task GetMatchRoundsWithValidMatch()
+        {
+            var mayur = await Login();
+            var matt = await Login("matt", "matt");
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+
+                var quickMatch = new QuickMatchActors
+                {
+                    Actors = new List<Guid>(new[] { mayur.Player.Id, matt.Player.Id })
+                };
+
+                var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
+                Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
+
+                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
+                Assert.False(match.IsFinished);
+                Assert.False(match.IsDeleted);
+
+                // Get Match with Valid Id
+                matchResponse = await client.GetAsync($"/api/matches/{match.Id}");
+                Assert.Equal(HttpStatusCode.OK, matchResponse.StatusCode);
+
+                var matchGet = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                Assert.Equal(mayur.Player.Id, matchGet.Tournament.OwnerId);
+                Assert.Equal(match.Id, matchGet.Id);
+
+                // Get Match Actors with Valid Id
+                var matchRoundsResponse = await client.GetAsync($"/api/matches/{match.Id}/rounds");
+                Assert.Equal(HttpStatusCode.OK, matchRoundsResponse.StatusCode);
+
+                var matchRounds = await matchRoundsResponse.Content.ReadAsJsonAsync<List<MatchRound>>();
+                Assert.IsType(typeof(List<MatchRound>), matchRounds);
             }
         }
     }
