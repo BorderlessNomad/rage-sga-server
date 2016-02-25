@@ -230,13 +230,10 @@ namespace SocialGamificationAsset.Models
 
                 IList<Alliance> alliances = new List<Alliance>
                 {
-                    new Alliance { RequesterId = mayur.Id, RequesteeId = matt.Id },
-                    new Alliance { RequesterId = mayur.Id, RequesteeId = jack.Id },
-                    new Alliance { RequesterId = jack.Id, RequesteeId = matt.Id },
-                    new Alliance { RequesterId = jack.Id, RequesteeId = kam.Id },
-                    new Alliance { RequesterId = matt.Id, RequesteeId = ben.Id },
-                    new Alliance { RequesterId = kam.Id, RequesteeId = ben.Id },
-                    new Alliance { RequesterId = kam.Id, RequesteeId = mayur.Id }
+                    new Alliance { RequesterId = mayur.Id, RequesteeId = matt.Id, State = AllianceState.Pending },
+                    new Alliance { RequesterId = mayur.Id, RequesteeId = jack.Id, State = AllianceState.Accepted },
+                    new Alliance { RequesterId = jack.Id, RequesteeId = matt.Id, State = AllianceState.Declined },
+                    new Alliance { RequesterId = kam.Id, RequesteeId = mayur.Id, State = AllianceState.Accepted }
                 };
 
                 _context.Alliances.AddRange(alliances);

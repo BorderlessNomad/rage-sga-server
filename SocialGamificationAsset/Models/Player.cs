@@ -53,7 +53,7 @@ namespace SocialGamificationAsset.Models
             {
                 var alliancesList = Alliance.GetAllianceIds(db, player.Id, AllianceState.Accepted);
 
-                query = query.Where(p => alliancesList.Contains(player.Id));
+                query = query.Where(p => alliancesList.Contains(p.Id));
             }
             else
             {
@@ -61,11 +61,16 @@ namespace SocialGamificationAsset.Models
             }
 
             // CustomData conditions
-            var cQuery = Models.CustomData.ConditionBuilder(db, customData, CustomDataType.Player);
-            IList<Guid> similarPlayers = await cQuery.Select(c => c.ObjectId).Distinct().ToListAsync();
+            var customDataQuery = Models.CustomData.ConditionBuilder(db, customData, CustomDataType.Player);
+            if (customDataQuery != null)
+            {
+                IList<Guid> similarPlayers = await customDataQuery.Select(c => c.ObjectId).Distinct().ToListAsync();
 
-            // Check if Players satisfy CustomData constraints
-            IList<Player> players = await query.Where(p => similarPlayers.Contains(p.Id)).ToListAsync();
+                // Check if Players satisfy CustomData constraints
+                query = query.Where(p => similarPlayers.Contains(p.Id));
+            }
+
+            IList<Player> players = await query.ToListAsync();
 
             return Helper.Shuffle(players, limit);
         }

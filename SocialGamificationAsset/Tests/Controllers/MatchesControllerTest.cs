@@ -171,6 +171,67 @@ namespace SocialGamificationAsset.Tests.Controllers
         }
 
         [Fact]
+        public async Task CreateQuickMatch()
+        {
+            var mayur = await Login();
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+
+                var quickMatch = new QuickMatch();
+
+                var matchResponse = await client.PostAsJsonAsync("/api/matches", quickMatch);
+                Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
+
+                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
+                Assert.False(match.IsFinished);
+                Assert.False(match.IsDeleted);
+            }
+        }
+
+        [Fact]
+        public async Task CreateQuickMatchWithAlliance()
+        {
+            var mayur = await Login();
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+
+                var quickMatch = new QuickMatch { AlliancesOnly = true };
+
+                var matchResponse = await client.PostAsJsonAsync("/api/matches", quickMatch);
+                Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
+
+                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
+                Assert.False(match.IsFinished);
+                Assert.False(match.IsDeleted);
+            }
+        }
+
+        [Fact]
+        public async Task CreateQuickMatchWithAllianceForNonAlliedPlayer()
+        {
+            var kam = await Login("ben", "ben");
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(kam.Id.ToString());
+
+                var quickMatch = new QuickMatch { AlliancesOnly = true };
+
+                var matchResponse = await client.PostAsJsonAsync("/api/matches", quickMatch);
+                Assert.Equal(HttpStatusCode.NotFound, matchResponse.StatusCode);
+
+                var response = await matchResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal("No Players available for match at this moment.", response.Error);
+            }
+        }
+
+        [Fact]
         public async Task GetInvalidMatch()
         {
             var session = await Login();

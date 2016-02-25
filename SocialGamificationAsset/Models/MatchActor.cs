@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.Validation;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 using Microsoft.AspNet.Mvc;
@@ -12,6 +13,7 @@ namespace SocialGamificationAsset.Models
     {
         public Guid MatchId { get; set; }
 
+        [IgnoreDataMember]
         [ForeignKey("MatchId")]
         public Match Match { get; set; }
 
