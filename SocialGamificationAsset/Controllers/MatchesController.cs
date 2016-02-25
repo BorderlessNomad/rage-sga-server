@@ -73,6 +73,28 @@ namespace SocialGamificationAsset.Controllers
             return Ok(match);
         }
 
+        // GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8/owner
+        [HttpGet("{id:Guid}/owner", Name = "GetMatchOwner")]
+        [ResponseType(typeof(Actor))]
+        public async Task<IActionResult> GetMatchOwner([FromRoute] Guid id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Helper.HttpBadRequest(ModelState);
+            }
+
+            var match =
+                await
+                _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament.Owner).FirstOrDefaultAsync();
+
+            if (match == null)
+            {
+                return Helper.HttpNotFound($"No Match found for ID {id}.");
+            }
+
+            return Ok(match.Tournament.Owner);
+        }
+
         // GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8/actors
         [HttpGet("{id:Guid}/actors", Name = "GetMatchActors")]
         [ResponseType(typeof(IList<MatchActor>))]
@@ -155,28 +177,6 @@ namespace SocialGamificationAsset.Controllers
             }
 
             return Ok(matchRoundResponse);
-        }
-
-        // GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8/owner
-        [HttpGet("{id:Guid}/owner", Name = "GetMatchOwner")]
-        [ResponseType(typeof(Actor))]
-        public async Task<IActionResult> GetMatchOwner([FromRoute] Guid id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return Helper.HttpBadRequest(ModelState);
-            }
-
-            var match =
-                await
-                _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament.Owner).FirstOrDefaultAsync();
-
-            if (match == null)
-            {
-                return Helper.HttpNotFound($"No Match found for ID {id}");
-            }
-
-            return Ok(match.Tournament.Owner);
         }
 
         // PUT: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
