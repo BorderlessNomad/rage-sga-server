@@ -15,6 +15,7 @@ namespace SocialGamificationAsset.Models
     {
         public Player()
         {
+            Class = "Player";
             Role = AccountType.Player;
             ActivationCode = Guid.NewGuid();
         }

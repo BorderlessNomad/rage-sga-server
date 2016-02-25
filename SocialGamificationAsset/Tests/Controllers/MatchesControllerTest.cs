@@ -4,6 +4,8 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
+using Newtonsoft.Json;
+
 using SocialGamificationAsset.Models;
 using SocialGamificationAsset.Policies;
 
@@ -255,8 +257,9 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchActorResponse = await client.GetAsync($"/api/matches/{match.Id}/actors");
                 Assert.Equal(HttpStatusCode.OK, matchActorResponse.StatusCode);
 
-                var matchActorGet = await matchActorResponse.Content.ReadAsJsonAsync<IList<MatchActor>>();
-                Assert.IsType(typeof(List<MatchActor>), matchActorGet);
+                var matchActorGet = await matchActorResponse.Content.ReadAsStringAsync();
+                var matchActors = JsonConvert.DeserializeObject<List<MatchActor>>(matchActorGet, Actor.JsonSerializerSettings());
+                Assert.IsType(typeof(List<MatchActor>), matchActors);
             }
         }
     }

@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
+using Newtonsoft.Json;
+
+using SocialGamificationAsset.Tests.Controllers;
+
 namespace SocialGamificationAsset.Models
 {
     public abstract class Actor : DbEntity
@@ -11,6 +15,8 @@ namespace SocialGamificationAsset.Models
         {
             IsEnabled = true;
         }
+
+        public string Class { get; set; }
 
         public bool IsEnabled { get; set; }
 
@@ -57,6 +63,13 @@ namespace SocialGamificationAsset.Models
         public IQueryable<Actor> Alliances(SocialGamificationAssetContext db, AllianceState state)
         {
             return Alliances(db, Id, state);
+        }
+
+        public static JsonSerializerSettings JsonSerializerSettings()
+        {
+            var settings = new JsonSerializerSettings { Converters = { new ActorJsonConverter() } };
+
+            return settings;
         }
     }
 }

@@ -15,6 +15,7 @@ namespace SocialGamificationAsset.Models
     {
         public Group()
         {
+            Class = "Group";
             Type = GroupVisibility.Public;
         }
 

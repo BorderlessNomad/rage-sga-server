@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Newtonsoft.Json;
+
+using SocialGamificationAsset.Tests.Controllers;
+
 namespace SocialGamificationAsset.Models
 {
     public class DataInitializer
@@ -28,6 +32,61 @@ namespace SocialGamificationAsset.Models
 
                 await SeedCustomData(_context, isAsync);
             }
+        }
+
+        protected static async Task Test()
+        {
+            var matchActorGet = @"
+            [
+	            {
+		            ""$id"": ""1"",
+		            ""matchId"": ""ab66cb81-7534-41ba-b104-7ce1c76f442a"",
+		            ""match"": null,
+		            ""actorId"": ""59aeb9ac-732a-4c03-8911-0c052b4c9d14"",
+		            ""actor"": {
+			            ""$id"": ""2"",
+			            ""username"": ""matt"",
+			            ""email"": null,
+			            ""role"": 1,
+			            ""groups"": null,
+			            ""class"": ""Player"",
+			            ""isEnabled"": true,
+			            ""updatedDate"": ""2016-02-25T10:10:53"",
+			            ""createdDate"": ""2016-02-25T10:10:53"",
+			            ""id"": ""59aeb9ac-732a-4c03-8911-0c052b4c9d14""
+		            },
+		            ""customData"": null,
+		            ""updatedDate"": ""2016-02-25T10:17:02"",
+		            ""createdDate"": ""2016-02-25T10:17:02"",
+		            ""id"": ""6acd0be2-af03-4728-95bf-dd2d573bf457""
+	            },
+	            {
+		            ""$id"": ""3"",
+		            ""matchId"": ""ab66cb81-7534-41ba-b104-7ce1c76f442a"",
+		            ""match"": null,
+		            ""actorId"": ""3e08fff9-346e-4d9d-84ab-e19e0f9c84ac"",
+		            ""actor"": {
+			            ""$id"": ""4"",
+			            ""username"": ""mayur"",
+			            ""email"": null,
+			            ""role"": 1,
+			            ""groups"": null,
+			            ""class"": ""Player"",
+			            ""isEnabled"": true,
+			            ""updatedDate"": ""2016-02-25T10:10:53"",
+			            ""createdDate"": ""2016-02-25T10:10:53"",
+			            ""id"": ""3e08fff9-346e-4d9d-84ab-e19e0f9c84ac""
+		            },
+		            ""customData"": null,
+		            ""updatedDate"": ""2016-02-25T10:17:02"",
+		            ""createdDate"": ""2016-02-25T10:17:02"",
+		            ""id"": ""e4384134-7e4b-47b5-90bd-e330f4500578""
+	            }
+            ]";
+
+            var settings = new JsonSerializerSettings { Converters = { new ActorJsonConverter() } };
+
+            var matchActors = JsonConvert.DeserializeObject<List<MatchActor>>(matchActorGet, settings);
         }
 
         protected static async Task SeedGames(SocialGamificationAssetContext _context, bool isAsync = false)
