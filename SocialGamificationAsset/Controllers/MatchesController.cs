@@ -494,9 +494,9 @@ namespace SocialGamificationAsset.Controllers
         }
 
         // DELETE: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
-        [HttpDelete("{id:Guid}", Name = "DeleteMatch")]
+        [HttpDelete("{id:Guid}", Name = "FinishMatch")]
         [ResponseType(typeof(Match))]
-        public async Task<IActionResult> DeleteMatch([FromRoute] Guid id)
+        public async Task<IActionResult> FinishMatch([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
             {
@@ -509,7 +509,7 @@ namespace SocialGamificationAsset.Controllers
                 return Helper.HttpNotFound("No Match found.");
             }
 
-            match.IsDeleted = true;
+            match.IsFinished = true;
 
             var error = await SaveChangesAsync();
             if (error != null)
