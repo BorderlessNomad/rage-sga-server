@@ -6,7 +6,7 @@ namespace SocialGamificationAsset.Controllers
     {
         public IActionResult Index()
         {
-            return RedirectPermanent("/swagger/ui");
+            return Redirect("/swagger/ui");
             // return View();
         }
 
