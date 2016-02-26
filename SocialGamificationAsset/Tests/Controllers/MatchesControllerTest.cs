@@ -582,7 +582,9 @@ namespace SocialGamificationAsset.Tests.Controllers
                 Assert.Equal(HttpStatusCode.NotFound, matchRoundsResponse.StatusCode);
 
                 var content = await matchRoundsResponse.Content.ReadAsJsonAsync<ApiError>();
-                Assert.Equal($"No Round #{matchRoundForm.RoundNumber} found for Actor {matchRoundForm.ActorId}", content.Error);
+                Assert.Equal(
+                    $"No Round #{matchRoundForm.RoundNumber} found for Actor {matchRoundForm.ActorId}",
+                    content.Error);
             }
         }
 
@@ -659,6 +661,74 @@ namespace SocialGamificationAsset.Tests.Controllers
                 matchRoundScore = await matchRoundsResponse.Content.ReadAsJsonAsync<MatchRoundScoreResponse>();
                 Assert.Equal(matchRoundForm2.Score, matchRoundScore.Score);
                 Assert.Equal(matchRoundForm2.ActorId, matchRoundScore.ActorId);
+            }
+        }
+
+        [Fact]
+        public async Task UpdateMatchInvalidMatch()
+        {
+            var mayur = await Login();
+            var matt = await Login("matt", "matt");
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+
+                var quickMatch = new QuickMatchActors
+                {
+                    Actors = new List<Guid>(new[] { mayur.Player.Id, matt.Player.Id })
+                };
+
+                var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
+                Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
+
+                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
+                Assert.False(match.IsFinished);
+                Assert.False(match.IsDeleted);
+
+                // Update Match with Invalid Id
+                var invalidMatchId = Guid.NewGuid();
+                var matchForm = new Match();
+                var matchUpdateResponse = await client.PutAsJsonAsync($"/api/matches/{invalidMatchId}", matchForm);
+                Assert.Equal(HttpStatusCode.NotFound, matchUpdateResponse.StatusCode);
+
+                var content = await matchUpdateResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal($"No such Match found.", content.Error);
+            }
+        }
+
+        [Fact]
+        public async Task UpdateMatchValid()
+        {
+            var mayur = await Login();
+            var matt = await Login("matt", "matt");
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+
+                var quickMatch = new QuickMatchActors
+                {
+                    Actors = new List<Guid>(new[] { mayur.Player.Id, matt.Player.Id })
+                };
+
+                var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
+                Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
+
+                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
+                Assert.False(match.IsFinished);
+                Assert.False(match.IsDeleted);
+
+                // Update Match with Valid Id
+                var matchForm = new Match { Title = "Updated Title" };
+                var matchUpdateResponse = await client.PutAsJsonAsync($"/api/matches/{match.Id}", matchForm);
+                Assert.Equal(HttpStatusCode.OK, matchUpdateResponse.StatusCode);
+
+                var content = await matchUpdateResponse.Content.ReadAsJsonAsync<Match>();
+                Assert.Equal(match.Id, content.Id);
+                Assert.Equal(matchForm.Title, content.Title);
             }
         }
     }

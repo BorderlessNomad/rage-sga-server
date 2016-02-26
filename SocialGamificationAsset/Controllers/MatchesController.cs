@@ -241,19 +241,24 @@ namespace SocialGamificationAsset.Controllers
         // PUT: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpPut("{id:Guid}", Name = "UpdateMatch")]
         [ResponseType(typeof(MatchRound))]
-        public async Task<IActionResult> UpdateMatch([FromRoute] Guid id, [FromBody] Match match)
+        public async Task<IActionResult> UpdateMatch([FromRoute] Guid id, [FromBody] Match matchForm)
         {
             if (!ModelState.IsValid)
             {
                 return Helper.HttpBadRequest(ModelState);
             }
 
-            if (id != match.Id)
+            var match = await _context.Matches.Where(m => m.Id.Equals(id)).FirstOrDefaultAsync();
+            if (match == null)
             {
-                return Helper.HttpBadRequest("Invalid Match Id.");
+                return Helper.HttpNotFound("No such Match found.");
             }
 
             _context.Entry(match).State = EntityState.Modified;
+            match.Title = matchForm.Title;
+            match.ExpirationDate = matchForm.ExpirationDate;
+            match.IsFinished = matchForm.IsFinished;
+            match.IsDeleted = matchForm.IsDeleted;
 
             var error = await SaveChangesAsync();
             if (error != null)
@@ -261,7 +266,7 @@ namespace SocialGamificationAsset.Controllers
                 return error;
             }
 
-            return CreatedAtRoute("GetMatch", new { id = match.Id }, match);
+            return Ok(match);
         }
 
         // Creates a Quick Match between given actors
