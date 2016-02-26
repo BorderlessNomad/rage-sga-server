@@ -38,12 +38,7 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(Player))]
         public async Task<IActionResult> WhoAmI()
         {
-            if (session?.Player != null)
-            {
-                return Ok(session.Player);
-            }
-
-            return Helper.HttpNotFound("No Player found.");
+            return Ok(session.Player);
         }
 
         // GET: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
