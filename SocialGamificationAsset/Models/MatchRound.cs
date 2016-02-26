@@ -35,6 +35,8 @@ namespace SocialGamificationAsset.Models
     {
         public Guid ActorId { get; set; }
 
+        public Actor Actor { get; set; }
+
         public int Score { get; set; }
 
         public DateTime? DateScore { get; set; }
@@ -45,5 +47,18 @@ namespace SocialGamificationAsset.Models
         public int RoundNumber { get; set; }
 
         public IList<MatchRoundActor> Actors { get; set; }
+    }
+
+    public class MatchRoundScoreResponse
+    {
+        public int RoundNumber { get; set; }
+
+        public Guid ActorId { get; set; }
+
+        public Actor Actor { get; set; }
+
+        public int Score { get; set; }
+
+        public DateTime? DateScore { get; set; }
     }
 }

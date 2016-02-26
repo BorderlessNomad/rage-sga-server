@@ -10,6 +10,6 @@
 	<s:String x:Key="/Default/CodeStyle/AgentSmith/CustomDictionary/CustomDictionaries/=en_002DUS/@EntryIndexedValue"></s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/CASE_BLOCK_BRACES/@EntryValue">NEXT_LINE</s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/INITIALIZER_BRACES/@EntryValue">NEXT_LINE</s:String>
-	<s:String x:Key="/Default/Environment/UpdatesManger/LastUpdateCheck/@EntryValue">02/25/2016 09:53:51</s:String>
+	<s:String x:Key="/Default/Environment/UpdatesManger/LastUpdateCheck/@EntryValue">02/26/2016 09:53:52</s:String>
 	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/OptionsDialog/SelectedPageId/@EntryValue">nUnit</s:String>
 	</wpf:ResourceDictionary>

@@ -181,7 +181,7 @@ namespace SocialGamificationAsset.Controllers
 
         // PUT: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8/rounds
         [HttpPut("{id:Guid}/rounds", Name = "UpdateMatchRoundScore")]
-        [ResponseType(typeof(MatchRound))]
+        [ResponseType(typeof(MatchRoundScoreResponse))]
         public async Task<IActionResult> UpdateMatchRoundScore([FromRoute] Guid id, [FromBody] MatchRoundForm form)
         {
             if (!ModelState.IsValid)
@@ -191,12 +191,15 @@ namespace SocialGamificationAsset.Controllers
 
             var match =
                 await
-                _context.Matches.Where(m => m.Id.Equals(id) && m.IsFinished.Equals(false))
-                        .Include(m => m.Actors)
-                        .FirstOrDefaultAsync();
+                _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Actors).FirstOrDefaultAsync();
             if (match == null)
             {
-                return Helper.HttpNotFound("No running Match found.");
+                return Helper.HttpNotFound("No such Match found.");
+            }
+
+            if (match.IsFinished)
+            {
+                return Helper.HttpBadRequest("This match is already finished.");
             }
 
             foreach (var actor in match.Actors.Where(actor => actor.ActorId.Equals(form.ActorId)))
@@ -222,7 +225,14 @@ namespace SocialGamificationAsset.Controllers
                     return error;
                 }
 
-                return Ok(round);
+                return Ok(new MatchRoundScoreResponse
+                {
+                    RoundNumber = round.RoundNumber,
+                    ActorId = round.MatchActor.ActorId,
+                    Actor = round.MatchActor.Actor,
+                    Score = round.Score,
+                    DateScore = round.DateScore,
+                });
             }
 
             return Helper.HttpNotFound($"No Actor {form.ActorId} found for this Match.");

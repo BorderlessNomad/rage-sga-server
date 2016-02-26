@@ -491,6 +491,77 @@ namespace SocialGamificationAsset.Tests.Controllers
             }
         }
 
+        [Fact]
+        public async Task UpdateMatchRoundScoreInvalidMatch()
+        {
+            var session = await Login();
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+
+                // Update Round Score Match with Invalid Id
+                var invalidMatchId = Guid.NewGuid();
+
+                var matchRoundForm = new MatchRoundForm
+                {
+                    ActorId = session.Player.Id,
+                    RoundNumber = 1,
+                    Score = 10
+                };
+
+                var response = await client.PutAsJsonAsync($"/api/matches/{invalidMatchId}/rounds", matchRoundForm);
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+                var content = await response.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal($"No such Match found.", content.Error);
+            }
+        }
+
+        [Fact]
+        public async Task UpdateMatchRoundScoreFinishedMatch()
+        {
+            var mayur = await Login();
+            var matt = await Login("matt", "matt");
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+
+                var quickMatch = new QuickMatchActors
+                {
+                    Actors = new List<Guid>(new[] { mayur.Player.Id, matt.Player.Id })
+                };
+
+                var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
+                Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
+
+                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
+                Assert.False(match.IsFinished);
+                Assert.False(match.IsDeleted);
+
+                // Finish Match with Valid Id
+                var response = await client.DeleteAsync($"/api/matches/{match.Id}");
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+                var finishedMatch = await response.Content.ReadAsJsonAsync<Match>();
+                Assert.True(finishedMatch.IsFinished);
+
+                // Update Finished Match Round Score with Valid Id
+                var matchRoundForm = new MatchRoundForm
+                {
+                    ActorId = mayur.Player.Id,
+                    RoundNumber = 1,
+                    Score = 10
+                };
+                var matchRoundsResponse = await client.PutAsJsonAsync($"/api/matches/{match.Id}/rounds", matchRoundForm);
+                Assert.Equal(HttpStatusCode.BadRequest, matchRoundsResponse.StatusCode);
+
+                var content = await matchRoundsResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal($"This match is already finished.", content.Error);
+            }
+        }
 
         [Fact]
         public async Task UpdateMatchRoundScore()
@@ -515,12 +586,32 @@ namespace SocialGamificationAsset.Tests.Controllers
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
 
-                // Get Match Rounds with Valid Id
-                var matchRoundsResponse = await client.GetAsync($"/api/matches/{match.Id}/rounds");
+                // Update Match Round Score with Valid Id
+                // Player 1
+                var matchRoundForm = new MatchRoundForm
+                {
+                    ActorId = mayur.Player.Id,
+                    RoundNumber = 1,
+                    Score = 10
+                };
+                var matchRoundsResponse = await client.PutAsJsonAsync($"/api/matches/{match.Id}/rounds", matchRoundForm);
                 Assert.Equal(HttpStatusCode.OK, matchRoundsResponse.StatusCode);
 
-                var matchRounds = await matchRoundsResponse.Content.ReadAsJsonAsync<List<MatchRoundResponse>>();
-                Assert.IsType(typeof(List<MatchRoundResponse>), matchRounds);
+                var matchRoundScore = await matchRoundsResponse.Content.ReadAsJsonAsync<MatchRoundScoreResponse>();
+                Assert.Equal(matchRoundForm.Score, matchRoundScore.Score);
+                Assert.Equal(matchRoundForm.ActorId, matchRoundScore.ActorId);
+
+                // Player 2
+                var matchRoundForm2 = new MatchRoundForm
+                {
+                    ActorId = matt.Player.Id,
+                    RoundNumber = 1,
+                    Score = 5
+                };
+                matchRoundsResponse = await client.PutAsJsonAsync($"/api/matches/{match.Id}/rounds", matchRoundForm2);
+                matchRoundScore = await matchRoundsResponse.Content.ReadAsJsonAsync<MatchRoundScoreResponse>();
+                Assert.Equal(matchRoundForm2.Score, matchRoundScore.Score);
+                Assert.Equal(matchRoundForm2.ActorId, matchRoundScore.ActorId);
             }
         }
     }
