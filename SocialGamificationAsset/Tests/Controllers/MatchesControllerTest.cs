@@ -503,12 +503,7 @@ namespace SocialGamificationAsset.Tests.Controllers
                 // Update Round Score Match with Invalid Id
                 var invalidMatchId = Guid.NewGuid();
 
-                var matchRoundForm = new MatchRoundForm
-                {
-                    ActorId = session.Player.Id,
-                    RoundNumber = 1,
-                    Score = 10
-                };
+                var matchRoundForm = new MatchRoundForm { ActorId = session.Player.Id, RoundNumber = 1, Score = 10 };
 
                 var response = await client.PutAsJsonAsync($"/api/matches/{invalidMatchId}/rounds", matchRoundForm);
                 Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -549,12 +544,7 @@ namespace SocialGamificationAsset.Tests.Controllers
                 Assert.True(finishedMatch.IsFinished);
 
                 // Update Finished Match Round Score with Valid Id
-                var matchRoundForm = new MatchRoundForm
-                {
-                    ActorId = mayur.Player.Id,
-                    RoundNumber = 1,
-                    Score = 10
-                };
+                var matchRoundForm = new MatchRoundForm { ActorId = mayur.Player.Id, RoundNumber = 1, Score = 10 };
                 var matchRoundsResponse = await client.PutAsJsonAsync($"/api/matches/{match.Id}/rounds", matchRoundForm);
                 Assert.Equal(HttpStatusCode.BadRequest, matchRoundsResponse.StatusCode);
 
@@ -588,12 +578,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
                 // Update Match Round Score with Valid Id
                 // Player 1
-                var matchRoundForm = new MatchRoundForm
-                {
-                    ActorId = mayur.Player.Id,
-                    RoundNumber = 1,
-                    Score = 10
-                };
+                var matchRoundForm = new MatchRoundForm { ActorId = mayur.Player.Id, RoundNumber = 1, Score = 10 };
                 var matchRoundsResponse = await client.PutAsJsonAsync($"/api/matches/{match.Id}/rounds", matchRoundForm);
                 Assert.Equal(HttpStatusCode.OK, matchRoundsResponse.StatusCode);
 
@@ -602,12 +587,7 @@ namespace SocialGamificationAsset.Tests.Controllers
                 Assert.Equal(matchRoundForm.ActorId, matchRoundScore.ActorId);
 
                 // Player 2
-                var matchRoundForm2 = new MatchRoundForm
-                {
-                    ActorId = matt.Player.Id,
-                    RoundNumber = 1,
-                    Score = 5
-                };
+                var matchRoundForm2 = new MatchRoundForm { ActorId = matt.Player.Id, RoundNumber = 1, Score = 5 };
                 matchRoundsResponse = await client.PutAsJsonAsync($"/api/matches/{match.Id}/rounds", matchRoundForm2);
                 matchRoundScore = await matchRoundsResponse.Content.ReadAsJsonAsync<MatchRoundScoreResponse>();
                 Assert.Equal(matchRoundForm2.Score, matchRoundScore.Score);

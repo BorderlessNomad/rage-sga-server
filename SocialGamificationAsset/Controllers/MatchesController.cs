@@ -189,9 +189,7 @@ namespace SocialGamificationAsset.Controllers
                 return Helper.HttpBadRequest(ModelState);
             }
 
-            var match =
-                await
-                _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Actors).FirstOrDefaultAsync();
+            var match = await _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Actors).FirstOrDefaultAsync();
             if (match == null)
             {
                 return Helper.HttpNotFound("No such Match found.");
@@ -225,14 +223,16 @@ namespace SocialGamificationAsset.Controllers
                     return error;
                 }
 
-                return Ok(new MatchRoundScoreResponse
-                {
-                    RoundNumber = round.RoundNumber,
-                    ActorId = round.MatchActor.ActorId,
-                    Actor = round.MatchActor.Actor,
-                    Score = round.Score,
-                    DateScore = round.DateScore,
-                });
+                return
+                    Ok(
+                        new MatchRoundScoreResponse
+                        {
+                            RoundNumber = round.RoundNumber,
+                            ActorId = round.MatchActor.ActorId,
+                            Actor = round.MatchActor.Actor,
+                            Score = round.Score,
+                            DateScore = round.DateScore
+                        });
             }
 
             return Helper.HttpNotFound($"No Actor {form.ActorId} found for this Match.");
