@@ -3,14 +3,22 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
+using Microsoft.AspNet.Mvc;
+
 namespace SocialGamificationAsset.Models
 {
     public class Goal : DbEntity
     {
-        [IgnoreDataMember]
+        public Goal()
+        {
+            Description = "Test";
+            ConcernId = Guid.Empty;
+            RewardResourceId = Guid.Empty;
+            FeedbackId = Guid.Empty;
+        }
+
         public virtual ICollection<Reward> Rewards { get; set; }
 
-        [IgnoreDataMember]
         public virtual ICollection<Target> Targets { get; set; }
 
         public Guid ConcernId { get; set; }
@@ -23,15 +31,12 @@ namespace SocialGamificationAsset.Models
         [ForeignKey("RewardResourceId")]
         public virtual RewardResourceMatrix RewardResource { get; set; }
 
-        [IgnoreDataMember]
         public virtual ICollection<Activity> Activities { get; set; }
 
-        [IgnoreDataMember]
         public virtual ICollection<Action> Actions { get; set; }
 
         public string Description { get; set; }
 
-        [IgnoreDataMember]
         public ICollection<Role> Roles { get; set; }
 
         public Guid FeedbackId { get; set; }

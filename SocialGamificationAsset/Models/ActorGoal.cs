@@ -5,6 +5,16 @@ namespace SocialGamificationAsset.Models
 {
     public class ActorGoal : DbEntity
     {
+        public ActorGoal()
+        {
+            ActorId = Guid.Empty;
+            GoalId = Guid.Empty;
+            Status = GoalStatus.InProgress;
+            ConcernOutcomeId = Guid.Empty;
+            RewardResourceOutcomeId = Guid.Empty;
+            ActivityId = Guid.Empty;
+            RoleId = Guid.Empty;
+        }
         public Guid ActorId { get; set; }
 
         [ForeignKey("ActorId")]
