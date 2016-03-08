@@ -36,10 +36,7 @@ namespace SocialGamificationAsset.Controllers
         [HttpGet("")]
         [HttpGet("whoami", Name = "WhoAmI")]
         [ResponseType(typeof(Player))]
-        public async Task<IActionResult> WhoAmI()
-        {
-            return Ok(session.Player);
-        }
+        public IActionResult WhoAmI() => Ok(session.Player);
 
         // GET: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
         /// <summary>

@@ -11,7 +11,8 @@
   "projectUrl": "",
   "licenseUrl": "",
   "compilationOptions": {
-    "emitEntryPoint": true
+    "emitEntryPoint": true,
+    "warningsAsErrors": true
   },
   "dependencies": {
     "SocialGamificationAsset": "1.0.0"

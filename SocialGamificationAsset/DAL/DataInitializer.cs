@@ -34,7 +34,7 @@ namespace SocialGamificationAsset.Models
             }
         }
 
-        protected static async Task Test()
+        protected static void Test()
         {
             var matchActorGet = @"
             [

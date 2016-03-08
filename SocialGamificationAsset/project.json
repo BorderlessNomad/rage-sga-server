@@ -6,7 +6,8 @@
     "projectUrl": "",
     "licenseUrl": "",
     "compilationOptions": {
-        "emitEntryPoint": true
+        "emitEntryPoint": true,
+        "warningsAsErrors": true
     },
     "dependencies": {
         "BCrypt-Official": "0.1.107-*",
@@ -62,12 +63,7 @@
         "weblistener": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.WebListener --server.urls http://localhost:5002"
     },
     "frameworks": {
-        "dnx451": {
-            "frameworkAssemblies": {
-                "System.Data": "4.0.0.0",
-                "System.Configuration": "4.0.0.0"
-            }
-        }
+        "dnx451": {}
     },
     "exclude": [
         "wwwroot",

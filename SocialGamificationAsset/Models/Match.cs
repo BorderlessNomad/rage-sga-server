@@ -98,7 +98,7 @@ namespace SocialGamificationAsset.Models
             }
         }
 
-        public IList<Guid> Actors { get; set; }
+        public new IList<Guid> Actors { get; set; }
     }
 
     public struct QuickMatchResult
