@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -88,17 +87,6 @@ namespace SocialGamificationAsset
 
             ConfigureCachingServices(services);
 
-            // Configure MVC routing. We store the route options for use by ConfigureSearchEngineOptimizationFilters.
-            RouteOptions routeOptions = null;
-
-            services.ConfigureRouting(
-                x =>
-                    {
-                        routeOptions = x;
-
-                        ConfigureRouting(services, x);
-                    });
-
             // Add many MVC services to the services container.
             var mvcBuilder = services.AddMvc(
                 mvcOptions =>
@@ -109,6 +97,9 @@ namespace SocialGamificationAsset
 
                         // ConfigureFormatters(mvcOptions);
                     });
+
+            // Configure MVC routing.
+            ConfigureRouting(services);
 
             ConfigureFormatters(mvcBuilder);
 
@@ -147,6 +138,7 @@ namespace SocialGamificationAsset
 
             ConfigureSession(application);
 
+            // Enable CORS Policy
             ConfigureCors(application);
 
             // Add MVC to the request pipeline.
