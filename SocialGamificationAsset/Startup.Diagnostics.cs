@@ -6,9 +6,9 @@ namespace SocialGamificationAsset
 {
     public partial class Startup
     {
-        private static void ConfigureHeadersOverride(IApplicationBuilder application)
+        private static void ConfigureDiagnosticInformation(IApplicationBuilder application)
         {
-            application.UseMiddleware<XHttpHeaderOverrideMiddleware>();
+            application.UseMiddleware<ResponseTimerMiddleware>();
         }
     }
 }
