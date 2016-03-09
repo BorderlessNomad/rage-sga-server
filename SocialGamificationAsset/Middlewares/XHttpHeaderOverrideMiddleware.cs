@@ -10,6 +10,9 @@ namespace SocialGamificationAsset.Middlewares
     {
         private readonly RequestDelegate _next;
 
+        /// <summary>
+        /// </summary>
+        /// <param name="next"></param>
         public XHttpHeaderOverrideMiddleware(RequestDelegate next)
         {
             _next = next;
@@ -18,21 +21,21 @@ namespace SocialGamificationAsset.Middlewares
         /// <exception cref="Exception">
         ///     A <see langword="delegate" /> callback throws an exception.
         /// </exception>
-        public Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext context)
         {
-            var headerValue = httpContext.Request.Headers["X-HTTP-Method-Override"];
-            var queryValue = httpContext.Request.Query["X-HTTP-Method-Override"];
+            var headerValue = context.Request.Headers["X-HTTP-Method-Override"];
+            var queryValue = context.Request.Query["X-HTTP-Method-Override"];
 
             if (!string.IsNullOrEmpty(headerValue))
             {
-                httpContext.Request.Method = headerValue;
+                context.Request.Method = headerValue;
             }
             else if (!string.IsNullOrEmpty(queryValue))
             {
-                httpContext.Request.Method = queryValue;
+                context.Request.Method = queryValue;
             }
 
-            return _next.Invoke(httpContext);
+            await _next.Invoke(context);
         }
     }
 }

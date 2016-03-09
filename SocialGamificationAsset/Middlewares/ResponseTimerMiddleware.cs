@@ -10,21 +10,29 @@ namespace SocialGamificationAsset.Middlewares
     {
         private readonly RequestDelegate _next;
 
+        /// <summary>
+        /// </summary>
+        /// <param name="next"></param>
         public ResponseTimerMiddleware(RequestDelegate next)
         {
             _next = next;
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="httpContext"></param>
+        /// <returns>
+        /// </returns>
         public async Task Invoke(HttpContext context)
         {
-            var sw = Stopwatch.StartNew();
+            var timer = Stopwatch.StartNew();
             context.Response.OnStarting(
                 state =>
                     {
-                        sw.Stop();
+                        timer.Stop();
                         context.Response.Headers.Add(
                             "X-Response-Time",
-                            new[] { sw.ElapsedMilliseconds.ToString() + "ms" });
+                            new[] { timer.ElapsedMilliseconds.ToString() + "ms" });
 
                         return Task.FromResult<object>(null);
                     },
