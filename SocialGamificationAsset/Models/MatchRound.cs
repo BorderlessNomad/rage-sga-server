@@ -35,7 +35,7 @@ namespace SocialGamificationAsset.Models
     {
         public Guid ActorId { get; set; }
 
-        public Actor Actor { get; set; }
+        public Player Actor { get; set; }
 
         public int Score { get; set; }
 
@@ -55,7 +55,7 @@ namespace SocialGamificationAsset.Models
 
         public Guid ActorId { get; set; }
 
-        public Actor Actor { get; set; }
+        public Player Actor { get; set; }
 
         public int Score { get; set; }
 

@@ -34,8 +34,9 @@ namespace SocialGamificationAsset.Models
 
         public bool IsDeleted { get; set; }
 
-        [IgnoreDataMember]
-        public virtual ICollection<MatchActor> Actors { get; set; }
+        public ICollection<MatchActor> Actors { get; set; }
+
+        public ICollection<MatchRound> Rounds { get; set; }
 
         [NotMapped]
         public virtual ICollection<CustomData> CustomData { get; set; }

@@ -15,6 +15,11 @@ namespace SocialGamificationAsset.Models
         [ForeignKey("ActivityId")]
         public virtual Activity Activity { get; set; }
 
+        public Guid GoalId { get; set; }
+
+        [ForeignKey("GoalId")]
+        public virtual Goal Goal { get; set; }
+
         [IgnoreDataMember]
         public virtual ICollection<ActionRelation> Relations { get; set; }
     }

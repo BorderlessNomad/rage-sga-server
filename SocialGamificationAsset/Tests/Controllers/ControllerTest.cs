@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -37,5 +38,23 @@ namespace SocialGamificationAsset.Tests.Controllers
                 return created;
             }
         }
+
+    protected async Task<Role> GetRole(string name= "Testing")
+    {
+      var session = await Login();
+
+      using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+      {
+
+        client.AcceptJson().AddSessionHeader(session.Id.ToString());
+
+        var roleResponse = await client.GetAsync($"/api/roles/{name}/name");
+        Assert.Equal(HttpStatusCode.OK, roleResponse.StatusCode);
+
+        var created = await roleResponse.Content.ReadAsJsonAsync<Role>();
+
+        return created;
+      }
     }
+  }
 }
