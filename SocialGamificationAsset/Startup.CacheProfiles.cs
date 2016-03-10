@@ -12,7 +12,8 @@ namespace SocialGamificationAsset
         ///     location.
         /// </summary>
         /// <param name="cacheProfiles">
-        ///     The settings for the <see cref="ResponseCacheAttribute" /> 's.
+        ///     The settings for the
+        ///     <see cref="Microsoft.AspNet.Mvc.ResponseCacheAttribute" /> 's.
         /// </param>
         /// <param name="configuration">
         ///     Gets or sets the application configuration, where key value pair

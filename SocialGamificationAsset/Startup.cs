@@ -124,6 +124,8 @@ namespace SocialGamificationAsset
             // Add static files to the request pipeline e.g. hello.html or world.css.
             application.UseStaticFiles();
 
+            ConfigureDiagnosticInformation(application);
+
             ConfigureDebugging(application, hostingEnv);
 
             ConfigureLogging(application, hostingEnv, loggerfactory, configuration);
