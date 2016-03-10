@@ -21,12 +21,29 @@ namespace SocialGamificationAsset.Controllers
         }
 
         // GET: api/achievements
-        [HttpGet]
+        [HttpGet("", Name = "GetAchievements")]
         [ResponseType(typeof(IList<Achievement>))]
         public async Task<IActionResult> GetAchievements()
         {
             IList<Achievement> achievements =
                 await _context.Achievements.Where(a => a.ActorId.Equals(session.Player.Id)).ToListAsync();
+
+            return Ok(achievements);
+        }
+
+        // GET: api/achievements/actor/936da01f-9abd-4d9d-80c7-02af85c822a8
+        [HttpGet("actor/{id:Guid}", Name = "GetActorAchievements")]
+        [ResponseType(typeof(IList<Achievement>))]
+        public async Task<IActionResult> GetActorAchievements([FromRoute] Guid id)
+        {
+            var actor = await _context.Actors.Where(p => p.Id.Equals(id)).FirstOrDefaultAsync();
+            if (actor == null)
+            {
+                return Helper.HttpNotFound("No such Actor found.");
+            }
+
+            IList<Achievement> achievements =
+                await _context.Achievements.Where(a => a.ActorId.Equals(actor.Id)).ToListAsync();
 
             return Ok(achievements);
         }

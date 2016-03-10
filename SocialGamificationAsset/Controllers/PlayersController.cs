@@ -63,65 +63,6 @@ namespace SocialGamificationAsset.Controllers
             return Ok(player);
         }
 
-        // GET: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8/achievements
-        /// <summary>
-        ///     Get <see cref="Player" /> 's Achievements
-        /// </summary>
-        /// <param name="id">GUID of <see cref="Player" /></param>
-        /// <returns>
-        /// </returns>
-        [HttpGet("{id:Guid}/achievements", Name = "GetPlayerAchievements")]
-        [ResponseType(typeof(IList<Achievement>))]
-        public async Task<IActionResult> GetPlayerAchievements([FromRoute] Guid id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return Helper.HttpBadRequest(ModelState);
-            }
-
-            var query = _context.Players.Where(p => p.Id.Equals(id));
-
-            var player = await query.FirstOrDefaultAsync();
-            if (player == null)
-            {
-                return Helper.HttpNotFound("No such Player found.");
-            }
-
-            var achievements = await query.Include(p => p.Achievements).Select(p => p.Achievements).ToListAsync();
-
-            return Ok(achievements);
-        }
-
-        // GET: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8/goals
-        /// <summary>
-        ///     Get <see cref="Player" /> 's Goals
-        /// </summary>
-        /// <param name="id">GUID of <see cref="Player" /></param>
-        /// <returns>
-        /// </returns>
-        [HttpGet("{id:Guid}/goals", Name = "GetPlayerGoals")]
-        [ResponseType(typeof(IList<ActorGoal>))]
-        public async Task<IActionResult> GetPlayerGoals([FromRoute] Guid id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return Helper.HttpBadRequest(ModelState);
-            }
-
-            var query = _context.Players.Where(p => p.Id.Equals(id));
-
-            var player = await query.FirstOrDefaultAsync();
-            if (player == null)
-            {
-                return Helper.HttpNotFound("No such Player found.");
-            }
-
-            IList<ActorGoal> goals =
-                await _context.ActorGoal.Where(g => g.ActorId.Equals(session.Player.Id)).ToListAsync();
-
-            return Ok(goals);
-        }
-
         // PUT: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
         /// <summary>
         ///     Update <see cref="Player" /> 's information
