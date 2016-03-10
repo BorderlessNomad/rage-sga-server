@@ -125,7 +125,7 @@ namespace SocialGamificationAsset.Controllers
                 return error;
             }
 
-            return CreatedAtRoute("GetPlayer", new { id = player.Id }, player);
+            return Ok(player);
         }
 
         // POST: api/players
@@ -216,7 +216,7 @@ namespace SocialGamificationAsset.Controllers
             var player = await _context.Players.FindAsync(id);
             if (player == null)
             {
-                return Helper.HttpBadRequest("Invalid PlayerId");
+                return Helper.HttpNotFound("No Player found.");
             }
 
             player.IsEnabled = false;

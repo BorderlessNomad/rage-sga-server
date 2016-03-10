@@ -46,7 +46,8 @@ namespace SocialGamificationAsset.Controllers
         public async Task<IActionResult> GetPlayerGoals()
         {
             IList<ActorGoal> actorGoals =
-                await _context.ActorGoal.Where(g => g.ActorId.Equals(session.Player.Id)).Include(g => g.Goal).ToListAsync();
+                await
+                _context.ActorGoal.Where(g => g.ActorId.Equals(session.Player.Id)).Include(g => g.Goal).ToListAsync();
 
             return Ok(actorGoals);
         }
