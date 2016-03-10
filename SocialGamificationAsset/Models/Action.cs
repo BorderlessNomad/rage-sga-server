@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
@@ -18,6 +19,12 @@ namespace SocialGamificationAsset.Models
         public virtual ICollection<ActionRelation> Relations { get; set; }
     }
 
+    public class ActionForm
+    {
+        [Required]
+        public string Verb { get; set; }
+    }
+
     public class ActionRelation : DbEntity
     {
         public Relationships Relationship { get; set; }
@@ -34,6 +41,8 @@ namespace SocialGamificationAsset.Models
 
         [IgnoreDataMember]
         public virtual ICollection<Reward> AttributeChanges { get; set; }
+
+        
     }
 
     public class ActionHistory : DbEntity

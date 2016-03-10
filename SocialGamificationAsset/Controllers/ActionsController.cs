@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Threading.Tasks;
@@ -68,6 +69,29 @@ namespace SocialGamificationAsset.Controllers
             }
 
             return CreatedAtRoute("GetAction", new { id = action.Id }, action);
+        }
+
+        // POST: api/actions/send
+        [HttpPost("send")]
+        [ResponseType(typeof(ActionForm))]
+        public async Task<IActionResult> SendAction([FromBody] ActionForm action)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Helper.HttpBadRequest(ModelState);
+            }
+
+            foreach (Goal goal in _context.Goals.Include(g => g.Actions).Include(g => g.Rewards))
+            {
+                goal.CalculateRewardFromAction(_context, action.Verb);
+            }
+
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
+            return Ok();
         }
 
         // POST: api/actions
