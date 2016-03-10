@@ -164,6 +164,7 @@ namespace SocialGamificationAsset.Models
                             new Player
                             {
                                 Username = "mayur",
+                                Email = "mayur@playgen.com",
                                 Password = Helper.HashPassword("mayur"),
                                 Groups = new List<Group> { boardgame, gameideas, rage }
                             }

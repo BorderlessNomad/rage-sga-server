@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Description;
 
@@ -181,9 +179,7 @@ namespace SocialGamificationAsset.Controllers
 
             player.Password = Helper.HashPassword(register.Password);
 
-            var entity = new Session { Player = player };
-
-            _context.Sessions.Add(entity);
+            _context.Players.Add(player);
 
             var error = await SaveChangesAsync();
             if (error != null)
@@ -198,7 +194,7 @@ namespace SocialGamificationAsset.Controllers
                 return error;
             }
 
-            return CreatedAtRoute("GetPlayer", new { id = entity.Id }, entity);
+            return CreatedAtRoute("GetPlayer", new { id = player.Id }, player);
         }
 
         // DELETE: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
