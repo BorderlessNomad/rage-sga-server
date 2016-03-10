@@ -12,6 +12,7 @@ using Action = SocialGamificationAsset.Models.Action;
 
 namespace SocialGamificationAsset.Controllers
 {
+    [Route("api/actions")]
     public class ActionsController : ApiController
     {
         public ActionsController(SocialGamificationAssetContext context)
