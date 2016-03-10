@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
@@ -20,11 +21,15 @@ namespace SocialGamificationAsset.Models
             ActivationCode = Guid.NewGuid();
         }
 
+        [Index(IsUnique = true)]
+        [StringLength(128)]
         public string Username { get; set; }
 
         [IgnoreDataMember]
         public string Password { get; set; }
 
+        [Index(IsUnique = true)]
+        [StringLength(128)]
         public string Email { get; set; }
 
         [IgnoreDataMember]

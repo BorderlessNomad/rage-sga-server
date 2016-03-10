@@ -18,7 +18,7 @@ namespace SocialGamificationAsset.Models
         public Guid ActorId { get; set; }
 
         [ForeignKey("ActorId")]
-        public virtual Player Actor { get; set; }
+        public virtual Actor Actor { get; set; }
 
         public Guid GoalId { get; set; }
 
