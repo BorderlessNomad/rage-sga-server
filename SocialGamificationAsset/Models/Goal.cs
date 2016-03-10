@@ -11,7 +11,7 @@ namespace SocialGamificationAsset.Models
     {
         public Goal()
         {
-            Description = "Test";
+            Description = "None provided";
             ConcernId = Guid.Empty;
             RewardResourceId = Guid.Empty;
             FeedbackId = Guid.Empty;

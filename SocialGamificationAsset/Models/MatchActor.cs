@@ -20,7 +20,7 @@ namespace SocialGamificationAsset.Models
         public Guid ActorId { get; set; }
 
         [ForeignKey("ActorId")]
-        public Actor Actor { get; set; }
+        public Player Actor { get; set; }
 
         public ICollection<CustomData> CustomData { get; set; }
 
