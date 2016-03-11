@@ -32,14 +32,14 @@ namespace SocialGamificationAsset.Models
 
         [ForeignKey("RewardResourceId")]
         public virtual RewardResourceMatrix RewardResource { get; set; }
-
+        
         public virtual ICollection<Activity> Activities { get; set; }
-
+       
         public virtual ICollection<Action> Actions { get; set; }
 
         public string Description { get; set; }
-
-        public ICollection<Role> Roles { get; set; }
+        
+        public virtual ICollection<Role> Roles { get; set; }
 
         public Guid FeedbackId { get; set; }
 
