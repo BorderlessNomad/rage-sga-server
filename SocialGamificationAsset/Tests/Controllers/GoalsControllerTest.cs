@@ -66,56 +66,6 @@ namespace SocialGamificationAsset.Tests.Controllers
     }
 
     [Fact]
-    public async Task GetDetailedGoalsWithoutSession()
-    {
-      using (var client = _server.AcceptJson())
-      {
-        // Get detailed goals without session header
-        var goalsResponse = await client.GetAsync($"/api/goals/detailed");
-        Assert.Equal(HttpStatusCode.Unauthorized, goalsResponse.StatusCode);
-
-        var fetched = await goalsResponse.Content.ReadAsJsonAsync<ApiError>();
-        Assert.Equal($"No {SessionAuthorizeFilter.SessionHeaderName} Header found.", fetched.Error);
-      }
-    }
-
-    [Fact]
-    public async Task GetDetailedGoalsWithInvalidSession()
-    {
-      var sessionId = "unknown";
-
-      using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
-      {
-        client.AcceptJson().AddSessionHeader(sessionId);
-
-        // Get detailed goals with invalid session header
-        var goalsResponse = await client.GetAsync("/api/goals/detailed");
-        Assert.Equal(HttpStatusCode.Unauthorized, goalsResponse.StatusCode);
-
-        var fetched = await goalsResponse.Content.ReadAsJsonAsync<ApiError>();
-        Assert.Equal($"Invalid {SessionAuthorizeFilter.SessionHeaderName} Header.", fetched.Error);
-      }
-    }
-
-    [Fact]
-    public async Task GetDetailedGoalsWithNonExistingSession()
-    {
-      var sessionId = Guid.NewGuid();
-
-      using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
-      {
-        client.AcceptJson().AddSessionHeader(sessionId.ToString());
-
-        // get detailed goals with non-existing session header
-        var goalsResponse = await client.GetAsync("/api/goals/detailed");
-        Assert.Equal(HttpStatusCode.NotFound, goalsResponse.StatusCode);
-
-        var fetched = await goalsResponse.Content.ReadAsJsonAsync<ApiError>();
-        Assert.Equal($"Session {sessionId} is Invalid.", fetched.Error);
-      }
-    }
-
-    [Fact]
     public async Task GetGoalByActivityInvalidActivity()
     {
       var session = await Login();

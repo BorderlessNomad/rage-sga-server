@@ -75,33 +75,6 @@ namespace SocialGamificationAsset.Controllers
       return Ok(actorGoals);
     }
 
-    // GET: api/goals/detailed
-    [HttpGet("detailed", Name = "GetGoalsDetailed")]
-    [ResponseType(typeof(IList<Goal>))]
-    public async Task<IActionResult> GetGoalsDetailed()
-    {
-      IList<Goal> goals =
-          await
-          _context.ActorGoal.Where(g => g.ActorId.Equals(session.Player.Id))
-                  .Include(g => g.Goal)
-                  .Select(g => g.Goal)
-                  .Include(g => g.Concern)
-                  .Include(g => g.RewardResource)
-                  .Include(g => g.Feedback)
-                  .ToListAsync();
-
-      foreach (Goal g in goals)
-      {
-        g.Activities = await _context.ActorGoal.Where(a => a.GoalId.Equals(g.Id)).Include(a => a.Activity).Select(a => a.Activity).ToListAsync();
-        g.Roles = await _context.Roles.Where(r => r.GoalId.Equals(g.Id)).ToListAsync();
-        g.Rewards = await _context.Rewards.Where(r => r.GoalId.Equals(g.Id)).ToListAsync();
-        g.Targets = await _context.Targets.Where(t => t.GoalId.Equals(g.Id)).ToListAsync();
-        g.Actions = await _context.Actions.Where(a => a.GoalId.Equals(g.Id)).ToListAsync();
-      }
-
-      return Ok(goals);
-    }
-
     // GET: api/goals/936da01f-9abd-4d9d-80c7-02af85c822a8/activity
     [HttpGet("{id:Guid}/activity", Name = "GetGoalsByActivity")]
     [ResponseType(typeof(IList<Goal>))]
@@ -115,15 +88,16 @@ namespace SocialGamificationAsset.Controllers
                   .Include(g => g.Concern)
                   .Include(g => g.RewardResource)
                   .Include(g => g.Feedback)
+                  .Include(g => g.Roles)
+                  .Include(g => g.Rewards)
+                  .Include(g => g.Targets)
+                  .Include(g => g.Actions)
                   .ToListAsync();
 
       foreach (Goal g in goals)
       {
-        g.Activities = await _context.ActorGoal.Where(a => a.GoalId.Equals(g.Id)).Include(a => a.Activity).Select(a => a.Activity).ToListAsync();
-        g.Roles = await _context.Roles.Where(r => r.GoalId.Equals(g.Id)).ToListAsync();
-        g.Rewards = await _context.Rewards.Where(r => r.GoalId.Equals(g.Id)).ToListAsync();
-        g.Targets = await _context.Targets.Where(t => t.GoalId.Equals(g.Id)).ToListAsync();
-        g.Actions = await _context.Actions.Where(a => a.GoalId.Equals(g.Id)).ToListAsync();
+        IList<Guid> activitiesIDs = g.Roles.AsEnumerable().Select(r => r.ActivityId).ToList();
+        g.Activities = await _context.Activities.Where(a => activitiesIDs.Contains(a.Id)).OrderBy(a => a.Name).ToListAsync();
       }
 
       if (goals.Count == 0)
@@ -200,8 +174,9 @@ namespace SocialGamificationAsset.Controllers
       goal.Concern = await _context.ConcernMatrix.FindAsync(goal.ConcernId);
       goal.RewardResource = await _context.RewardResourceMatrix.FindAsync(goal.RewardResourceId);
       goal.Feedback = await _context.GoalFeedback.FindAsync(goal.FeedbackId);
-      goal.Activities = await _context.ActorGoal.Where(a => a.GoalId.Equals(goal.Id)).Include(a => a.Activity).Select(a => a.Activity).ToListAsync();
       goal.Roles = await _context.Roles.Where(r => r.GoalId.Equals(goal.Id)).ToListAsync();
+      IList<Guid> activitiesIDs = goal.Roles.AsEnumerable().Select(r => r.ActivityId).ToList();
+      goal.Activities = await _context.Activities.Where(a => activitiesIDs.Contains(a.Id)).OrderBy(a => a.Name).ToListAsync();
       goal.Rewards = await _context.Rewards.Where(r => r.GoalId.Equals(goal.Id)).ToListAsync();
       goal.Targets = await _context.Targets.Where(t => t.GoalId.Equals(goal.Id)).ToListAsync();
       goal.Actions = await _context.Actions.Where(a => a.GoalId.Equals(goal.Id)).ToListAsync();
