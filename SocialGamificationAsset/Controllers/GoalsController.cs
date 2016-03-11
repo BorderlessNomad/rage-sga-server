@@ -75,14 +75,14 @@ namespace SocialGamificationAsset.Controllers
       return Ok(actorGoals);
     }
 
-    // GET: api/goals/936da01f-9abd-4d9d-80c7-02af85c822a8/activity
-    [HttpGet("{id:Guid}/activity", Name = "GetGoalsByActivity")]
+    // GET: api/goals/936da01f-9abd-4d9d-80c7-02af85c822a8/role
+    [HttpGet("{id:Guid}/role", Name = "GetGoalsByRole")]
     [ResponseType(typeof(IList<Goal>))]
-    public async Task<IActionResult> GetGoalsByActivity([FromRoute] Guid id)
+    public async Task<IActionResult> GetGoalsByRole([FromRoute] Guid id)
     {
       IList<Goal> goals =
           await
-          _context.Roles.Where(g => g.ActivityId.Equals(id))
+          _context.Roles.Where(g => g.Id.Equals(id))
                   .Include(g => g.Goal)
                   .Select(g => g.Goal)
                   .Include(g => g.Concern)

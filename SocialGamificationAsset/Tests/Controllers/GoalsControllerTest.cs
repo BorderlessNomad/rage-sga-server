@@ -66,16 +66,16 @@ namespace SocialGamificationAsset.Tests.Controllers
     }
 
     [Fact]
-    public async Task GetGoalByActivityInvalidActivity()
+    public async Task GetGoalByRoleInvalidRole()
     {
       var session = await Login();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
-        // Get goal with Invalid activity Id
+        // Get goal with Invalid role Id
         var invalidId = Guid.NewGuid();
-        var response = await client.GetAsync($"/api/goals/{invalidId}/activity");
+        var response = await client.GetAsync($"/api/goals/{invalidId}/role");
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
         var content = await response.Content.ReadAsJsonAsync<ApiError>();
@@ -84,7 +84,7 @@ namespace SocialGamificationAsset.Tests.Controllers
     }
 
     [Fact]
-    public async Task GetGoalByActivityValidActivity()
+    public async Task GetGoalByRoleValidRole()
     {
       var role = await GetRole();
       var session = await Login();
@@ -92,7 +92,7 @@ namespace SocialGamificationAsset.Tests.Controllers
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
-        var goalRes = await client.GetAsync($"/api/goals/{role.ActivityId}/activity");
+        var goalRes = await client.GetAsync($"/api/goals/{role.Id}/role");
         Assert.Equal(HttpStatusCode.OK, goalRes.StatusCode);
 
         var goalGet = await goalRes.Content.ReadAsJsonAsync <List<Goal>>();
@@ -228,7 +228,7 @@ namespace SocialGamificationAsset.Tests.Controllers
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
-        // Get 'detailed' goal with Invalid activity Id
+        // Get 'detailed' goal with Invalid goal Id
         var invalidId = Guid.NewGuid();
         var response = await client.GetAsync($"/api/goals/{invalidId}/detailed");
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
