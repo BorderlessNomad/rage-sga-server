@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 
 using Microsoft.AspNet.Mvc;
+using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Models
 {
@@ -46,23 +47,27 @@ namespace SocialGamificationAsset.Models
         [ForeignKey("FeedbackId")]
         public virtual GoalFeedback Feedback { get; set; }
 
-        public bool CalculateRewardFromAction(SocialGamificationAssetContext context, string actionVerb)
+        public async Task<bool> CalculateRewardFromAction(SocialGamificationAssetContext context, string actionVerb)
         {
             Action actionMatch = this.Actions.Where(a => a.Verb.Equals(actionVerb)).FirstOrDefault();
 
             if (actionMatch != null)
             {
-                actionMatch.Relations = context.ActionRelations.Where(a => a.ActionId.Equals(actionMatch.Id)).Include(ar => ar.AttributeChanges).ToList();
+                actionMatch.Relations = await context.ActionRelations.Where(a => a.ActionId.Equals(actionMatch.Id)).Include(ar => ar.AttributeChanges.Select(ac => ac.AttributeType)).ToListAsync();
 
                 foreach (ActionRelation ar in actionMatch.Relations)
                 {
                     foreach (Reward reward in ar.AttributeChanges)
                     {
-                        Reward rewardMatch = this.Rewards.Where(r => r.AttributeType.Name.Equals(reward.AttributeType.Name)).FirstOrDefault();
-
+                        var temp = this.Rewards;
+                        Reward rewardMatch = this.Rewards.Where(r => r.TypeReward.Equals(RewardType.Store)).Where(r => r.AttributeType.Name.Equals(reward.AttributeType.Name)).FirstOrDefault();
+                        // THIS IS NULL
                         if (rewardMatch != null)
                         {
+                            float d = reward.Value;
+                            float c = rewardMatch.Value;
                             rewardMatch.Value += reward.Value;
+                            float i = rewardMatch.Value;
                             return true;
                         }
                     }

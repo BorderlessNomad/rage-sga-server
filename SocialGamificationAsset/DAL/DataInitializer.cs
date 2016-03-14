@@ -33,7 +33,7 @@ namespace SocialGamificationAsset.Models
                 await SeedCustomData(_context, isAsync);
 
                 await SeedGoals(_context, isAsync);
-      }
+            }
         }
 
         protected static void Test()
@@ -331,52 +331,139 @@ namespace SocialGamificationAsset.Models
             }
         }
 
-    protected static async Task SeedGoals(SocialGamificationAssetContext _context, bool isAsync = false)
-    {
-      if (!_context.ActorGoal.Any())
-      {
-        var mayur = await _context.Players.Where(a => a.Username.Equals("mayur")).FirstOrDefaultAsync();
-        var goal = new Goal {Concern = new ConcernMatrix { Coordinates = new Matrix { X = 0, Y = 0 }, Category = 0},
-        RewardResource = new RewardResourceMatrix { Coordinates = new Matrix { X = 0, Y= 0 }, Category = 0},
-        Feedback = new GoalFeedback { Threshold = 0, Target = 0, Direction = 0},
-        Description = "Test"};
-        var activity = new Activity { Name = "Testing" };
-
-        IList<ActorGoal> goals = new List<ActorGoal>
+        protected static async Task SeedGoals(SocialGamificationAssetContext _context, bool isAsync = false)
         {
-        new ActorGoal {
-        Actor = mayur,
-        Goal = goal,
-        Status = 0,
-        ConcernOutcome =
-        new ConcernMatrix {
-        Coordinates = new Matrix {X = 0, Y = 0},
-        Category = 0
-        },
-        RewardResourceOutcome =
-        new RewardResourceMatrix {
-        Coordinates = new Matrix {X = 0, Y = 0},
-        Category = 0
-        },
-        Activity = activity,
-        Role =
-        new Role {
-        Name = "Testing",
-        Goal = goal,
-        Activity = activity
+            if (!_context.ActorGoal.Any())
+            {
+                var mayur = await _context.Players.Where(a => a.Username.Equals("mayur")).FirstOrDefaultAsync();
+                var goal = new Goal
+                {
+                    Concern = new ConcernMatrix
+                    {
+                        Coordinates = new Matrix
+                        {
+                            X = 0,
+                            Y = 0
+                        },
+                        Category = 0
+                    },
+                    RewardResource = new RewardResourceMatrix
+                    {
+                        Coordinates = new Matrix
+                        {
+                            X = 0,
+                            Y = 0
+                        },
+                        Category = 0
+                    },
+                    Feedback = new GoalFeedback
+                    {
+                        Threshold = 0,
+                        Target = 0,
+                        Direction = 0
+                    },
+                    Description = "Test"
+                };
+
+                var activity = new Activity { Name = "Testing" };
+
+                IList<ActorGoal> goals = new List<ActorGoal>
+                {
+                    new ActorGoal
+                    {
+                        Actor = mayur,
+                        Goal = goal,
+                        Status = 0,
+                        ConcernOutcome = new ConcernMatrix
+                        {
+                            Coordinates = new Matrix {X = 0, Y = 0},
+                            Category = 0
+                        },
+                        RewardResourceOutcome = new RewardResourceMatrix
+                        {
+                            Coordinates = new Matrix {X = 0, Y = 0},
+                            Category = 0
+                        },
+                        Activity = activity,
+                        Role = new Role
+                        {
+                            Name = "Testing",
+                            Goal = goal,
+                            Activity = activity
+                        }
+                    }
+                };
+
+                _context.ActorGoal.AddRange(goals);
+
+                IList<Reward> rewards = new List<Reward>
+                {
+                    new Reward
+                    {
+                        AttributeType = new AttributeType
+                        {
+                            Name = "testAttribute",
+                            DefaultValue = 0f,
+                            Type = 0
+                        },
+                        TypeReward = RewardType.Store,
+                        Value = 1.5f,
+                        Status = 0,
+                        Goal = goal
+                    }
+                };
+
+                _context.Rewards.AddRange(rewards);
+
+
+                IList<ActionRelation> actions = new List<ActionRelation>
+                {
+                    new ActionRelation
+                    {
+                        Action = new Action
+                        {
+                            Verb = "testVerb",
+                            Activity = activity,
+                            Goal = goal
+                        },
+                        Relationship = 0,
+                        ConcernChange = new Matrix
+                        {
+                            X = 0,
+                            Y = 0
+                        },
+                        RewardResourceChange = new Matrix
+                        {
+                            X = 0,
+                            Y = 0
+                        },
+                        AttributeChanges = new List<Reward>
+                        {
+                            new Reward
+                            {
+                                AttributeType = new AttributeType
+                                {
+                                    Name = "testAttribute",
+                                    DefaultValue = 0f,
+                                    Type = 0
+                                },
+                                Value = 3.5f,
+                                Status = 0,
+                                Goal = goal,
+                                TypeReward = RewardType.Modify
+                            }
+                        }
+                    }
+                };
+
+                _context.ActionRelations.AddRange(actions);
+
+                await SaveChanges(_context, isAsync);
+                Debug.WriteLine("Goals & related Seeded.");
+            }
         }
-        }
-        };
 
-        _context.ActorGoal.AddRange(goals);
-
-        await SaveChanges(_context, isAsync);
-
-        Debug.WriteLine("Goals & related Seeded.");
-      }
-    }
-
-    protected static async Task SaveChanges(SocialGamificationAssetContext _context, bool isAsync = false)
+        protected static async Task SaveChanges(SocialGamificationAssetContext _context, bool isAsync = false)
         {
             try
             {
