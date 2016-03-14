@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.Description;
 
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
@@ -21,6 +22,7 @@ namespace SocialGamificationAsset.Controllers
 
         // GET: api/groups
         [HttpGet("", Name = "GetMyGroups")]
+        [ResponseType(typeof(IList<Group>))]
         public async Task<IActionResult> GetMyGroups()
         {
             var groups =
@@ -35,6 +37,7 @@ namespace SocialGamificationAsset.Controllers
 
         // GET: api/groups/actor/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpGet("actor/{id:Guid}", Name = "GetActorGroups")]
+        [ResponseType(typeof(IList<Group>))]
         public async Task<IActionResult> GetActorGroups([FromRoute] Guid id)
         {
             var player = await _context.Players.FindAsync(id);
@@ -55,6 +58,7 @@ namespace SocialGamificationAsset.Controllers
 
         // GET: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpGet("{id:Guid}", Name = "GetGroupInfo")]
+        [ResponseType(typeof(Group))]
         public async Task<IActionResult> GetGroupInfo([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
@@ -73,8 +77,9 @@ namespace SocialGamificationAsset.Controllers
         }
 
         // PUT: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8
-        [HttpPut("{id:Guid}")]
-        public async Task<IActionResult> PutGroup([FromRoute] Guid id, [FromBody] Group group)
+        [HttpPut("{id:Guid}", Name = "UpdateGroup")]
+        [ResponseType(typeof(Group))]
+        public async Task<IActionResult> UpdateGroup([FromRoute] Guid id, [FromBody] Group group)
         {
             if (!ModelState.IsValid)
             {
@@ -94,22 +99,54 @@ namespace SocialGamificationAsset.Controllers
                 return error;
             }
 
-            return new HttpStatusCodeResult(StatusCodes.Status204NoContent);
+            return Ok(group);
         }
 
         // POST: api/groups
-        [HttpPost]
-        public async Task<IActionResult> PostGroup([FromBody] Group group)
+        [HttpPost("", Name = "CreateGroup")]
+        [ResponseType(typeof(Group))]
+        public async Task<IActionResult> CreateGroup([FromBody] GroupFrom form)
         {
             if (!ModelState.IsValid)
             {
                 return Helper.HttpBadRequest(ModelState);
             }
 
-            if (group.Players != null && group.Players.Count != 0)
+            if (string.IsNullOrWhiteSpace(form.Name))
             {
-                group.AddPlayers(_context, group.Players);
+                return Helper.HttpBadRequest("Group name is required.");
             }
+
+            if (await Group.ExistsUsername(_context, form.Name))
+            {
+                return Helper.HttpBadRequest("Group with this name already exists.");
+            }
+
+            var group = new Group
+            {
+                Username = form.Name,
+                Type = form.Type,
+                OwnerId = session.Player.Id
+            };
+
+            if (form.Players == null || form.Players.Count < 1)
+            {
+                return Helper.HttpBadRequest("Group requires minimum 1 Player.");
+            }
+
+            IList<Player> players = new List<Player>();
+            foreach (var playerId in form.Players)
+            {
+                var player = await _context.Players.FindAsync(playerId);
+                if (player == null)
+                {
+                    return Helper.HttpNotFound($"No Player with Id {playerId} exists.");
+                }
+
+                players.Add(player);
+            }
+
+            group.Players = players;
 
             _context.Groups.Add(group);
 
@@ -123,8 +160,9 @@ namespace SocialGamificationAsset.Controllers
         }
 
         // DELETE: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8
-        [HttpDelete("{id:Guid}")]
-        public async Task<IActionResult> DeleteGroup([FromRoute] Guid id)
+        [HttpDelete("{id:Guid}", Name = "DisableGroup")]
+        [ResponseType(typeof(Group))]
+        public async Task<IActionResult> DisableGroup([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
             {
