@@ -19,13 +19,6 @@ namespace SocialGamificationAsset.Controllers
         {
         }
 
-        // GET: api/groups/all
-        [HttpGet("all", Name = "GetAllGroups")]
-        public IEnumerable<Group> GetAllGroups()
-        {
-            return _context.Groups.Include(g => g.Players);
-        }
-
         // GET: api/groups
         [HttpGet("", Name = "GetMyGroups")]
         public async Task<IActionResult> GetMyGroups()
@@ -33,6 +26,26 @@ namespace SocialGamificationAsset.Controllers
             var groups =
                 await
                 _context.Players.Where(p => p.Id.Equals(session.Player.Id))
+                        .Include(p => p.Groups)
+                        .Select(p => p.Groups)
+                        .FirstOrDefaultAsync();
+
+            return Ok(groups);
+        }
+
+        // GET: api/groups/actor/936da01f-9abd-4d9d-80c7-02af85c822a8
+        [HttpGet("actor/{id:Guid}", Name = "GetActorGroups")]
+        public async Task<IActionResult> GetActorGroups([FromRoute] Guid id)
+        {
+            var player = await _context.Players.FindAsync(id);
+            if (player == null)
+            {
+                return Helper.HttpNotFound("No such Player found.");
+            }
+
+            var groups =
+                await
+                _context.Players.Where(p => p.Id.Equals(player.Id))
                         .Include(p => p.Groups)
                         .Select(p => p.Groups)
                         .FirstOrDefaultAsync();
@@ -66,11 +79,6 @@ namespace SocialGamificationAsset.Controllers
             if (!ModelState.IsValid)
             {
                 return Helper.HttpBadRequest(ModelState);
-            }
-
-            if (id != group.Id)
-            {
-                return Helper.HttpBadRequest("Id & Group.Id does not match.");
             }
 
             _context.Entry(group).State = EntityState.Modified;
