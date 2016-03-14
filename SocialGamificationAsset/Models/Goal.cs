@@ -17,8 +17,9 @@ namespace SocialGamificationAsset.Models
             ConcernId = Guid.Empty;
             RewardResourceId = Guid.Empty;
             FeedbackId = Guid.Empty;
+            IsDeleted = false;
         }
-
+        [NotMapped]
         public virtual ICollection<Reward> Rewards { get; set; }
 
         public virtual ICollection<Target> Targets { get; set; }
@@ -45,6 +46,8 @@ namespace SocialGamificationAsset.Models
 
         [ForeignKey("FeedbackId")]
         public virtual GoalFeedback Feedback { get; set; }
+
+        public bool IsDeleted { get; set; }
 
         public bool CalculateRewardFromAction(SocialGamificationAssetContext context, string actionVerb)
         {

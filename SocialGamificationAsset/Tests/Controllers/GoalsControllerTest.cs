@@ -15,6 +15,61 @@ namespace SocialGamificationAsset.Tests.Controllers
 {
   public class GoalsControllerTest : ControllerTest
   {
+
+    protected async Task<Goal> CreateTestGoal()
+    {
+      var session = await Login();
+
+      using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+      {
+        client.AcceptJson().AddSessionHeader(session.Id.ToString());
+        var goal = new Goal
+        {
+          Concern = new ConcernMatrix { Coordinates = new Matrix { X = 1, Y = 1 }, Category = 0 },
+          RewardResource = new RewardResourceMatrix { Coordinates = new Matrix { X = 2, Y = 2 }, Category = 0 },
+          Feedback = new GoalFeedback { Threshold = 0, Target = 0, Direction = 0 },
+          Description = "Created for test cases"
+        };
+        var goalResponse = await client.PostAsJsonAsync("/api/goals", goal);
+        Assert.Equal(HttpStatusCode.Created, goalResponse.StatusCode);
+        
+        var created = await goalResponse.Content.ReadAsJsonAsync<Goal>();
+
+        return created;
+      }
+    }
+
+    protected async Task<Role> CreateTestRole()
+    {
+      var session = await Login();
+
+      using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+      {
+        client.AcceptJson().AddSessionHeader(session.Id.ToString());
+        var role = new Role
+        {
+          Name = "Testing" + Guid.NewGuid(),
+          Goal = new Goal
+          {
+            Concern = new ConcernMatrix { Coordinates = new Matrix { X = 1, Y = 1 }, Category = 0 },
+            RewardResource = new RewardResourceMatrix { Coordinates = new Matrix { X = 2, Y = 2 }, Category = 0 },
+            Feedback = new GoalFeedback { Threshold = 0, Target = 0, Direction = 0 },
+            Description = "Created for test cases"
+          },
+          Activity = new Activity
+          {
+            Name = "Testing"
+          }
+        };
+        var roleResponse = await client.PostAsJsonAsync("/api/roles", role);
+        Assert.Equal(HttpStatusCode.Created, roleResponse.StatusCode);
+
+        var created = await roleResponse.Content.ReadAsJsonAsync<Role>();
+
+        return created;
+      }
+    }
+
     [Fact]
     public async Task GetGoalsWithoutSession()
     {
@@ -79,14 +134,14 @@ namespace SocialGamificationAsset.Tests.Controllers
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
         var content = await response.Content.ReadAsJsonAsync<ApiError>();
-        Assert.Equal($"No Goals found.", content.Error);
+        Assert.Equal($"No Role found for the passed ID", content.Error);
       }
     }
 
     [Fact]
     public async Task GetGoalByRoleValidRole()
     {
-      var role = await GetRole();
+      var role = await CreateTestRole();
       var session = await Login();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
@@ -103,12 +158,12 @@ namespace SocialGamificationAsset.Tests.Controllers
     [Fact]
     public async Task GetActorGoalWithoutSession()
     {
-      var role = await GetRole();
+      var newGoal = await CreateTestGoal();
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson();
 
-        var goalsResponse = await client.GetAsync($"/api/goals/{role.GoalId}/actor");
+        var goalsResponse = await client.GetAsync($"/api/goals/{newGoal.Id}/actor");
         Assert.Equal(HttpStatusCode.Unauthorized, goalsResponse.StatusCode);
 
         var fetched = await goalsResponse.Content.ReadAsJsonAsync<ApiError>();
@@ -120,12 +175,12 @@ namespace SocialGamificationAsset.Tests.Controllers
     public async Task GetActorGoalWithInvalidSession()
     {
       var sessionId = "unknown";
-      var role = await GetRole();
+      var newGoal = await CreateTestGoal();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson().AddSessionHeader(sessionId);
-        var goalsResponse = await client.GetAsync($"/api/goals/{role.GoalId}/actor");
+        var goalsResponse = await client.GetAsync($"/api/goals/{newGoal.Id}/actor");
         Assert.Equal(HttpStatusCode.Unauthorized, goalsResponse.StatusCode);
 
         var fetched = await goalsResponse.Content.ReadAsJsonAsync<ApiError>();
@@ -137,12 +192,12 @@ namespace SocialGamificationAsset.Tests.Controllers
     public async Task GetActorGoalWithNonExistingSession()
     {
       var sessionId = Guid.NewGuid();
-      var role = await GetRole();
+      var newGoal = await CreateTestGoal();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson().AddSessionHeader(sessionId.ToString());
-        var goalsResponse = await client.GetAsync($"/api/goals/{role.GoalId}/actor");
+        var goalsResponse = await client.GetAsync($"/api/goals/{newGoal.Id}/actor");
         Assert.Equal(HttpStatusCode.NotFound, goalsResponse.StatusCode);
 
         var fetched = await goalsResponse.Content.ReadAsJsonAsync<ApiError>();
@@ -172,12 +227,12 @@ namespace SocialGamificationAsset.Tests.Controllers
     public async Task GetActorGoalValidGoal()
     {
       var session = await Login();
-      var role = await GetRole();
+      var newGoal = await CreateTestGoal();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
-        var goalsResponse = await client.GetAsync($"/api/goals/{role.GoalId}/actor");
+        var goalsResponse = await client.GetAsync($"/api/goals/{newGoal.Id}/actor");
         Assert.Equal(HttpStatusCode.OK, goalsResponse.StatusCode);
 
         var goalGet = await goalsResponse.Content.ReadAsJsonAsync<ActorGoal>();
@@ -206,17 +261,17 @@ namespace SocialGamificationAsset.Tests.Controllers
     [Fact]
     public async Task GetGoalValid()
     {
-      var role = await GetRole();
+      var newGoal = await CreateTestGoal();
       var session = await Login();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
-        var goalsResponse = await client.GetAsync($"/api/goals/{role.GoalId}");
+        var goalsResponse = await client.GetAsync($"/api/goals/{newGoal.Id}");
         Assert.Equal(HttpStatusCode.OK, goalsResponse.StatusCode);
 
         var goalGet = await goalsResponse.Content.ReadAsJsonAsync<Goal>();
-        Assert.Equal(role.GoalId, goalGet.Id);
+        Assert.Equal(newGoal.Id, goalGet.Id);
       }
     }
 
@@ -241,24 +296,23 @@ namespace SocialGamificationAsset.Tests.Controllers
     [Fact]
     public async Task GetGoalValidDetailed()
     {
-      var role = await GetRole();
+      var newGoal = await CreateTestGoal();
       var session = await Login();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
-        var goalsResponse = await client.GetAsync($"/api/goals/{role.GoalId}/detailed");
+        var goalsResponse = await client.GetAsync($"/api/goals/{newGoal.Id}/detailed");
         Assert.Equal(HttpStatusCode.OK, goalsResponse.StatusCode);
 
         var goalGet = await goalsResponse.Content.ReadAsJsonAsync<Goal>();
-        Assert.Equal(role.GoalId, goalGet.Id);
+        Assert.Equal(newGoal.Id, goalGet.Id);
       }
     }
 
     [Fact]
     public async Task UpdateGoalInvalidGoal()
     {
-      var role = await GetRole();
       var session = await Login();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
@@ -279,7 +333,7 @@ namespace SocialGamificationAsset.Tests.Controllers
     [Fact]
     public async Task UpdateGoalValid()
     {
-      var role = await GetRole();
+      var newGoal = await CreateTestGoal();
       var session = await Login();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
@@ -288,11 +342,11 @@ namespace SocialGamificationAsset.Tests.Controllers
 
         // Update Goal with Valid Id
         var goalForm = new Goal { Description = "updated" };
-        var goalUpdateResponse = await client.PutAsJsonAsync($"/api/goals/{role.GoalId}", goalForm);
+        var goalUpdateResponse = await client.PutAsJsonAsync($"/api/goals/{newGoal.Id}", goalForm);
         Assert.Equal(HttpStatusCode.OK, goalUpdateResponse.StatusCode);
 
         var content = await goalUpdateResponse.Content.ReadAsJsonAsync<Goal>();
-        Assert.Equal(role.GoalId, content.Id);
+        Assert.Equal(newGoal.Id, content.Id);
         Assert.Equal("updated", content.Description);
       }
     }
@@ -300,7 +354,6 @@ namespace SocialGamificationAsset.Tests.Controllers
     [Fact]
     public async Task CreateGoal()
     {
-      var role = await GetRole();
       var session = await Login();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
@@ -309,24 +362,25 @@ namespace SocialGamificationAsset.Tests.Controllers
 
         var newGoal = new Goal
         {
-          ConcernId = role.Goal.ConcernId,
-          RewardResourceId = role.Goal.RewardResourceId,
-          FeedbackId = role.Goal.FeedbackId
+          Concern = new ConcernMatrix { Coordinates = new Matrix { X = 3, Y = 3 }, Category = 0 },
+          RewardResource = new RewardResourceMatrix { Coordinates = new Matrix { X = 4, Y = 4 }, Category = 0 },
+          Feedback = new GoalFeedback { Threshold = 0, Target = 0, Direction = 0 },
+          Description = "Test case creation"
         };
 
         var goalResponse = await client.PostAsJsonAsync("/api/goals", newGoal);
         Assert.Equal(HttpStatusCode.Created, goalResponse.StatusCode);
 
         var goal = await goalResponse.Content.ReadAsJsonAsync<Goal>();
-        Assert.Equal(0, goal.Concern.Coordinates.X);
-        Assert.Equal(0, goal.Concern.Coordinates.Y);
+        Assert.Equal(3, goal.Concern.Coordinates.X);
+        Assert.Equal(4, goal.RewardResource.Coordinates.Y);
       }
     }
 
     [Fact]
     public async Task CreateGoalInvalidFeedback()
     {
-      var role = await GetRole();
+      var newGoal = await CreateTestGoal();
       var session = await Login();
       var invalidId = Guid.NewGuid();
 
@@ -334,14 +388,14 @@ namespace SocialGamificationAsset.Tests.Controllers
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
 
-        var newGoal = new Goal
+        var newerGoal = new Goal
         {
-          ConcernId = role.Goal.ConcernId,
-          RewardResourceId = role.Goal.RewardResourceId,
+          ConcernId = newGoal.ConcernId,
+          RewardResourceId = newGoal.RewardResourceId,
           FeedbackId = invalidId
         };
 
-        var goalResponse = await client.PostAsJsonAsync("/api/goals", newGoal);
+        var goalResponse = await client.PostAsJsonAsync("/api/goals", newerGoal);
         Assert.Equal(HttpStatusCode.NotFound, goalResponse.StatusCode);
 
         var content = await goalResponse.Content.ReadAsJsonAsync<ApiError>();
@@ -352,7 +406,7 @@ namespace SocialGamificationAsset.Tests.Controllers
     [Fact]
     public async Task CreateGoalInvalidConcern()
     {
-      var role = await GetRole();
+      var newGoal = await CreateTestGoal();
       var session = await Login();
       var invalidId = Guid.NewGuid();
 
@@ -360,14 +414,14 @@ namespace SocialGamificationAsset.Tests.Controllers
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
 
-        var newGoal = new Goal
+        var newerGoal = new Goal
         {
-          ConcernId = role.Goal.ConcernId,
+          ConcernId = newGoal.ConcernId,
           RewardResourceId = invalidId,
-          FeedbackId = role.Goal.FeedbackId
+          FeedbackId = newGoal.FeedbackId
         };
 
-        var goalResponse = await client.PostAsJsonAsync("/api/goals", newGoal);
+        var goalResponse = await client.PostAsJsonAsync("/api/goals", newerGoal);
         Assert.Equal(HttpStatusCode.NotFound, goalResponse.StatusCode);
 
         var content = await goalResponse.Content.ReadAsJsonAsync<ApiError>();
@@ -378,7 +432,7 @@ namespace SocialGamificationAsset.Tests.Controllers
     [Fact]
     public async Task CreateGoalInvalidRewardResource()
     {
-      var role = await GetRole();
+      var newGoal = await CreateTestGoal();
       var session = await Login();
       var invalidId = Guid.NewGuid();
 
@@ -386,14 +440,14 @@ namespace SocialGamificationAsset.Tests.Controllers
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
 
-        var newGoal = new Goal
+        var newerGoal = new Goal
         {
           ConcernId = invalidId,
-          RewardResourceId = role.Goal.RewardResourceId,
-          FeedbackId = role.Goal.FeedbackId
+          RewardResourceId = newGoal.RewardResourceId,
+          FeedbackId = newGoal.FeedbackId
         };
 
-        var goalResponse = await client.PostAsJsonAsync("/api/goals", newGoal);
+        var goalResponse = await client.PostAsJsonAsync("/api/goals", newerGoal);
         Assert.Equal(HttpStatusCode.NotFound, goalResponse.StatusCode);
 
         var content = await goalResponse.Content.ReadAsJsonAsync<ApiError>();
@@ -405,15 +459,15 @@ namespace SocialGamificationAsset.Tests.Controllers
     public async Task CreateActorGoal()
     {
       var session = await Login();
-      var role = await GetRole();
+      var role = await CreateTestRole();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
-        var newGoal = new ActorGoal
+        var newerGoal = new ActorGoal
         {
           ActorId = session.PlayerId,
-          GoalId = role.GoalId,
+          GoalId = role.Goal.Id,
           Status = 0,
           ConcernOutcomeId = role.Goal.ConcernId,
           RewardResourceOutcomeId = role.Goal.RewardResourceId,
@@ -421,7 +475,7 @@ namespace SocialGamificationAsset.Tests.Controllers
           RoleId = role.Id
         };
 
-        var goalResponse = await client.PostAsJsonAsync("/api/goals/actors", newGoal);
+        var goalResponse = await client.PostAsJsonAsync("/api/goals/actors", newerGoal);
         Assert.Equal(HttpStatusCode.Created, goalResponse.StatusCode);
 
         var actorgoal = await goalResponse.Content.ReadAsJsonAsync<ActorGoal>();
@@ -436,15 +490,15 @@ namespace SocialGamificationAsset.Tests.Controllers
     {
       var session = await Login();
       var invalidId = Guid.NewGuid();
-      var role = await GetRole();
+      var role = await CreateTestRole();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
-        var newGoal = new ActorGoal
+        var newerGoal = new ActorGoal
         {
           ActorId = session.PlayerId,
-          GoalId = role.GoalId,
+          GoalId = role.Goal.Id,
           Status = 0,
           ConcernOutcomeId = role.Goal.ConcernId,
           RewardResourceOutcomeId = role.Goal.RewardResourceId,
@@ -452,7 +506,7 @@ namespace SocialGamificationAsset.Tests.Controllers
           RoleId = role.Id
         };
 
-        var goalResponse = await client.PostAsJsonAsync("/api/goals/actors", newGoal);
+        var goalResponse = await client.PostAsJsonAsync("/api/goals/actors", newerGoal);
         Assert.Equal(HttpStatusCode.NotFound, goalResponse.StatusCode);
 
         var content = await goalResponse.Content.ReadAsJsonAsync<ApiError>();
@@ -465,15 +519,15 @@ namespace SocialGamificationAsset.Tests.Controllers
     {
       var session = await Login();
       var invalidId = Guid.NewGuid();
-      var role = await GetRole();
+      var role = await CreateTestRole();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
-        var newGoal = new ActorGoal
+        var newerGoal = new ActorGoal
         {
           ActorId = session.PlayerId,
-          GoalId = role.GoalId,
+          GoalId = role.Goal.Id,
           Status = 0,
           ConcernOutcomeId = role.Goal.ConcernId,
           RewardResourceOutcomeId = role.Goal.RewardResourceId,
@@ -481,7 +535,7 @@ namespace SocialGamificationAsset.Tests.Controllers
           RoleId = invalidId
         };
 
-        var goalResponse = await client.PostAsJsonAsync("/api/goals/actors", newGoal);
+        var goalResponse = await client.PostAsJsonAsync("/api/goals/actors", newerGoal);
         Assert.Equal(HttpStatusCode.NotFound, goalResponse.StatusCode);
 
         var content = await goalResponse.Content.ReadAsJsonAsync<ApiError>();
@@ -494,15 +548,15 @@ namespace SocialGamificationAsset.Tests.Controllers
     {
       var session = await Login();
       var invalidId = Guid.NewGuid();
-      var role = await GetRole();
+      var role = await CreateTestRole();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
-        var newGoal = new ActorGoal
+        var newerGoal = new ActorGoal
         {
           ActorId = session.PlayerId,
-          GoalId = role.GoalId,
+          GoalId = role.Goal.Id,
           Status = 0,
           ConcernOutcomeId = invalidId,
           RewardResourceOutcomeId = role.Goal.RewardResourceId,
@@ -510,7 +564,7 @@ namespace SocialGamificationAsset.Tests.Controllers
           RoleId = role.Id
         };
 
-        var goalResponse = await client.PostAsJsonAsync("/api/goals/actors", newGoal);
+        var goalResponse = await client.PostAsJsonAsync("/api/goals/actors", newerGoal);
         Assert.Equal(HttpStatusCode.NotFound, goalResponse.StatusCode);
 
         var content = await goalResponse.Content.ReadAsJsonAsync<ApiError>();
@@ -523,15 +577,15 @@ namespace SocialGamificationAsset.Tests.Controllers
     {
       var session = await Login();
       var invalidId = Guid.NewGuid();
-      var role = await GetRole();
+      var role = await CreateTestRole();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
-        var newGoal = new ActorGoal
+        var newerGoal = new ActorGoal
         {
           ActorId = session.PlayerId,
-          GoalId = role.GoalId,
+          GoalId = role.Goal.Id,
           Status = 0,
           ConcernOutcomeId = role.Goal.ConcernId,
           RewardResourceOutcomeId = invalidId,
@@ -539,7 +593,7 @@ namespace SocialGamificationAsset.Tests.Controllers
           RoleId = role.Id
         };
 
-        var goalResponse = await client.PostAsJsonAsync("/api/goals/actors", newGoal);
+        var goalResponse = await client.PostAsJsonAsync("/api/goals/actors", newerGoal);
         Assert.Equal(HttpStatusCode.NotFound, goalResponse.StatusCode);
 
         var content = await goalResponse.Content.ReadAsJsonAsync<ApiError>();
@@ -552,12 +606,12 @@ namespace SocialGamificationAsset.Tests.Controllers
     {
       var session = await Login();
       var invalidId = Guid.NewGuid();
-      var role = await GetRole();
+      var role = await CreateTestRole();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
-        var newGoal = new ActorGoal
+        var newerGoal = new ActorGoal
         {
           ActorId = session.PlayerId,
           GoalId = invalidId,
@@ -568,7 +622,7 @@ namespace SocialGamificationAsset.Tests.Controllers
           RoleId = role.Id
         };
 
-        var goalResponse = await client.PostAsJsonAsync("/api/goals/actors", newGoal);
+        var goalResponse = await client.PostAsJsonAsync("/api/goals/actors", newerGoal);
         Assert.Equal(HttpStatusCode.NotFound, goalResponse.StatusCode);
 
         var content = await goalResponse.Content.ReadAsJsonAsync<ApiError>();
@@ -581,15 +635,15 @@ namespace SocialGamificationAsset.Tests.Controllers
     {
       var session = await Login();
       var invalidId = Guid.NewGuid();
-      var role = await GetRole();
+      var role = await CreateTestRole();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
-        var newGoal = new ActorGoal
+        var newerGoal = new ActorGoal
         {
           ActorId = invalidId,
-          GoalId = role.GoalId,
+          GoalId = role.Goal.Id,
           Status = 0,
           ConcernOutcomeId = role.Goal.ConcernId,
           RewardResourceOutcomeId = role.Goal.RewardResourceId,
@@ -597,11 +651,49 @@ namespace SocialGamificationAsset.Tests.Controllers
           RoleId = role.Id
         };
 
-        var goalResponse = await client.PostAsJsonAsync("/api/goals/actors", newGoal);
+        var goalResponse = await client.PostAsJsonAsync("/api/goals/actors", newerGoal);
         Assert.Equal(HttpStatusCode.NotFound, goalResponse.StatusCode);
 
         var content = await goalResponse.Content.ReadAsJsonAsync<ApiError>();
         Assert.Equal($"No Actor found for the passed ID", content.Error);
+      }
+    }
+
+    [Fact]
+    public async Task DeleteGoalInvalidGoal()
+    {
+      var session = await Login();
+
+      using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+      {
+        client.AcceptJson().AddSessionHeader(session.Id.ToString());
+
+        // Update Goal with Invalid Id
+        var invalidId = Guid.NewGuid();
+        var goalForm = new Goal { Description = "updated" };
+        var goalResponse = await client.DeleteAsync($"/api/goals/{invalidId}");
+        Assert.Equal(HttpStatusCode.NotFound, goalResponse.StatusCode);
+
+        var content = await goalResponse.Content.ReadAsJsonAsync<ApiError>();
+        Assert.Equal($"No Goal found.", content.Error);
+      }
+    }
+
+    [Fact]
+    public async Task DeleteGoalValidGoal()
+    {
+      var newGoal = await CreateTestGoal();
+      var session = await Login();
+
+      using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+      {
+        client.AcceptJson().AddSessionHeader(session.Id);
+
+        var response = await client.DeleteAsync($"/api/goals/{newGoal.Id}");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var finishedGoal = await response.Content.ReadAsJsonAsync<Goal>();
+        Assert.True(finishedGoal.IsDeleted);
       }
     }
   }

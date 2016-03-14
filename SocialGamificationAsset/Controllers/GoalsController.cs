@@ -80,6 +80,17 @@ namespace SocialGamificationAsset.Controllers
     [ResponseType(typeof(IList<Goal>))]
     public async Task<IActionResult> GetGoalsByRole([FromRoute] Guid id)
     {
+
+      if (id == Guid.Empty)
+      {
+        return Helper.HttpNotFound("No Role found");
+      }
+      var roletest = await _context.Roles.FindAsync(id);
+      if (roletest == null)
+      {
+        return Helper.HttpNotFound("No Role found for the passed ID");
+      }
+
       IList<Goal> goals =
           await
           _context.Roles.Where(g => g.Id.Equals(id))
@@ -221,32 +232,41 @@ namespace SocialGamificationAsset.Controllers
       {
         return Helper.HttpBadRequest(ModelState);
       }
-      if (goal.ConcernId == Guid.Empty)
+      if (goal.ConcernId != Guid.Empty)
+      {
+        var concerntest = await _context.ConcernMatrix.FindAsync(goal.ConcernId);
+        if (concerntest == null)
+        {
+          return Helper.HttpNotFound("No Concern found for the passed ID");
+        }
+      }
+      else if (goal.Concern == null)
       {
         return Helper.HttpNotFound("No Concern found");
       }
-      var concerntest = await _context.ConcernMatrix.FindAsync(goal.ConcernId);
-      if (concerntest == null)
+      if (goal.RewardResourceId != Guid.Empty)
       {
-        return Helper.HttpNotFound("No Concern found for the passed ID");
+        var rrtest = await _context.RewardResourceMatrix.FindAsync(goal.RewardResourceId);
+        if (rrtest == null)
+        {
+          return Helper.HttpNotFound("No RewardResource found for the passed ID");
+        }
       }
-      if (goal.RewardResourceId == Guid.Empty)
+      else if (goal.RewardResource == null)
       {
         return Helper.HttpNotFound("No RewardResource found");
       }
-      var rrtest = await _context.RewardResourceMatrix.FindAsync(goal.RewardResourceId);
-      if (rrtest == null)
+      if (goal.FeedbackId != Guid.Empty)
       {
-        return Helper.HttpNotFound("No RewardResource found for the passed ID");
+        var fbtest = await _context.GoalFeedback.FindAsync(goal.FeedbackId);
+        if (fbtest == null)
+        {
+          return Helper.HttpNotFound("No GoalFeedback found for the passed ID");
+        }
       }
-      if (goal.FeedbackId == Guid.Empty)
+      else if (goal.Feedback == null)
       {
-        return Helper.HttpNotFound("No Feedback found");
-      }
-      var fbtest = await _context.GoalFeedback.FindAsync(goal.FeedbackId);
-      if (fbtest == null)
-      {
-        return Helper.HttpNotFound("No GoalFeedback found for the passed ID");
+        return Helper.HttpNotFound("No GoalFeedback found");
       }
 
       _context.Goals.Add(goal);
@@ -349,7 +369,7 @@ namespace SocialGamificationAsset.Controllers
         return Helper.HttpNotFound("No Goal found.");
       }
 
-      _context.Goals.Remove(goal);
+      goal.IsDeleted = true;
 
       var error = await SaveChangesAsync();
       if (error != null)
