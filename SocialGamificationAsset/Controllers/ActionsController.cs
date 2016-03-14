@@ -84,9 +84,22 @@ namespace SocialGamificationAsset.Controllers
                 return Helper.HttpBadRequest(ModelState);
             }
 
+            Reward reward = null;
+
             foreach (Goal goal in await _context.Goals.Include(g => g.Actions).Include(g => g.Rewards.Select(r => r.AttributeType)).ToListAsync())
             {
-                await goal.CalculateRewardFromAction(_context, action.Verb);
+                try
+                {
+                    reward = await goal.CalculateRewardFromAction(_context, action.Verb);
+                }
+                catch (Exception e)
+                {
+                    return Helper.HttpNotFound(e.Message);
+                }
+                if (reward != null)
+                {
+                    break;
+                }
             }
 
             var error = await SaveChangesAsync();
@@ -94,7 +107,7 @@ namespace SocialGamificationAsset.Controllers
             {
                 return error;
             }
-            return Ok();
+            return Ok(reward);
         }
 
         // POST: api/actions

@@ -47,7 +47,7 @@ namespace SocialGamificationAsset.Models
         [ForeignKey("FeedbackId")]
         public virtual GoalFeedback Feedback { get; set; }
 
-        public async Task<bool> CalculateRewardFromAction(SocialGamificationAssetContext context, string actionVerb)
+        public async Task<Reward> CalculateRewardFromAction(SocialGamificationAssetContext context, string actionVerb)
         {
             Action actionMatch = this.Actions.Where(a => a.Verb.Equals(actionVerb)).FirstOrDefault();
 
@@ -61,19 +61,20 @@ namespace SocialGamificationAsset.Models
                     {
                         var temp = this.Rewards;
                         Reward rewardMatch = this.Rewards.Where(r => r.TypeReward.Equals(RewardType.Store)).Where(r => r.AttributeType.Name.Equals(reward.AttributeType.Name)).FirstOrDefault();
-                        // THIS IS NULL
+
                         if (rewardMatch != null)
                         {
-                            float d = reward.Value;
-                            float c = rewardMatch.Value;
                             rewardMatch.Value += reward.Value;
-                            float i = rewardMatch.Value;
-                            return true;
+                            return rewardMatch;
                         }
                     }
                 }
             }
-            return false;
+            else
+            {
+                throw new Exception("Invalid action verb.");
+            }
+            return null;
         }
 
     }

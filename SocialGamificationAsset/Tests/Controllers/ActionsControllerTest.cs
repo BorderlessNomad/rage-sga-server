@@ -279,7 +279,7 @@ namespace SocialGamificationAsset.Tests.Controllers
         }
 
         [Fact]
-        public async Task UpdateRewardByAction()
+        public async Task UpdateRewardByInvalidAction()
         {
             var session = await Login();
 
@@ -291,17 +291,91 @@ namespace SocialGamificationAsset.Tests.Controllers
 
                 var actionForm = new Models.Action
                 {
-                    Verb = "testVerb",
+                    Verb = "invalidVerb"
+                };
+
+
+                var actionResponse = await client.PostAsJsonAsync("/api/actions/send", actionForm);
+                Assert.Equal(HttpStatusCode.NotFound, actionResponse.StatusCode);
+
+                var content = await actionResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal($"Invalid action verb.", content.Error);
+            }
+        }
+
+        [Fact]
+        public async Task UpdateRewardByValidAction()
+        {
+            var session = await Login();
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+
+                var role = await GetRole();
+
+                var actionForm = new Models.Action
+                {
+                    Verb = "testVerb"
                 };
 
 
                 var actionResponse = await client.PostAsJsonAsync("/api/actions/send", actionForm);
                 Assert.Equal(HttpStatusCode.OK, actionResponse.StatusCode);
 
+                Reward reward = await actionResponse.Content.ReadAsJsonAsync<Reward>();
+                Assert.IsType(typeof(Reward), reward);
+            }
+        }
+
+        [Fact]
+        public async Task DeleteInvalidAction()
+        {
+            var session = await Login();
+            var invalidId = new Guid();
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+
+                var actionResponse = await client.DeleteAsync($"/api/actions/{invalidId}");
+                Assert.Equal(HttpStatusCode.NotFound, actionResponse.StatusCode);
+
+                var content = await actionResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal($"No Action found.", content.Error);
+            }
+        }
+
+        [Fact]
+        public async Task DeleteValidAction()
+        {
+            var session = await Login();
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+
+                var role = await GetRole();
+
+                var actionForm = new Models.Action
+                {
+                    Verb = "testerVerb",
+                    ActivityId = role.ActivityId,
+                    GoalId = role.GoalId
+                };
+
+                var actionResponse = await client.PostAsJsonAsync("/api/actions", actionForm);
+                Assert.Equal(HttpStatusCode.Created, actionResponse.StatusCode);
+
                 Models.Action action = await actionResponse.Content.ReadAsJsonAsync<Models.Action>();
                 Assert.IsType(typeof(Models.Action), action);
-            }
 
+                var actionResponse2 = await client.DeleteAsync($"/api/actions/{action.Id}");
+                Assert.Equal(HttpStatusCode.OK, actionResponse2.StatusCode);
+
+                var actions = await actionResponse2.Content.ReadAsJsonAsync<Models.Action>();
+                Assert.IsType(typeof(Models.Action), actions);
+            }
         }
     }
 }
