@@ -398,7 +398,6 @@ namespace SocialGamificationAsset.Tests.Controllers
                 Assert.IsType(typeof(Group), group);
                 Assert.Equal(mayur.Player.Id, group.AdminId);
 
-                var newSeed = Guid.NewGuid();
                 var updateForm = new GroupFrom { Name = $"Test.{currentSeed}", Type = GroupVisibility.InviteOnly };
 
                 // Update Group with valid data
@@ -775,7 +774,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
                 var updateForm = new GroupFrom();
 
-                // Update Group Players with Invalid Player Admin
+                // Update Group Players with New Player Admin
                 groupResponse =
                     await client.PutAsJsonAsync($"/api/groups/{group.Id}/players/{matt.Player.Id}/admin", updateForm);
                 Assert.Equal(HttpStatusCode.OK, groupResponse.StatusCode);

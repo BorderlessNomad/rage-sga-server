@@ -290,7 +290,7 @@ namespace SocialGamificationAsset.Controllers
                 return Helper.HttpBadRequest("Minimum 2 Actors are required for a Match");
             }
 
-            var result = new QuickMatchResult();
+            QuickMatchResult result;
 
             IList<Player> players = new List<Player>();
             IList<Group> groups = new List<Group>();

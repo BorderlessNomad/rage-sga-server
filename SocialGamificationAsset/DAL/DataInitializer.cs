@@ -86,7 +86,7 @@ namespace SocialGamificationAsset.Models
 
             var settings = new JsonSerializerSettings { Converters = { new ActorJsonConverter() } };
 
-            var matchActors = JsonConvert.DeserializeObject<List<MatchActor>>(matchActorGet, settings);
+            JsonConvert.DeserializeObject<List<MatchActor>>(matchActorGet, settings);
         }
 
         protected static async Task SeedGames(SocialGamificationAssetContext _context, bool isAsync = false)

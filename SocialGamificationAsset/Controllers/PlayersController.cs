@@ -28,7 +28,6 @@ namespace SocialGamificationAsset.Controllers
         /// <summary>
         ///     Get <see cref="Player" /> Details
         /// </summary>
-        /// <param name="id">GUID of <see cref="Player" /></param>
         /// <returns>
         /// </returns>
         [HttpGet("")]
