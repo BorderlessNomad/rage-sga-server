@@ -274,5 +274,141 @@ namespace SocialGamificationAsset.Tests.Controllers
                 Assert.Equal(group.Id, response.Id);
             }
         }
+
+        [Fact]
+        public async Task UpdateGroupWithInvalidId()
+        {
+            var session = await Login();
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(session.Id);
+
+                var form = new GroupFrom();
+
+                // Update Invalid Group
+                var invalidId = Guid.NewGuid();
+                var groupResponse = await client.PutAsJsonAsync($"/api/groups/{invalidId}", form);
+                Assert.Equal(HttpStatusCode.NotFound, groupResponse.StatusCode);
+
+                var content = await groupResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal("No Group found.", content.Error);
+            }
+        }
+
+        [Fact]
+        public async Task UpdateGroupWithInvalidName()
+        {
+            var mayur = await Login();
+            var matt = await Login("matt", "matt");
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(mayur.Id);
+
+                var currentSeed = Guid.NewGuid();
+                var form = new GroupFrom
+                {
+                    Name = $"Test.{currentSeed}",
+                    Type = GroupVisibility.Invisible,
+                    Players = new List<Guid> { mayur.Player.Id, matt.Player.Id }
+                };
+
+                // Create Group with valid Players
+                var groupResponse = await client.PostAsJsonAsync($"/api/groups", form);
+                Assert.Equal(HttpStatusCode.Created, groupResponse.StatusCode);
+
+                var group = await groupResponse.Content.ReadAsJsonAsync<Group>();
+                Assert.IsType(typeof(Group), group);
+                Assert.Equal(mayur.Player.Id, group.OwnerId);
+
+                var updateForm = new GroupFrom { Name = "" };
+
+                // Update Group with empty Name
+                groupResponse = await client.PutAsJsonAsync($"/api/groups/{group.Id}", updateForm);
+                Assert.Equal(HttpStatusCode.BadRequest, groupResponse.StatusCode);
+
+                var content = await groupResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal("Group name is required.", content.Error);
+            }
+        }
+
+        [Fact]
+        public async Task UpdateGroupWithExistingName()
+        {
+            var mayur = await Login();
+            var matt = await Login("matt", "matt");
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(mayur.Id);
+
+                var currentSeed = Guid.NewGuid();
+                var form = new GroupFrom
+                {
+                    Name = $"Test.{currentSeed}",
+                    Type = GroupVisibility.Invisible,
+                    Players = new List<Guid> { mayur.Player.Id, matt.Player.Id }
+                };
+
+                // Create Group with valid Players
+                var groupResponse = await client.PostAsJsonAsync($"/api/groups", form);
+                Assert.Equal(HttpStatusCode.Created, groupResponse.StatusCode);
+
+                var group = await groupResponse.Content.ReadAsJsonAsync<Group>();
+                Assert.IsType(typeof(Group), group);
+                Assert.Equal(mayur.Player.Id, group.OwnerId);
+
+                var updateForm = new GroupFrom { Name = "rage" };
+
+                // Update Group with existing Name
+                groupResponse = await client.PutAsJsonAsync($"/api/groups/{group.Id}", updateForm);
+                Assert.Equal(HttpStatusCode.BadRequest, groupResponse.StatusCode);
+
+                var content = await groupResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal("Group with this name already exists.", content.Error);
+            }
+        }
+
+        [Fact]
+        public async Task UpdateGroup()
+        {
+            var mayur = await Login();
+            var matt = await Login("matt", "matt");
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(mayur.Id);
+
+                var currentSeed = Guid.NewGuid();
+                var form = new GroupFrom
+                {
+                    Name = $"Test.{currentSeed}",
+                    Type = GroupVisibility.Invisible,
+                    Players = new List<Guid> { mayur.Player.Id, matt.Player.Id }
+                };
+
+                // Create Group with valid Players
+                var groupResponse = await client.PostAsJsonAsync($"/api/groups", form);
+                Assert.Equal(HttpStatusCode.Created, groupResponse.StatusCode);
+
+                var group = await groupResponse.Content.ReadAsJsonAsync<Group>();
+                Assert.IsType(typeof(Group), group);
+                Assert.Equal(mayur.Player.Id, group.OwnerId);
+
+                var newSeed = Guid.NewGuid();
+                var updateForm = new GroupFrom { Name = $"Test.{currentSeed}", Type = GroupVisibility.InviteOnly };
+
+                // Update Group with valid data
+                groupResponse = await client.PutAsJsonAsync($"/api/groups/{group.Id}", updateForm);
+                Assert.Equal(HttpStatusCode.OK, groupResponse.StatusCode);
+
+                var response = await groupResponse.Content.ReadAsJsonAsync<Group>();
+                Assert.IsType(typeof(Group), response);
+                Assert.Equal(group.Id, response.Id);
+                Assert.Equal($"Test.{currentSeed}", response.Username);
+                Assert.Equal(GroupVisibility.InviteOnly, response.Type);
+            }
+        }
     }
 }

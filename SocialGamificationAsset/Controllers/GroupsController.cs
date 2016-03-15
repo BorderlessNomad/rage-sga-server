@@ -125,12 +125,12 @@ namespace SocialGamificationAsset.Controllers
         // PUT: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8/players/936da01f-9abd-4d9d-80c7-02af85c822a8/add
         // PUT: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8/players/936da01f-9abd-4d9d-80c7-02af85c822a8/remove
         // PUT: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8/players/936da01f-9abd-4d9d-80c7-02af85c822a8/owner
-        [HttpPut("{id:Guid}/players/{playerId:Guid}/{action}", Name = "UpdateGroupPlayer")]
+        [HttpPut("{id:Guid}/players/{playerId:Guid}/{target?}", Name = "UpdateGroupPlayer")]
         [ResponseType(typeof(Group))]
         public async Task<IActionResult> UpdateGroupPlayer(
             [FromRoute] Guid id,
             [FromRoute] Guid playerId,
-            [FromRoute] string action)
+            [FromRoute] string target = "add")
         {
             if (!ModelState.IsValid)
             {
@@ -149,16 +149,53 @@ namespace SocialGamificationAsset.Controllers
                 return Helper.HttpNotFound("No such Player found.");
             }
 
-            if (action == "remove" && !group.Players.Contains(player))
+            _context.Entry(group).State = EntityState.Modified;
+
+            switch (target.ToLower())
             {
-                return Helper.HttpBadRequest($"No Player with Id {playerId} exists in the Group.");
-            } else if (action == "add" && group.Players.Contains(player))
+                case "add":
+                    if (group.Players.Contains(player))
+                    {
+                        return Helper.HttpBadRequest($"Player with Id {playerId} already exists in the Group.");
+                    }
+
+                    // Add Player
+                    group.Players.Add(player);
+
+                    break;
+                case "remove":
+                    if (!group.Players.Contains(player))
+                    {
+                        return Helper.HttpBadRequest($"No Player with Id {playerId} exists in the Group.");
+                    }
+
+                    // Remove Player
+                    group.Players.Remove(player);
+
+                    break;
+                case "owner":
+                    if (group.OwnerId != session.Player.Id)
+                    {
+                        return Helper.HttpUnauthorized($"You are not the owner of this Group.");
+                    }
+
+                    if (!group.Players.Contains(player))
+                    {
+                        return Helper.HttpBadRequest($"No Player with Id {playerId} exists in the Group.");
+                    }
+
+                    // Make owner
+                    group.Owner = player;
+
+                    break;
+                default:
+                    return Helper.HttpBadRequest($"'{target}' is not a valid Action.");
+            }
+
+            var error = await SaveChangesAsync();
+            if (error != null)
             {
-                return Helper.HttpBadRequest($"Player with Id {playerId} already exists in the Group.");
-            } else if (action == "owner" && group.OwnerId != session.Player.Id)
-            {
-                // Unauthorized
-                return Helper.HttpBadRequest($"Player with Id {playerId} already exists in the Group.");
+                return error;
             }
 
             return Ok(group);
