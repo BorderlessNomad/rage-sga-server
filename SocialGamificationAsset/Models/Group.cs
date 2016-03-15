@@ -29,10 +29,10 @@ namespace SocialGamificationAsset.Models
         // [IgnoreDataMember]
         public virtual ICollection<Player> Players { get; set; }
 
-        public Guid? OwnerId { get; set; }
+        public Guid? AdminId { get; set; }
 
-        [ForeignKey("OwnerId")]
-        public virtual Player Owner { get; set; }
+        [ForeignKey("AdminId")]
+        public virtual Player Admin { get; set; }
 
         public static async Task<IList<Group>> LoadRandom(
             SocialGamificationAssetContext db,
@@ -117,6 +117,8 @@ namespace SocialGamificationAsset.Models
         public string Name { get; set; }
 
         public GroupVisibility Type { get; set; }
+
+        public Guid? Admin { get; set; }
 
         public IList<Guid> Players { get; set; }
     }

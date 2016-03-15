@@ -124,7 +124,7 @@ namespace SocialGamificationAsset.Controllers
 
         // PUT: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8/players/936da01f-9abd-4d9d-80c7-02af85c822a8/add
         // PUT: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8/players/936da01f-9abd-4d9d-80c7-02af85c822a8/remove
-        // PUT: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8/players/936da01f-9abd-4d9d-80c7-02af85c822a8/owner
+        // PUT: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8/players/936da01f-9abd-4d9d-80c7-02af85c822a8/admin
         [HttpPut("{id:Guid}/players/{playerId:Guid}/{target?}", Name = "UpdateGroupPlayer")]
         [ResponseType(typeof(Group))]
         public async Task<IActionResult> UpdateGroupPlayer(
@@ -173,10 +173,10 @@ namespace SocialGamificationAsset.Controllers
                     group.Players.Remove(player);
 
                     break;
-                case "owner":
-                    if (group.OwnerId != session.Player.Id)
+                case "admin":
+                    if (group.AdminId != session.Player.Id)
                     {
-                        return Helper.HttpUnauthorized($"You are not the owner of this Group.");
+                        return Helper.HttpUnauthorized($"You are not the Admin of this Group.");
                     }
 
                     if (!group.Players.Contains(player))
@@ -184,8 +184,13 @@ namespace SocialGamificationAsset.Controllers
                         return Helper.HttpBadRequest($"No Player with Id {playerId} exists in the Group.");
                     }
 
-                    // Make owner
-                    group.Owner = player;
+                    // Make Admin
+                    if (group.AdminId == player.Id)
+                    {
+                        return Helper.HttpBadRequest($"You are already Admin of this Group.");
+                    }
+
+                    group.Admin = player;
 
                     break;
                 default:
@@ -221,7 +226,7 @@ namespace SocialGamificationAsset.Controllers
                 return Helper.HttpBadRequest("Group with this name already exists.");
             }
 
-            var group = new Group { Username = form.Name, Type = form.Type, OwnerId = session.Player.Id };
+            var group = new Group { Username = form.Name, Type = form.Type, AdminId = session.Player.Id };
 
             if (form.Players == null || form.Players.Count < 1)
             {
