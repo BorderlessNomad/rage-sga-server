@@ -56,12 +56,14 @@ namespace SocialGamificationAsset.Controllers
                 return Helper.HttpBadRequest(ModelState);
             }
 
-            if (id != action.Id)
+            var actionMatch = await _context.Actions.Where(g => g.Id.Equals(id)).FirstOrDefaultAsync();
+            if (actionMatch == null)
             {
-                return Helper.HttpBadRequest("Invalid Action Id.");
+                return Helper.HttpNotFound("No such Action found.");
             }
 
-            _context.Entry(action).State = EntityState.Modified;
+
+            _context.Entry(actionMatch).State = EntityState.Modified;
 
             var error = await SaveChangesAsync();
             if (error != null)
@@ -69,7 +71,7 @@ namespace SocialGamificationAsset.Controllers
                 return error;
             }
 
-            return CreatedAtRoute("GetAction", new { id = action.Id }, action);
+            return Ok(actionMatch);
         }
 
         // POST: api/actions/send
@@ -82,9 +84,22 @@ namespace SocialGamificationAsset.Controllers
                 return Helper.HttpBadRequest(ModelState);
             }
 
-            foreach (Goal goal in _context.Goals.Include(g => g.Actions).Include(g => g.Rewards))
+            Reward reward = null;
+
+            foreach (Goal goal in await _context.Goals.Include(g => g.Actions).Include(g => g.Rewards.Select(r => r.AttributeType)).ToListAsync())
             {
-                goal.CalculateRewardFromAction(_context, action.Verb);
+                try
+                {
+                    reward = await goal.CalculateRewardFromAction(_context, action.Verb);
+                }
+                catch (Exception e)
+                {
+                    return Helper.HttpNotFound(e.Message);
+                }
+                if (reward != null)
+                {
+                    break;
+                }
             }
 
             var error = await SaveChangesAsync();
@@ -92,7 +107,7 @@ namespace SocialGamificationAsset.Controllers
             {
                 return error;
             }
-            return Ok();
+            return Ok(reward);
         }
 
         // POST: api/actions
@@ -105,6 +120,19 @@ namespace SocialGamificationAsset.Controllers
                 return Helper.HttpBadRequest(ModelState);
             }
 
+            var actTest = await _context.Activities.FindAsync(action.ActivityId);
+
+            if (actTest == null)
+            {
+                return Helper.HttpNotFound("Invalid ActivityId.");
+            }
+
+            var goalTest = await _context.Goals.FindAsync(action.GoalId);
+
+            if (goalTest == null)
+            {
+                return Helper.HttpNotFound("Invalid GoalId.");
+            }
             _context.Actions.Add(action);
 
             var error = await SaveChangesAsync();
