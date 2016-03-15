@@ -129,12 +129,12 @@ namespace SocialGamificationAsset.Tests.Controllers
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
         // Get goal with Invalid role Id
-        var invalidId = Guid.NewGuid();
-        var response = await client.GetAsync($"/api/goals/{invalidId}/role");
+        var invalidName = Guid.NewGuid();
+        var response = await client.GetAsync($"/api/goals/{invalidName}/role");
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
         var content = await response.Content.ReadAsJsonAsync<ApiError>();
-        Assert.Equal($"No Role found for the passed ID", content.Error);
+        Assert.Equal($"No Role found for the passed name", content.Error);
       }
     }
 
@@ -147,7 +147,7 @@ namespace SocialGamificationAsset.Tests.Controllers
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
-        var goalRes = await client.GetAsync($"/api/goals/{role.Id}/role");
+        var goalRes = await client.GetAsync($"/api/goals/{role.Name}/role");
         Assert.Equal(HttpStatusCode.OK, goalRes.StatusCode);
 
         var goalGet = await goalRes.Content.ReadAsJsonAsync <List<Goal>>();
@@ -227,12 +227,26 @@ namespace SocialGamificationAsset.Tests.Controllers
     public async Task GetActorGoalValidGoal()
     {
       var session = await Login();
-      var newGoal = await CreateTestGoal();
+      var role = await CreateTestRole();
 
       using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
       {
         client.AcceptJson().AddSessionHeader(session.Id.ToString());
-        var goalsResponse = await client.GetAsync($"/api/goals/{newGoal.Id}/actor");
+        var newerGoal = new ActorGoal
+        {
+          ActorId = session.PlayerId,
+          GoalId = role.Goal.Id,
+          Status = 0,
+          ConcernOutcomeId = role.Goal.ConcernId,
+          RewardResourceOutcomeId = role.Goal.RewardResourceId,
+          ActivityId = role.ActivityId,
+          RoleId = role.Id
+        };
+
+        var actorgoalResponse = await client.PostAsJsonAsync("/api/goals/actors", newerGoal);
+        Assert.Equal(HttpStatusCode.Created, actorgoalResponse.StatusCode);
+
+        var goalsResponse = await client.GetAsync($"/api/goals/{role.Goal.Id}/actor");
         Assert.Equal(HttpStatusCode.OK, goalsResponse.StatusCode);
 
         var goalGet = await goalsResponse.Content.ReadAsJsonAsync<ActorGoal>();

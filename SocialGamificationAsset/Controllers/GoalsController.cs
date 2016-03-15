@@ -76,37 +76,37 @@ namespace SocialGamificationAsset.Controllers
     }
 
     // GET: api/goals/936da01f-9abd-4d9d-80c7-02af85c822a8/role
-    [HttpGet("{id:Guid}/role", Name = "GetGoalsByRole")]
+    [HttpGet("{name}/role", Name = "GetGoalsByRole")]
     [ResponseType(typeof(IList<Goal>))]
-    public async Task<IActionResult> GetGoalsByRole([FromRoute] Guid id)
+    public async Task<IActionResult> GetGoalsByRole([FromRoute] string name)
     {
 
-      if (id == Guid.Empty)
+      if (string.IsNullOrEmpty(name))
       {
         return Helper.HttpNotFound("No Role found");
       }
-      var roletest = await _context.Roles.FindAsync(id);
+      var roletest = await _context.Roles.Where(g => g.Name.Equals(name)).FirstOrDefaultAsync();
       if (roletest == null)
       {
-        return Helper.HttpNotFound("No Role found for the passed ID");
+        return Helper.HttpNotFound("No Role found for the passed name");
       }
 
       IList<Goal> goals =
           await
-          _context.Roles.Where(g => g.Id.Equals(id))
+          _context.Roles.Where(g => g.Name.Equals(name))
                   .Include(g => g.Goal)
                   .Select(g => g.Goal)
                   .Include(g => g.Concern)
                   .Include(g => g.RewardResource)
                   .Include(g => g.Feedback)
-                  .Include(g => g.Roles)
-                  .Include(g => g.Rewards)
-                  .Include(g => g.Targets)
-                  .Include(g => g.Actions)
                   .ToListAsync();
 
       foreach (Goal g in goals)
       {
+        g.Roles = await _context.Roles.Where(r => r.GoalId.Equals(g.Id)).ToListAsync();
+        g.Rewards = await _context.Rewards.Where(r => r.GoalId.Equals(g.Id)).ToListAsync();
+        g.Targets = await _context.Targets.Where(t => t.GoalId.Equals(g.Id)).ToListAsync();
+        g.Actions = await _context.Actions.Where(a => a.GoalId.Equals(g.Id)).ToListAsync();
         IList<Guid> activitiesIDs = g.Roles.AsEnumerable().Select(r => r.ActivityId).ToList();
         g.Activities = await _context.Activities.Where(a => activitiesIDs.Contains(a.Id)).OrderBy(a => a.Name).ToListAsync();
       }

@@ -20,7 +20,7 @@ namespace SocialGamificationAsset.Models
             FeedbackId = Guid.Empty;
             IsDeleted = false;
         }
-        [NotMapped]
+        
         public virtual ICollection<Reward> Rewards { get; set; }
 
         public virtual ICollection<Target> Targets { get; set; }
@@ -48,13 +48,9 @@ namespace SocialGamificationAsset.Models
         [ForeignKey("FeedbackId")]
         public virtual GoalFeedback Feedback { get; set; }
 
-<<<<<<< HEAD
         public bool IsDeleted { get; set; }
 
-        public bool CalculateRewardFromAction(SocialGamificationAssetContext context, string actionVerb)
-=======
         public async Task<Reward> CalculateRewardFromAction(SocialGamificationAssetContext context, string actionVerb)
->>>>>>> feature/actionstoevents
         {
             Action actionMatch = this.Actions.Where(a => a.Verb.Equals(actionVerb)).FirstOrDefault();
 
@@ -66,7 +62,6 @@ namespace SocialGamificationAsset.Models
                 {
                     foreach (Reward reward in ar.AttributeChanges)
                     {
-                        var temp = this.Rewards;
                         Reward rewardMatch = this.Rewards.Where(r => r.TypeReward.Equals(RewardType.Store)).Where(r => r.AttributeType.Name.Equals(reward.AttributeType.Name)).FirstOrDefault();
 
                         if (rewardMatch != null)
@@ -77,10 +72,7 @@ namespace SocialGamificationAsset.Models
                     }
                 }
             }
-            else
-            {
-                throw new Exception("Invalid action verb.");
-            }
+            
             return null;
         }
 
