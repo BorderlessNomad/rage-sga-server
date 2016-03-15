@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Description;
 
-using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 
 using SocialGamificationAsset.Models;
@@ -79,24 +78,87 @@ namespace SocialGamificationAsset.Controllers
         // PUT: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8
         [HttpPut("{id:Guid}", Name = "UpdateGroup")]
         [ResponseType(typeof(Group))]
-        public async Task<IActionResult> UpdateGroup([FromRoute] Guid id, [FromBody] Group group)
+        public async Task<IActionResult> UpdateGroup([FromRoute] Guid id, [FromBody] GroupFrom form)
         {
             if (!ModelState.IsValid)
             {
                 return Helper.HttpBadRequest(ModelState);
             }
 
+            var group = await _context.Groups.Where(g => g.Id.Equals(id)).Include(g => g.Players).FirstOrDefaultAsync();
+            if (group == null)
+            {
+                return Helper.HttpNotFound("No Group found.");
+            }
+
+            if (string.IsNullOrWhiteSpace(form.Name))
+            {
+                return Helper.HttpBadRequest("Group name is required.");
+            }
+
             _context.Entry(group).State = EntityState.Modified;
 
-            if (group.Players != null && group.Players.Count != 0)
+            if (form.Name != group.Username)
             {
-                group.AddPlayers(_context, group.Players);
+                if (await Group.ExistsUsername(_context, form.Name))
+                {
+                    return Helper.HttpBadRequest("Group with this name already exists.");
+                }
+
+                group.Username = form.Name;
+            }
+
+            if (form.Type != group.Type)
+            {
+                group.Type = form.Type;
             }
 
             var error = await SaveChangesAsync();
             if (error != null)
             {
                 return error;
+            }
+
+            return Ok(group);
+        }
+
+        // PUT: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8/players/936da01f-9abd-4d9d-80c7-02af85c822a8/add
+        // PUT: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8/players/936da01f-9abd-4d9d-80c7-02af85c822a8/remove
+        // PUT: api/groups/936da01f-9abd-4d9d-80c7-02af85c822a8/players/936da01f-9abd-4d9d-80c7-02af85c822a8/owner
+        [HttpPut("{id:Guid}/players/{playerId:Guid}/{action}", Name = "UpdateGroupPlayer")]
+        [ResponseType(typeof(Group))]
+        public async Task<IActionResult> UpdateGroupPlayer(
+            [FromRoute] Guid id,
+            [FromRoute] Guid playerId,
+            [FromRoute] string action)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Helper.HttpBadRequest(ModelState);
+            }
+
+            var group = await _context.Groups.Where(g => g.Id.Equals(id)).Include(g => g.Players).FirstOrDefaultAsync();
+            if (group == null)
+            {
+                return Helper.HttpNotFound("No Group found.");
+            }
+
+            var player = await _context.Players.Where(p => p.Id.Equals(playerId)).FirstOrDefaultAsync();
+            if (player == null)
+            {
+                return Helper.HttpNotFound("No such Player found.");
+            }
+
+            if (action == "remove" && !group.Players.Contains(player))
+            {
+                return Helper.HttpBadRequest($"No Player with Id {playerId} exists in the Group.");
+            } else if (action == "add" && group.Players.Contains(player))
+            {
+                return Helper.HttpBadRequest($"Player with Id {playerId} already exists in the Group.");
+            } else if (action == "owner" && group.OwnerId != session.Player.Id)
+            {
+                // Unauthorized
+                return Helper.HttpBadRequest($"Player with Id {playerId} already exists in the Group.");
             }
 
             return Ok(group);
@@ -122,12 +184,7 @@ namespace SocialGamificationAsset.Controllers
                 return Helper.HttpBadRequest("Group with this name already exists.");
             }
 
-            var group = new Group
-            {
-                Username = form.Name,
-                Type = form.Type,
-                OwnerId = session.Player.Id
-            };
+            var group = new Group { Username = form.Name, Type = form.Type, OwnerId = session.Player.Id };
 
             if (form.Players == null || form.Players.Count < 1)
             {

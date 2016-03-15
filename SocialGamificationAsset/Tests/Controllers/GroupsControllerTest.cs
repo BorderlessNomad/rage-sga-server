@@ -220,7 +220,6 @@ namespace SocialGamificationAsset.Tests.Controllers
             }
         }
 
-        /*
         [Fact]
         public async Task GetGroupWithInvalidId()
         {
@@ -236,26 +235,44 @@ namespace SocialGamificationAsset.Tests.Controllers
                 Assert.Equal(HttpStatusCode.NotFound, groupResponse.StatusCode);
 
                 var fetched = await groupResponse.Content.ReadAsJsonAsync<ApiError>();
-                Assert.Equal($"No such Player found.", fetched.Error);
+                Assert.Equal($"No Group found.", fetched.Error);
             }
         }
 
         [Fact]
         public async Task GetGroupWithValidId()
         {
-            var session = await Login();
+            var mayur = await Login();
+            var matt = await Login("matt", "matt");
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(session.Id);
+                client.AcceptJson().AddSessionHeader(mayur.Id);
 
-                // Get Group with valid id
-                var groupResponse = await client.GetAsync($"/api/groups/{session.Player.Id}");
-                Assert.Equal(HttpStatusCode.OK, groupResponse.StatusCode);
+                var currentSeed = Guid.NewGuid();
+                var form = new GroupFrom
+                {
+                    Name = $"Test.{currentSeed}",
+                    Type = GroupVisibility.Invisible,
+                    Players = new List<Guid> { mayur.Player.Id, matt.Player.Id }
+                };
+
+                // Create Group with valid Players
+                var groupResponse = await client.PostAsJsonAsync($"/api/groups", form);
+                Assert.Equal(HttpStatusCode.Created, groupResponse.StatusCode);
 
                 var group = await groupResponse.Content.ReadAsJsonAsync<Group>();
                 Assert.IsType(typeof(Group), group);
+                Assert.Equal(mayur.Player.Id, group.OwnerId);
+
+                // Get Group with valid id
+                groupResponse = await client.GetAsync($"/api/groups/{group.Id}");
+                Assert.Equal(HttpStatusCode.OK, groupResponse.StatusCode);
+
+                var response = await groupResponse.Content.ReadAsJsonAsync<Group>();
+                Assert.IsType(typeof(Group), response);
+                Assert.Equal(group.Id, response.Id);
             }
-        }*/
+        }
     }
 }
