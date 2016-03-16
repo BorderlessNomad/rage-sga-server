@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
 namespace SocialGamificationAsset.Models
 {
@@ -16,7 +17,7 @@ namespace SocialGamificationAsset.Models
             RoleId = Guid.Empty;
         }
         public Guid ActorId { get; set; }
-
+        [IgnoreDataMember]
         [ForeignKey("ActorId")]
         public virtual Actor Actor { get; set; }
 

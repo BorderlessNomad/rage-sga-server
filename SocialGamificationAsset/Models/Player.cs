@@ -153,6 +153,18 @@ namespace SocialGamificationAsset.Models
         {
             return await Models.CustomData.AddOrUpdate(db, sourceData, Id, CustomDataType.Player);
         }
+
+        /// <summary>
+        ///     Assign <see cref="Groups" /> to the Player.
+        /// </summary>
+        public void AddGroups(SocialGamificationAssetContext db, ICollection<Player> groupsList)
+        {
+            var groupIds = groupsList.Select(a => a.Id).ToList();
+
+            var groups = db.Groups.Where(g => groupIds.Contains(g.Id)).ToList();
+
+            Groups = new List<Group>(groups);
+        }
     }
 
     public enum AccountType
