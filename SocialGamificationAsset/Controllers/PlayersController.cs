@@ -1,4 +1,4 @@
-using Microsoft.AspNet.Authorization;
+﻿using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
 using SocialGamificationAsset.Models;
 using System;
@@ -34,7 +34,6 @@ namespace SocialGamificationAsset.Controllers
 		/// </summary>
 		/// <returns>
 		/// </returns>
-		[HttpGet("")]
 		[HttpGet("whoami", Name = "WhoAmI")]
 		[ResponseType(typeof(Player))]
 		public IActionResult WhoAmI() => Ok(session.Player);
