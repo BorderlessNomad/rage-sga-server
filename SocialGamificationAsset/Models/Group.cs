@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 using Microsoft.AspNet.Mvc;
@@ -65,7 +64,7 @@ namespace SocialGamificationAsset.Models
         }
 
         /// <summary>
-        ///     Assign Players to the Group.
+        ///     Assign <see cref="Players" /> to the Group.
         /// </summary>
         public void AddPlayers(SocialGamificationAssetContext db, ICollection<Player> playersList)
         {
