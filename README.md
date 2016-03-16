@@ -69,20 +69,12 @@ or
 
 See [CHANGELOG](CHANGELOG.md)
 
-## Authors
-This project is maintained by,
-
-Mayur Ahir [mayur <at> playgen <dot> com]
-
-Mathew Lepinay [matt <at> playgen <dot> com]
-
-Ben Hirsh [ben <at> playgen <dot> com]
 
 ## [License](LICENSE.md)
 
 **APACHE LICENSE 2.0**
 
-**Copyright (C) 2014 PlayGen Ltd**
+**Copyright (C) 2016 PlayGen Ltd**
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
