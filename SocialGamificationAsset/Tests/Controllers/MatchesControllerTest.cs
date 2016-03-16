@@ -54,10 +54,60 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(sessionId.ToString());
+                client.AcceptJson().AddSessionHeader(sessionId);
 
                 // get my matches with non-existing session header
                 var matchesResponse = await client.GetAsync("/api/matches");
+                Assert.Equal(HttpStatusCode.NotFound, matchesResponse.StatusCode);
+
+                var fetched = await matchesResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal($"Session {sessionId} is Invalid.", fetched.Error);
+            }
+        }
+
+        [Fact]
+        public async Task GetOngoingMatchesWithoutSession()
+        {
+            using (var client = _server.AcceptJson())
+            {
+                // Get ongoing matches without session header
+                var matchesResponse = await client.GetAsync($"/api/matches/ongoing");
+                Assert.Equal(HttpStatusCode.Unauthorized, matchesResponse.StatusCode);
+
+                var fetched = await matchesResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal($"No {SessionAuthorizeFilter.SessionHeaderName} Header found.", fetched.Error);
+            }
+        }
+
+        [Fact]
+        public async Task GetOngoingMatchesWithInvalidSession()
+        {
+            var sessionId = "unknown";
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(sessionId);
+
+                // Get ongoing matches with invalid session header
+                var matchesResponse = await client.GetAsync("/api/matches/ongoing");
+                Assert.Equal(HttpStatusCode.Unauthorized, matchesResponse.StatusCode);
+
+                var fetched = await matchesResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal($"Invalid {SessionAuthorizeFilter.SessionHeaderName} Header.", fetched.Error);
+            }
+        }
+
+        [Fact]
+        public async Task GetOngoingMatchesWithNonExistingSession()
+        {
+            var sessionId = Guid.NewGuid();
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(sessionId.ToString());
+
+                // get ongoing matches with non-existing session header
+                var matchesResponse = await client.GetAsync("/api/matches/ongoing");
                 Assert.Equal(HttpStatusCode.NotFound, matchesResponse.StatusCode);
 
                 var fetched = await matchesResponse.Content.ReadAsJsonAsync<ApiError>();
@@ -72,10 +122,28 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+                client.AcceptJson().AddSessionHeader(session.Id);
 
                 // Get Matches that Player have participated in
                 var matchesResponse = await client.GetAsync("/api/matches");
+                Assert.Equal(HttpStatusCode.OK, matchesResponse.StatusCode);
+
+                var matches = await matchesResponse.Content.ReadAsJsonAsync<IList<Match>>();
+                Assert.IsType(typeof(List<Match>), matches);
+            }
+        }
+
+        [Fact]
+        public async Task GetOngoingMatches()
+        {
+            var session = await Login();
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+
+                // Get Matches that Player is currently involved with
+                var matchesResponse = await client.GetAsync("/api/matches/ongoing");
                 Assert.Equal(HttpStatusCode.OK, matchesResponse.StatusCode);
 
                 var matches = await matchesResponse.Content.ReadAsJsonAsync<IList<Match>>();
@@ -90,7 +158,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+                client.AcceptJson().AddSessionHeader(session.Id);
 
                 // Get Matches that Player Own
                 var matchesResponse = await client.GetAsync("/api/matches/owned");
@@ -109,13 +177,13 @@ namespace SocialGamificationAsset.Tests.Controllers
         [Fact]
         public async Task CreateQuickMatchActorsLessThan2Actors()
         {
-            var mayur = await Login();
+            var session = await Login();
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+                client.AcceptJson().AddSessionHeader(session.Id);
 
-                var quickMatch = new QuickMatchActors { Actors = new List<Guid>(new[] { mayur.Player.Id }) };
+                var quickMatch = new QuickMatchActors { Actors = new List<Guid>(new[] { session.Player.Id }) };
 
                 var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
                 Assert.Equal(HttpStatusCode.BadRequest, matchResponse.StatusCode);
@@ -128,14 +196,17 @@ namespace SocialGamificationAsset.Tests.Controllers
         [Fact]
         public async Task CreateQuickMatchActorsInvalidActor()
         {
-            var mayur = await Login();
+            var session = await Login();
             var invalidId = Guid.NewGuid();
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+                client.AcceptJson().AddSessionHeader(session.Id);
 
-                var quickMatch = new QuickMatchActors { Actors = new List<Guid>(new[] { mayur.Player.Id, invalidId }) };
+                var quickMatch = new QuickMatchActors
+                {
+                    Actors = new List<Guid>(new[] { session.Player.Id, invalidId })
+                };
 
                 var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
                 Assert.Equal(HttpStatusCode.NotFound, matchResponse.StatusCode);
@@ -153,7 +224,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+                client.AcceptJson().AddSessionHeader(mayur.Id);
 
                 var quickMatch = new QuickMatchActors
                 {
@@ -173,11 +244,11 @@ namespace SocialGamificationAsset.Tests.Controllers
         [Fact]
         public async Task CreateQuickMatch()
         {
-            var mayur = await Login();
+            var session = await Login();
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+                client.AcceptJson().AddSessionHeader(session.Id);
 
                 var quickMatch = new QuickMatch();
 
@@ -185,7 +256,7 @@ namespace SocialGamificationAsset.Tests.Controllers
                 Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
 
                 var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
-                Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
+                Assert.Equal(session.Player.Id, match.Tournament.OwnerId);
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
             }
@@ -194,11 +265,11 @@ namespace SocialGamificationAsset.Tests.Controllers
         [Fact]
         public async Task CreateQuickMatchWithAlliance()
         {
-            var mayur = await Login();
+            var session = await Login();
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+                client.AcceptJson().AddSessionHeader(session.Id);
 
                 var quickMatch = new QuickMatch { AlliancesOnly = true };
 
@@ -206,7 +277,7 @@ namespace SocialGamificationAsset.Tests.Controllers
                 Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
 
                 var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
-                Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
+                Assert.Equal(session.Player.Id, match.Tournament.OwnerId);
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
             }
@@ -219,7 +290,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(ben.Id.ToString());
+                client.AcceptJson().AddSessionHeader(ben.Id);
 
                 var quickMatch = new QuickMatch { AlliancesOnly = true };
 
@@ -239,10 +310,29 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+                client.AcceptJson().AddSessionHeader(session.Id);
 
                 // Get Match with Invalid Id
                 var matchResponse = await client.GetAsync($"/api/matches/{invalidId}");
+                Assert.Equal(HttpStatusCode.NotFound, matchResponse.StatusCode);
+
+                var content = await matchResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal($"No Match found with Id {invalidId}.", content.Error);
+            }
+        }
+
+        [Fact]
+        public async Task GetInvalidMatchDetailed()
+        {
+            var session = await Login();
+            var invalidId = Guid.NewGuid();
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(session.Id);
+
+                // Get 'detailed' Match with Invalid Id
+                var matchResponse = await client.GetAsync($"/api/matches/{invalidId}/detailed");
                 Assert.Equal(HttpStatusCode.NotFound, matchResponse.StatusCode);
 
                 var content = await matchResponse.Content.ReadAsJsonAsync<ApiError>();
@@ -257,7 +347,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+                client.AcceptJson().AddSessionHeader(session.Id);
 
                 // Get Match Owner with Invalid Id
                 var invalidMatchId = Guid.NewGuid();
@@ -277,7 +367,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+                client.AcceptJson().AddSessionHeader(mayur.Id);
 
                 var quickMatch = new QuickMatchActors
                 {
@@ -310,7 +400,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+                client.AcceptJson().AddSessionHeader(mayur.Id);
 
                 var quickMatch = new QuickMatchActors
                 {
@@ -336,13 +426,46 @@ namespace SocialGamificationAsset.Tests.Controllers
         }
 
         [Fact]
+        public async Task GetMatchDetailedValid()
+        {
+            var mayur = await Login();
+            var matt = await Login("matt", "matt");
+
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(mayur.Id);
+
+                var quickMatch = new QuickMatchActors
+                {
+                    Actors = new List<Guid>(new[] { mayur.Player.Id, matt.Player.Id })
+                };
+
+                var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
+                Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
+
+                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
+                Assert.False(match.IsFinished);
+                Assert.False(match.IsDeleted);
+
+                // Get 'detailed' Match with Valid Id
+                matchResponse = await client.GetAsync($"/api/matches/{match.Id}/detailed");
+                Assert.Equal(HttpStatusCode.OK, matchResponse.StatusCode);
+
+                var matchGet = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                Assert.Equal(mayur.Player.Id, matchGet.Tournament.OwnerId);
+                Assert.Equal(match.Id, matchGet.Id);
+            }
+        }
+
+        [Fact]
         public async Task GetMatchActorsWithInvalidMatch()
         {
             var session = await Login();
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+                client.AcceptJson().AddSessionHeader(session.Id);
 
                 // Get Match Actors with Invalid Id
                 var invalidMatchId = Guid.NewGuid();
@@ -362,7 +485,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+                client.AcceptJson().AddSessionHeader(mayur.Id);
 
                 var quickMatch = new QuickMatchActors
                 {
@@ -396,7 +519,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+                client.AcceptJson().AddSessionHeader(session.Id);
 
                 // Get Match Rounds with Invalid Id
                 var invalidMatchId = Guid.NewGuid();
@@ -416,7 +539,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+                client.AcceptJson().AddSessionHeader(mayur.Id);
 
                 var quickMatch = new QuickMatchActors
                 {
@@ -447,7 +570,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+                client.AcceptJson().AddSessionHeader(session.Id);
 
                 // Finish Match with Invalid Id
                 var invalidMatchId = Guid.NewGuid();
@@ -467,7 +590,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+                client.AcceptJson().AddSessionHeader(mayur.Id);
 
                 var quickMatch = new QuickMatchActors
                 {
@@ -498,7 +621,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+                client.AcceptJson().AddSessionHeader(session.Id);
 
                 // Update Round Score Match with Invalid Id
                 var invalidMatchId = Guid.NewGuid();
@@ -521,7 +644,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+                client.AcceptJson().AddSessionHeader(mayur.Id);
 
                 var quickMatch = new QuickMatchActors
                 {
@@ -561,7 +684,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+                client.AcceptJson().AddSessionHeader(mayur.Id);
 
                 var quickMatch = new QuickMatchActors
                 {
@@ -596,7 +719,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+                client.AcceptJson().AddSessionHeader(mayur.Id);
 
                 var quickMatch = new QuickMatchActors
                 {
@@ -630,7 +753,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+                client.AcceptJson().AddSessionHeader(mayur.Id);
 
                 var quickMatch = new QuickMatchActors
                 {
@@ -672,7 +795,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+                client.AcceptJson().AddSessionHeader(mayur.Id);
 
                 var quickMatch = new QuickMatchActors
                 {
@@ -706,7 +829,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
             using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-                client.AcceptJson().AddSessionHeader(mayur.Id.ToString());
+                client.AcceptJson().AddSessionHeader(mayur.Id);
 
                 var quickMatch = new QuickMatchActors
                 {

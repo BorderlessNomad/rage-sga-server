@@ -1,17 +1,14 @@
-﻿using Microsoft.AspNet.Authorization;
+using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
 using SocialGamificationAsset.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Description;
 
 namespace SocialGamificationAsset.Controllers
 {
-	/// <summary>
-	/// </summary>
 	[Route("api/players")]
 	public class PlayersController : ApiController
 	{
@@ -35,9 +32,9 @@ namespace SocialGamificationAsset.Controllers
 		/// <summary>
 		///     Get <see cref="Player" /> Details
 		/// </summary>
-		/// <param name="id">GUID of <see cref="Player" /></param>
 		/// <returns>
 		/// </returns>
+		[HttpGet("")]
 		[HttpGet("whoami", Name = "WhoAmI")]
 		[ResponseType(typeof(Player))]
 		public IActionResult WhoAmI() => Ok(session.Player);
@@ -65,65 +62,6 @@ namespace SocialGamificationAsset.Controllers
 			}
 
 			return Ok(player);
-		}
-
-		// GET: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8/achievements
-		/// <summary>
-		///     Get <see cref="Player" /> 's Achievements
-		/// </summary>
-		/// <param name="id">GUID of <see cref="Player" /></param>
-		/// <returns>
-		/// </returns>
-		[HttpGet("{id:Guid}/achievements", Name = "GetPlayerAchievements")]
-		[ResponseType(typeof(IList<Achievement>))]
-		public async Task<IActionResult> GetPlayerAchievements([FromRoute] Guid id)
-		{
-			if (!ModelState.IsValid)
-			{
-				return Helper.HttpBadRequest(ModelState);
-			}
-
-			var query = _context.Players.Where(p => p.Id.Equals(id));
-
-			var player = await query.FirstOrDefaultAsync();
-			if (player == null)
-			{
-				return Helper.HttpNotFound("No such Player found.");
-			}
-
-			var achievements = await query.Include(p => p.Achievements).Select(p => p.Achievements).ToListAsync();
-
-			return Ok(achievements);
-		}
-
-		// GET: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8/goals
-		/// <summary>
-		///     Get <see cref="Player" /> 's Goals
-		/// </summary>
-		/// <param name="id">GUID of <see cref="Player" /></param>
-		/// <returns>
-		/// </returns>
-		[HttpGet("{id:Guid}/goals", Name = "GetPlayerGoals")]
-		[ResponseType(typeof(IList<ActorGoal>))]
-		public async Task<IActionResult> GetPlayerGoals([FromRoute] Guid id)
-		{
-			if (!ModelState.IsValid)
-			{
-				return Helper.HttpBadRequest(ModelState);
-			}
-
-			var query = _context.Players.Where(p => p.Id.Equals(id));
-
-			var player = await query.FirstOrDefaultAsync();
-			if (player == null)
-			{
-				return Helper.HttpNotFound("No such Player found.");
-			}
-
-			IList<ActorGoal> goals =
-				await _context.ActorGoal.Where(g => g.ActorId.Equals(session.Player.Id)).ToListAsync();
-
-			return Ok(goals);
 		}
 
 		// PUT: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -190,7 +128,7 @@ namespace SocialGamificationAsset.Controllers
 				return error;
 			}
 
-			return CreatedAtRoute("GetPlayer", new { id = player.Id }, player);
+			return Ok(player);
 		}
 
 		// POST: api/players
@@ -244,9 +182,7 @@ namespace SocialGamificationAsset.Controllers
 
 			player.Password = Helper.HashPassword(register.Password);
 
-			var entity = new Session { Player = player };
-
-			_context.Sessions.Add(entity);
+			_context.Players.Add(player);
 
 			var error = await SaveChangesAsync();
 			if (error != null)
@@ -261,7 +197,7 @@ namespace SocialGamificationAsset.Controllers
 				return error;
 			}
 
-			return CreatedAtRoute("GetPlayer", new { id = entity.Id }, entity);
+			return CreatedAtRoute("GetPlayer", new { id = player.Id }, player);
 		}
 
 		// DELETE: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -283,7 +219,7 @@ namespace SocialGamificationAsset.Controllers
 			var player = await _context.Players.FindAsync(id);
 			if (player == null)
 			{
-				return Helper.HttpBadRequest("Invalid PlayerId");
+				return Helper.HttpNotFound("No Player found.");
 			}
 
 			player.IsEnabled = false;

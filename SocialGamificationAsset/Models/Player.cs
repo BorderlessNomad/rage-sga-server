@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
@@ -20,11 +21,15 @@ namespace SocialGamificationAsset.Models
             ActivationCode = Guid.NewGuid();
         }
 
+        [Index(IsUnique = true)]
+        [StringLength(128)]
         public string Username { get; set; }
 
         [IgnoreDataMember]
         public string Password { get; set; }
 
+        [Index(IsUnique = true)]
+        [StringLength(128)]
         public string Email { get; set; }
 
         [IgnoreDataMember]
@@ -147,6 +152,18 @@ namespace SocialGamificationAsset.Models
             IList<CustomDataBase> sourceData)
         {
             return await Models.CustomData.AddOrUpdate(db, sourceData, Id, CustomDataType.Player);
+        }
+
+        /// <summary>
+        ///     Assign <see cref="Groups" /> to the Player.
+        /// </summary>
+        public void AddGroups(SocialGamificationAssetContext db, ICollection<Player> groupsList)
+        {
+            var groupIds = groupsList.Select(a => a.Id).ToList();
+
+            var groups = db.Groups.Where(g => groupIds.Contains(g.Id)).ToList();
+
+            Groups = new List<Group>(groups);
         }
     }
 

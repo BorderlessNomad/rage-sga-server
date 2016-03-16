@@ -5,8 +5,6 @@ using Microsoft.AspNet.Mvc;
 
 using SocialGamificationAsset.Models;
 
-// For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace SocialGamificationAsset.Controllers
 {
     [Produces("application/json")]

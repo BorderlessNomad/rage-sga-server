@@ -13,6 +13,13 @@ namespace SocialGamificationAsset.Models
         public float Value { get; set; }
 
         public RewardStatus Status { get; set; }
+
+        public Guid GoalId { get; set; }
+
+        [ForeignKey("GoalId")]
+        public virtual Goal Goal { get; set; }
+
+        public RewardType TypeReward { get; set; }
     }
 
     public enum RewardStatus
@@ -20,5 +27,12 @@ namespace SocialGamificationAsset.Models
         InProgress,
 
         Completed
+    }
+
+    public enum RewardType
+    {
+        Modify,
+
+        Store
     }
 }

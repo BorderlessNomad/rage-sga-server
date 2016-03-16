@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 using Microsoft.AspNet.Mvc;
@@ -19,12 +19,19 @@ namespace SocialGamificationAsset.Models
             Type = GroupVisibility.Public;
         }
 
+        [Index(IsUnique = true)]
+        [StringLength(128)]
         public string Username { get; set; }
 
         public GroupVisibility Type { get; set; }
 
-        [IgnoreDataMember]
+        // [IgnoreDataMember]
         public virtual ICollection<Player> Players { get; set; }
+
+        public Guid? AdminId { get; set; }
+
+        [ForeignKey("AdminId")]
+        public virtual Player Admin { get; set; }
 
         public static async Task<IList<Group>> LoadRandom(
             SocialGamificationAssetContext db,
@@ -57,22 +64,21 @@ namespace SocialGamificationAsset.Models
         }
 
         /// <summary>
-        ///     Create the group for the first time. Needs to populate the fake
-        ///     actor and get the list of player actors.
+        ///     Assign <see cref="Players" /> to the Group.
         /// </summary>
-        public void AddPlayers(SocialGamificationAssetContext db, ICollection<Player> actorsList)
+        public void AddPlayers(SocialGamificationAssetContext db, ICollection<Player> playersList)
         {
-            if (actorsList.Count < 2)
+            if (playersList.Count < 2)
             {
                 Console.WriteLine("At least two Players are required to create a Group.");
                 return;
             }
 
-            var actorIds = actorsList.Select(a => a.Id).ToList();
+            var playerIds = playersList.Select(a => a.Id).ToList();
 
-            var actors = db.Players.Where(a => actorIds.Contains(a.Id)).ToList();
+            var players = db.Players.Where(p => playerIds.Contains(p.Id)).ToList();
 
-            Players = new List<Player>(actors);
+            Players = new List<Player>(players);
         }
 
         public async Task<ContentResult> AddOrUpdateCustomData(
@@ -80,6 +86,19 @@ namespace SocialGamificationAsset.Models
             IList<CustomDataBase> sourceData)
         {
             return await Models.CustomData.AddOrUpdate(db, sourceData, Id, CustomDataType.Group);
+        }
+
+        /**
+		 * Check if the current Username already exists
+         *
+         * @return boolean Returns TRUE if Username exists
+         */
+
+        public static async Task<bool> ExistsUsername(SocialGamificationAssetContext db, string username)
+        {
+            var group = await db.Groups.Where(g => g.Username.Equals(username)).FirstOrDefaultAsync();
+
+            return group != null;
         }
     }
 
@@ -90,5 +109,16 @@ namespace SocialGamificationAsset.Models
         Invisible,
 
         InviteOnly
+    }
+
+    public class GroupFrom
+    {
+        public string Name { get; set; }
+
+        public GroupVisibility Type { get; set; }
+
+        public Guid? Admin { get; set; }
+
+        public IList<Guid> Players { get; set; }
     }
 }

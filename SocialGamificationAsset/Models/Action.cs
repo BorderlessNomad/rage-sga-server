@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
@@ -14,8 +15,19 @@ namespace SocialGamificationAsset.Models
         [ForeignKey("ActivityId")]
         public virtual Activity Activity { get; set; }
 
+        public Guid GoalId { get; set; }
+
+        [ForeignKey("GoalId")]
+        public virtual Goal Goal { get; set; }
+
         [IgnoreDataMember]
         public virtual ICollection<ActionRelation> Relations { get; set; }
+    }
+
+    public class ActionForm
+    {
+        [Required]
+        public string Verb { get; set; }
     }
 
     public class ActionRelation : DbEntity
@@ -32,7 +44,7 @@ namespace SocialGamificationAsset.Models
         [ForeignKey("ActionId")]
         public virtual Action Action { get; set; }
 
-        [IgnoreDataMember]
+        //[IgnoreDataMember]
         public virtual ICollection<Reward> AttributeChanges { get; set; }
     }
 

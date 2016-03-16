@@ -36,6 +36,35 @@ namespace SocialGamificationAsset.Controllers
             return Ok(matches);
         }
 
+        // GET: api/matches/ongoing
+        [HttpGet("ongoing", Name = "GetOngoingMatches")]
+        [ResponseType(typeof(IList<Match>))]
+        public async Task<IActionResult> GetOngoingMatches()
+        {
+            IList<Match> matches =
+                await
+                _context.MatchActors.Where(a => a.ActorId.Equals(session.Player.Id))
+                        .Select(m => m.Match)
+                        .Where(m => m.IsFinished.Equals(false))
+                        .Include(m => m.Tournament)
+                        .ToListAsync();
+
+            foreach (var m in matches)
+            {
+                m.Actors =
+                    await _context.MatchActors.Where(a => a.MatchId.Equals(m.Id)).Include(a => a.Actor).ToListAsync();
+                IList<Guid> matchActors = m.Actors.AsEnumerable().Select(a => a.Id).ToList();
+
+                m.Rounds =
+                    await
+                    _context.MatchRounds.Where(r => matchActors.Contains(r.MatchActorId))
+                            .OrderBy(r => r.UpdatedDate)
+                            .ToListAsync();
+            }
+
+            return Ok(matches);
+        }
+
         // GET: api/matches/owned
         [HttpGet("owned", Name = "GetOwnedMatches")]
         [ResponseType(typeof(IList<Match>))]
@@ -69,6 +98,36 @@ namespace SocialGamificationAsset.Controllers
             {
                 return Helper.HttpNotFound($"No Match found with Id {id}.");
             }
+
+            return Ok(match);
+        }
+
+        // GET: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
+        [HttpGet("{id:Guid}/detailed", Name = "GetMatchDetailed")]
+        [ResponseType(typeof(Match))]
+        public async Task<IActionResult> GetMatchDetailed([FromRoute] Guid id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Helper.HttpBadRequest(ModelState);
+            }
+
+            var match =
+                await _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament).FirstOrDefaultAsync();
+            if (match == null)
+            {
+                return Helper.HttpNotFound($"No Match found with Id {id}.");
+            }
+
+            match.Actors =
+                await _context.MatchActors.Where(a => a.MatchId.Equals(id)).Include(a => a.Actor).ToListAsync();
+            IList<Guid> matchActorIds = match.Actors.AsEnumerable().Select(a => a.Id).ToList();
+
+            match.Rounds =
+                await
+                _context.MatchRounds.Where(r => matchActorIds.Contains(r.MatchActorId))
+                        .OrderBy(r => r.RoundNumber)
+                        .ToListAsync();
 
             return Ok(match);
         }
@@ -290,7 +349,7 @@ namespace SocialGamificationAsset.Controllers
                 return Helper.HttpBadRequest("Minimum 2 Actors are required for a Match");
             }
 
-            var result = new QuickMatchResult();
+            QuickMatchResult result;
 
             IList<Player> players = new List<Player>();
             IList<Group> groups = new List<Group>();
@@ -331,7 +390,7 @@ namespace SocialGamificationAsset.Controllers
                 return result.error;
             }
 
-            return CreatedAtRoute("GetMatch", new { id = result.match.Id }, result.match);
+            return CreatedAtRoute("GetMatchDetailed", new { id = result.match.Id }, result.match);
         }
 
         // Creates a Quick Match between logged account and a random user
@@ -404,7 +463,7 @@ namespace SocialGamificationAsset.Controllers
                 return result.error;
             }
 
-            return CreatedAtRoute("GetMatch", new { id = result.match.Id }, result.match);
+            return CreatedAtRoute("GetMatchDetailed", new { id = result.match.Id }, result.match);
         }
 
         private async Task<QuickMatchResult> QuickMatch(QuickMatch quickMatch, IEnumerable<Player> players)

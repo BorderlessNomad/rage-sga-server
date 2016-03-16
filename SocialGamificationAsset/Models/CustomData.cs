@@ -100,7 +100,6 @@ namespace SocialGamificationAsset.Models
             IList<CustomDataBase> sourceData,
             CustomDataType objectType)
         {
-
             var query = db.CustomData.Where(c => c.ObjectType == objectType);
 
             if (sourceData == null || sourceData.Count <= 0)
@@ -117,17 +116,17 @@ namespace SocialGamificationAsset.Models
                     continue;
                 }
 
-                if (data.Operator == "=")
+                switch (data.Operator)
                 {
-                    query = query.Where(c => c.Value.Equals(data.Value));
-                }
-                else if (data.Operator == "!")
-                {
-                    query = query.Where(c => c.Value != data.Value);
-                }
-                else if (data.Operator == "%")
-                {
-                    query = query.Where(c => c.Value.Contains(data.Value));
+                    case "=":
+                        query = query.Where(c => c.Value.Equals(data.Value));
+                        break;
+                    case "!":
+                        query = query.Where(c => c.Value != data.Value);
+                        break;
+                    case "%":
+                        query = query.Where(c => c.Value.Contains(data.Value));
+                        break;
                 }
             }
 
