@@ -227,9 +227,9 @@ namespace SocialGamificationAsset.Controllers
         }
 
         // POST: api/goals
-        [HttpPost("", Name = "PostGoal")]
+        [HttpPost("", Name = "CreateGoal")]
         [ResponseType(typeof(Goal))]
-        public async Task<IActionResult> PostGoal([FromBody] Goal goal)
+        public async Task<IActionResult> CreateGoal([FromBody] Goal goal)
         {
             if (!ModelState.IsValid)
             {
@@ -283,9 +283,9 @@ namespace SocialGamificationAsset.Controllers
         }
 
         // POST: api/goals/actors
-        [HttpPost("actors", Name = "PostActorGoal")]
+        [HttpPost("actors", Name = "CreateActorGoal")]
         [ResponseType(typeof(ActorGoal))]
-        public async Task<IActionResult> PostActorGoal([FromBody] ActorGoal goal)
+        public async Task<IActionResult> CreateActorGoal([FromBody] ActorGoal goal)
         {
             if (!ModelState.IsValid)
             {
