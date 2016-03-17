@@ -367,6 +367,12 @@ namespace SocialGamificationAsset.Models
                     },
                     Description = "Test"
                 };
+                var attributeType = new AttributeType
+                {
+                  Name = "testAttribute",
+                  DefaultValue = 0f,
+                  Type = 0
+                };
 
                 var activity = new Activity { Name = "Testing" };
 
@@ -403,63 +409,43 @@ namespace SocialGamificationAsset.Models
                 {
                     new Reward
                     {
-                        AttributeType = new AttributeType
-                        {
-                            Name = "testAttribute",
-                            DefaultValue = 0f,
-                            Type = 0
-                        },
+                        AttributeType = attributeType,
                         TypeReward = RewardType.Store,
                         Value = 1.5f,
                         Status = 0,
                         Goal = goal
-                    }
-                };
-
-                _context.Rewards.AddRange(rewards);
-
-
-                IList<ActionRelation> actions = new List<ActionRelation>
-                {
-                    new ActionRelation
+                    },
+                    new Reward
                     {
-                        Action = new Action
+                        AttributeType = attributeType,
+                        Value = 3.5f,
+                        Status = 0,
+                        Goal = goal,
+                        TypeReward = RewardType.Modify,
+                        ActionRelation = new ActionRelation
                         {
-                            Verb = "testVerb",
-                            Activity = activity,
-                            Goal = goal
-                        },
-                        Relationship = 0,
-                        ConcernChange = new Matrix
-                        {
-                            X = 0,
-                            Y = 0
-                        },
-                        RewardResourceChange = new Matrix
-                        {
-                            X = 0,
-                            Y = 0
-                        },
-                        AttributeChanges = new List<Reward>
-                        {
-                            new Reward
+                            Action = new Action
                             {
-                                AttributeType = new AttributeType
-                                {
-                                    Name = "testAttribute",
-                                    DefaultValue = 0f,
-                                    Type = 0
-                                },
-                                Value = 3.5f,
-                                Status = 0,
-                                Goal = goal,
-                                TypeReward = RewardType.Modify
+                                Verb = "testVerb",
+                                Activity = activity,
+                                Goal = goal
+                            },
+                            Relationship = 0,
+                            ConcernChange = new Matrix
+                            {
+                                X = 0,
+                                Y = 0
+                            },
+                            RewardResourceChange = new Matrix
+                            {
+                                X = 0,
+                                Y = 0
                             }
                         }
                     }
                 };
 
-                _context.ActionRelations.AddRange(actions);
+                _context.Rewards.AddRange(rewards);
 
                 await SaveChanges(_context, isAsync);
                 Debug.WriteLine("Goals & related Seeded.");

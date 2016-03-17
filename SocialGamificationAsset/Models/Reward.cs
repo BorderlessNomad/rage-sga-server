@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
 namespace SocialGamificationAsset.Models
 {
@@ -20,6 +21,12 @@ namespace SocialGamificationAsset.Models
         public virtual Goal Goal { get; set; }
 
         public RewardType TypeReward { get; set; }
+
+        [DataMember(IsRequired = false)]
+        public Guid? ActionRelationId { get; set; }
+
+        [ForeignKey("ActionRelationId")]
+        public virtual ActionRelation ActionRelation { get; set; }
     }
 
     public enum RewardStatus

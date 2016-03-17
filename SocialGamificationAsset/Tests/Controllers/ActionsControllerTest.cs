@@ -468,21 +468,11 @@ namespace SocialGamificationAsset.Tests.Controllers
                     Relationship = 0,
                     ConcernChange = new Matrix { X = 0, Y = 0 },
                     RewardResourceChange = new Matrix { X = 0, Y = 0 },
-                    AttributeChanges =
-                        new List<Reward>
-                        {
-                            new Reward
-                            {
-                                AttributeTypeId = attribute.Id,
-                                TypeReward = RewardType.Modify,
-                                Value = 1f,
-                                Status = 0,
-                                GoalId = newAction.GoalId
-                            }
-                        }
                 };
                 var arResponse = await client.PostAsJsonAsync("/api/actions/relations", newAR);
                 Assert.Equal(HttpStatusCode.Created, arResponse.StatusCode);
+                var arReturn = await arResponse.Content.ReadAsJsonAsync<ActionRelation>();
+                Assert.IsType(typeof(ActionRelation), arReturn);
                 var newReward = new Reward
                 {
                     AttributeTypeId = attribute.Id,
@@ -493,6 +483,17 @@ namespace SocialGamificationAsset.Tests.Controllers
                 };
                 var rewardResponse = await client.PostAsJsonAsync("/api/rewards", newReward);
                 Assert.Equal(HttpStatusCode.Created, rewardResponse.StatusCode);
+                var newReward2 = new Reward
+                {
+                    AttributeTypeId = attribute.Id,
+                    TypeReward = RewardType.Modify,
+                    Value = 1f,
+                    Status = 0,
+                    GoalId = newAction.GoalId,
+                    ActionRelationId = arReturn.Id
+                };
+                var rewardResponse2 = await client.PostAsJsonAsync("/api/rewards", newReward2);
+                Assert.Equal(HttpStatusCode.Created, rewardResponse2.StatusCode);
 
                 var actionForm = new Action { Verb = newAction.Verb };
 
