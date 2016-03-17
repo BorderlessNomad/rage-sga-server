@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
 using Microsoft.AspNet.Mvc;
 
@@ -8,8 +9,6 @@ namespace SocialGamificationAsset.Models
 {
     public class Match : DbEntity
     {
-        // public virtual ICollection<MatchRound> Rounds { get; set; } // Make this Virtual method
-
         public Match()
         {
             Title = "Test";
@@ -33,8 +32,10 @@ namespace SocialGamificationAsset.Models
 
         public bool IsDeleted { get; set; }
 
+        [IgnoreDataMember]
         public virtual ICollection<MatchActor> Actors { get; set; }
 
+        [IgnoreDataMember]
         public virtual ICollection<MatchRound> Rounds { get; set; }
 
         [NotMapped]

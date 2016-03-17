@@ -45,7 +45,7 @@ namespace SocialGamificationAsset.Controllers
                 await
                 _context.MatchActors.Where(a => a.ActorId.Equals(session.Player.Id))
                         .Select(m => m.Match)
-                        .Where(m => m.IsFinished.Equals(false))
+                        .Where(m => !m.IsFinished)
                         .Include(m => m.Tournament)
                         .ToListAsync();
 
@@ -61,6 +61,7 @@ namespace SocialGamificationAsset.Controllers
                             .OrderBy(r => r.UpdatedDate)
                             .ToListAsync();
             }
+
             return Ok(matches);
         }
 
@@ -76,6 +77,7 @@ namespace SocialGamificationAsset.Controllers
                         .Include(m => m.Tournament)
                         .Where(m => m.Tournament.OwnerId.Equals(session.Player.Id))
                         .ToListAsync();
+
             return Ok(matches);
         }
 
@@ -109,12 +111,14 @@ namespace SocialGamificationAsset.Controllers
             {
                 return Helper.HttpBadRequest(ModelState);
             }
+
             var match =
                 await _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament).FirstOrDefaultAsync();
             if (match == null)
             {
                 return Helper.HttpNotFound($"No Match found with Id {id}.");
             }
+
             match.Actors =
                 await _context.MatchActors.Where(a => a.MatchId.Equals(id)).Include(a => a.Actor).ToListAsync();
             IList<Guid> matchActorIds = match.Actors.AsEnumerable().Select(a => a.Id).ToList();
@@ -124,6 +128,7 @@ namespace SocialGamificationAsset.Controllers
                 _context.MatchRounds.Where(r => matchActorIds.Contains(r.MatchActorId))
                         .OrderBy(r => r.RoundNumber)
                         .ToListAsync();
+
             return Ok(match);
         }
 
@@ -344,7 +349,7 @@ namespace SocialGamificationAsset.Controllers
                 return Helper.HttpBadRequest("Minimum 2 Actors are required for a Match");
             }
 
-            var result = new QuickMatchResult();
+            QuickMatchResult result;
 
             IList<Player> players = new List<Player>();
             IList<Group> groups = new List<Group>();

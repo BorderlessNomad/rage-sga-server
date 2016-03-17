@@ -495,7 +495,7 @@ namespace SocialGamificationAsset.Tests.Controllers
                 Assert.Equal(HttpStatusCode.Created, goalResponse.StatusCode);
 
                 var actorgoal = await goalResponse.Content.ReadAsJsonAsync<ActorGoal>();
-                Assert.Equal(0, actorgoal.Goal.Concern.Coordinates.X);
+                Assert.Equal(1, actorgoal.Goal.Concern.Coordinates.X);
                 Assert.Equal(role.Description, actorgoal.Role.Description);
                 Assert.Equal(role.Goal.Description, actorgoal.Goal.Description);
             }
