@@ -23,19 +23,13 @@ namespace SocialGamificationAsset.Controllers
         {
         }
 
-        // GET: api/players
-        [HttpGet]
-        public IEnumerable<Player> GetPlayer()
-        {
-            return _context.Players;
-        }
-
         // GET: api/players/whoami
         /// <summary>
         ///     Get <see cref="Player" /> Details
         /// </summary>
         /// <returns>
         /// </returns>
+        [HttpGet("")]
         [HttpGet("whoami", Name = "WhoAmI")]
         [ResponseType(typeof(Player))]
         public IActionResult WhoAmI() => Ok(session.Player);
