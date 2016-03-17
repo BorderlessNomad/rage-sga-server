@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Threading.Tasks;
 using System.Web.Http.Description;
@@ -80,7 +79,7 @@ namespace SocialGamificationAsset.Controllers
 
             if (player == null)
             {
-                return Helper.HttpNotFound("No Player found.");
+                return Helper.HttpNotFound("No such Player found.");
             }
 
             _context.Entry(player).State = EntityState.Modified;
@@ -214,7 +213,7 @@ namespace SocialGamificationAsset.Controllers
             var player = await _context.Players.FindAsync(id);
             if (player == null)
             {
-                return Helper.HttpNotFound("No Player found.");
+                return Helper.HttpNotFound("No such Player found.");
             }
 
             player.IsEnabled = false;

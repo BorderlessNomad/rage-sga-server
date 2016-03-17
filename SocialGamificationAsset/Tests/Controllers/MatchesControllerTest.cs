@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 
+using SocialGamificationAsset.Middlewares;
 using SocialGamificationAsset.Models;
 using SocialGamificationAsset.Policies;
 

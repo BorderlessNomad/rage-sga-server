@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
+using SocialGamificationAsset.Middlewares;
 using SocialGamificationAsset.Models;
 using SocialGamificationAsset.Policies;
 
@@ -219,7 +220,7 @@ namespace SocialGamificationAsset.Tests.Controllers
                 Assert.Equal(HttpStatusCode.NotFound, playerResponse.StatusCode);
 
                 var content = await playerResponse.Content.ReadAsJsonAsync<ApiError>();
-                Assert.Equal("No Player found.", content.Error);
+                Assert.Equal("No such Player found.", content.Error);
             }
         }
 
@@ -316,7 +317,7 @@ namespace SocialGamificationAsset.Tests.Controllers
                 Assert.Equal(HttpStatusCode.NotFound, playerResponse.StatusCode);
 
                 var content = await playerResponse.Content.ReadAsJsonAsync<ApiError>();
-                Assert.Equal($"No Player found.", content.Error);
+                Assert.Equal($"No such Player found.", content.Error);
             }
         }
 

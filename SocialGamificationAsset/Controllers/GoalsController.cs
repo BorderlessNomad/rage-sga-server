@@ -188,6 +188,7 @@ namespace SocialGamificationAsset.Controllers
             goal.RewardResource = await _context.RewardResourceMatrix.FindAsync(goal.RewardResourceId);
             goal.Feedback = await _context.GoalFeedback.FindAsync(goal.FeedbackId);
             goal.Roles = await _context.Roles.Where(r => r.GoalId.Equals(goal.Id)).ToListAsync();
+
             IList<Guid> activitiesIDs = goal.Roles.AsEnumerable().Select(r => r.ActivityId).ToList();
             goal.Activities =
                 await _context.Activities.Where(a => activitiesIDs.Contains(a.Id)).OrderBy(a => a.Name).ToListAsync();
@@ -235,6 +236,7 @@ namespace SocialGamificationAsset.Controllers
             {
                 return Helper.HttpBadRequest(ModelState);
             }
+
             if (goal.ConcernId != Guid.Empty)
             {
                 var concerntest = await _context.ConcernMatrix.FindAsync(goal.ConcernId);
@@ -247,6 +249,7 @@ namespace SocialGamificationAsset.Controllers
             {
                 return Helper.HttpNotFound("No Concern found");
             }
+
             if (goal.RewardResourceId != Guid.Empty)
             {
                 var rrtest = await _context.RewardResourceMatrix.FindAsync(goal.RewardResourceId);
@@ -259,6 +262,7 @@ namespace SocialGamificationAsset.Controllers
             {
                 return Helper.HttpNotFound("No RewardResource found");
             }
+
             if (goal.FeedbackId != Guid.Empty)
             {
                 var fbtest = await _context.GoalFeedback.FindAsync(goal.FeedbackId);
@@ -279,6 +283,7 @@ namespace SocialGamificationAsset.Controllers
             {
                 return error;
             }
+
             return CreatedAtRoute("GetGoalDetailed", new { id = goal.Id }, goal);
         }
 
@@ -291,55 +296,67 @@ namespace SocialGamificationAsset.Controllers
             {
                 return Helper.HttpBadRequest(ModelState);
             }
+
             if (goal.ActivityId == Guid.Empty)
             {
                 return Helper.HttpNotFound("No Activity found");
             }
+
             var activitytest = await _context.Activities.FindAsync(goal.ActivityId);
             if (activitytest == null)
             {
                 return Helper.HttpNotFound("No Activity found for the passed ID");
             }
+
             if (goal.ActorId == Guid.Empty)
             {
                 return Helper.HttpNotFound("No Actor found");
             }
+
             var actortest = await _context.Players.FindAsync(goal.ActorId);
             if (actortest == null)
             {
                 return Helper.HttpNotFound("No Actor found for the passed ID");
             }
+
             if (goal.ConcernOutcomeId == Guid.Empty)
             {
                 return Helper.HttpNotFound("No ConcernOutcome found");
             }
+
             var concerntest = await _context.ConcernMatrix.FindAsync(goal.ConcernOutcomeId);
             if (concerntest == null)
             {
                 return Helper.HttpNotFound("No ConcernOutcome found for the passed ID");
             }
+
             if (goal.GoalId == Guid.Empty)
             {
                 return Helper.HttpNotFound("No Goal found");
             }
+
             var goaltest = await _context.Goals.FindAsync(goal.GoalId);
             if (goaltest == null)
             {
                 return Helper.HttpNotFound("No Goal found for the passed ID");
             }
+
             if (goal.RewardResourceOutcomeId == Guid.Empty)
             {
                 return Helper.HttpNotFound("No RewardResourceOutcome found");
             }
+
             var rrtest = await _context.RewardResourceMatrix.FindAsync(goal.RewardResourceOutcomeId);
             if (rrtest == null)
             {
                 return Helper.HttpNotFound("No RewardResourceOutcome found for the passed ID");
             }
+
             if (goal.RoleId == Guid.Empty)
             {
                 return Helper.HttpNotFound("No Role found");
             }
+
             var roletest = await _context.Roles.FindAsync(goal.RoleId);
             if (roletest == null)
             {
@@ -353,6 +370,7 @@ namespace SocialGamificationAsset.Controllers
             {
                 return error;
             }
+
             return CreatedAtRoute("GetActorGoal", new { id = goal.GoalId }, goal);
         }
 

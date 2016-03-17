@@ -19,21 +19,24 @@ namespace SocialGamificationAsset.Models
             IsDeleted = false;
         }
 
-        [IgnoreDataMember]
-        public virtual ICollection<Reward> Rewards { get; set; }
+        public string Description { get; set; }
 
-        [IgnoreDataMember]
-        public virtual ICollection<Target> Targets { get; set; }
+        public bool IsDeleted { get; set; }
 
-        public Guid ConcernId { get; set; }
+        public Guid? ConcernId { get; set; }
 
         [ForeignKey("ConcernId")]
         public virtual ConcernMatrix Concern { get; set; }
 
-        public Guid RewardResourceId { get; set; }
+        public Guid? RewardResourceId { get; set; }
 
         [ForeignKey("RewardResourceId")]
         public virtual RewardResourceMatrix RewardResource { get; set; }
+
+        public Guid? FeedbackId { get; set; }
+
+        [ForeignKey("FeedbackId")]
+        public virtual GoalFeedback Feedback { get; set; }
 
         [IgnoreDataMember]
         public virtual ICollection<Activity> Activities { get; set; }
@@ -41,17 +44,14 @@ namespace SocialGamificationAsset.Models
         [IgnoreDataMember]
         public virtual ICollection<Action> Actions { get; set; }
 
-        public string Description { get; set; }
+        [IgnoreDataMember]
+        public virtual ICollection<Reward> Rewards { get; set; }
 
         [IgnoreDataMember]
         public virtual ICollection<Role> Roles { get; set; }
 
-        public Guid FeedbackId { get; set; }
-
-        [ForeignKey("FeedbackId")]
-        public virtual GoalFeedback Feedback { get; set; }
-
-        public bool IsDeleted { get; set; }
+        [IgnoreDataMember]
+        public virtual ICollection<Target> Targets { get; set; }
 
         public async Task<Reward> CalculateRewardFromAction(SocialGamificationAssetContext context, string actionVerb)
         {

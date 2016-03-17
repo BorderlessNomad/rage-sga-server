@@ -49,10 +49,20 @@ namespace SocialGamificationAsset.Controllers
             }
             catch (DbUpdateException e)
             {
-                return Helper.JsonErrorContentResult(e.Message);
+                return Helper.JsonErrorContentResult(GetExceptionString(e));
             }
 
             return null;
+        }
+
+        protected string GetExceptionString(Exception e)
+        {
+            if (e.Message == "An error occurred while updating the entries. See the inner exception for details.")
+            {
+                return GetExceptionString(e.InnerException);
+            }
+
+            return e.Message;
         }
     }
 }

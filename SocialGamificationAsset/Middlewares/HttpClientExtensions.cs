@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 
 using SocialGamificationAsset.Policies;
 
-namespace SocialGamificationAsset.Tests.Controllers
+namespace SocialGamificationAsset.Middlewares
 {
     public static class HttpClientExtensions
     {

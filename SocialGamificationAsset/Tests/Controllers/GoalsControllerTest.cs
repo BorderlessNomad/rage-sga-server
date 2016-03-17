@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
+using SocialGamificationAsset.Middlewares;
 using SocialGamificationAsset.Models;
 using SocialGamificationAsset.Policies;
 
@@ -236,8 +237,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                     ActorId = session.PlayerId,
                     GoalId = role.Goal.Id,
                     Status = 0,
-                    ConcernOutcomeId = role.Goal.ConcernId,
-                    RewardResourceOutcomeId = role.Goal.RewardResourceId,
+                    ConcernOutcomeId = role.Goal.ConcernId.Value,
+                    RewardResourceOutcomeId = role.Goal.RewardResourceId.Value,
                     ActivityId = role.ActivityId,
                     RoleId = role.Id
                 };
@@ -406,8 +407,8 @@ namespace SocialGamificationAsset.Tests.Controllers
 
                 var newerGoal = new Goal
                 {
-                    ConcernId = newGoal.ConcernId,
-                    RewardResourceId = newGoal.RewardResourceId,
+                    ConcernId = newGoal.ConcernId.Value,
+                    RewardResourceId = newGoal.RewardResourceId.Value,
                     FeedbackId = invalidId
                 };
 
@@ -432,7 +433,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
                 var newerGoal = new Goal
                 {
-                    ConcernId = newGoal.ConcernId,
+                    ConcernId = newGoal.ConcernId.Value,
                     RewardResourceId = invalidId,
                     FeedbackId = newGoal.FeedbackId
                 };
@@ -459,7 +460,7 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var newerGoal = new Goal
                 {
                     ConcernId = invalidId,
-                    RewardResourceId = newGoal.RewardResourceId,
+                    RewardResourceId = newGoal.RewardResourceId.Value,
                     FeedbackId = newGoal.FeedbackId
                 };
 
@@ -485,8 +486,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                     ActorId = session.PlayerId,
                     GoalId = role.Goal.Id,
                     Status = 0,
-                    ConcernOutcomeId = role.Goal.ConcernId,
-                    RewardResourceOutcomeId = role.Goal.RewardResourceId,
+                    ConcernOutcomeId = role.Goal.ConcernId.Value,
+                    RewardResourceOutcomeId = role.Goal.RewardResourceId.Value,
                     ActivityId = role.ActivityId,
                     RoleId = role.Id
                 };
@@ -516,8 +517,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                     ActorId = session.PlayerId,
                     GoalId = role.Goal.Id,
                     Status = 0,
-                    ConcernOutcomeId = role.Goal.ConcernId,
-                    RewardResourceOutcomeId = role.Goal.RewardResourceId,
+                    ConcernOutcomeId = role.Goal.ConcernId.Value,
+                    RewardResourceOutcomeId = role.Goal.RewardResourceId.Value,
                     ActivityId = invalidId,
                     RoleId = role.Id
                 };
@@ -545,8 +546,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                     ActorId = session.PlayerId,
                     GoalId = role.Goal.Id,
                     Status = 0,
-                    ConcernOutcomeId = role.Goal.ConcernId,
-                    RewardResourceOutcomeId = role.Goal.RewardResourceId,
+                    ConcernOutcomeId = role.Goal.ConcernId.Value,
+                    RewardResourceOutcomeId = role.Goal.RewardResourceId.Value,
                     ActivityId = role.ActivityId,
                     RoleId = invalidId
                 };
@@ -575,7 +576,7 @@ namespace SocialGamificationAsset.Tests.Controllers
                     GoalId = role.Goal.Id,
                     Status = 0,
                     ConcernOutcomeId = invalidId,
-                    RewardResourceOutcomeId = role.Goal.RewardResourceId,
+                    RewardResourceOutcomeId = role.Goal.RewardResourceId.Value,
                     ActivityId = role.ActivityId,
                     RoleId = role.Id
                 };
@@ -603,7 +604,7 @@ namespace SocialGamificationAsset.Tests.Controllers
                     ActorId = session.PlayerId,
                     GoalId = role.Goal.Id,
                     Status = 0,
-                    ConcernOutcomeId = role.Goal.ConcernId,
+                    ConcernOutcomeId = role.Goal.ConcernId.Value,
                     RewardResourceOutcomeId = invalidId,
                     ActivityId = role.ActivityId,
                     RoleId = role.Id
@@ -632,8 +633,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                     ActorId = session.PlayerId,
                     GoalId = invalidId,
                     Status = 0,
-                    ConcernOutcomeId = role.Goal.ConcernId,
-                    RewardResourceOutcomeId = role.Goal.RewardResourceId,
+                    ConcernOutcomeId = role.Goal.ConcernId.Value,
+                    RewardResourceOutcomeId = role.Goal.RewardResourceId.Value,
                     ActivityId = role.ActivityId,
                     RoleId = role.Id
                 };
@@ -661,8 +662,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                     ActorId = invalidId,
                     GoalId = role.Goal.Id,
                     Status = 0,
-                    ConcernOutcomeId = role.Goal.ConcernId,
-                    RewardResourceOutcomeId = role.Goal.RewardResourceId,
+                    ConcernOutcomeId = role.Goal.ConcernId.Value,
+                    RewardResourceOutcomeId = role.Goal.RewardResourceId.Value,
                     ActivityId = role.ActivityId,
                     RoleId = role.Id
                 };
