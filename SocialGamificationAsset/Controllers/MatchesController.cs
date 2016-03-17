@@ -44,20 +44,22 @@ namespace SocialGamificationAsset.Controllers
             IList<Match> matches =
                 await
                 _context.MatchActors.Where(a => a.ActorId.Equals(session.Player.Id))
-                        .Select(m => m.Match).Where(m => m.IsFinished.Equals(false))
+                        .Select(m => m.Match)
+                        .Where(m => m.IsFinished.Equals(false))
                         .Include(m => m.Tournament)
                         .ToListAsync();
 
-            foreach (Match m in matches) {
+            foreach (var m in matches)
+            {
                 m.Actors =
-                await _context.MatchActors.Where(a => a.MatchId.Equals(m.Id)).Include(a => a.Actor).ToListAsync();
+                    await _context.MatchActors.Where(a => a.MatchId.Equals(m.Id)).Include(a => a.Actor).ToListAsync();
                 IList<Guid> matchActors = m.Actors.AsEnumerable().Select(a => a.Id).ToList();
 
                 m.Rounds =
                     await
                     _context.MatchRounds.Where(r => matchActors.Contains(r.MatchActorId))
-                        .OrderBy(r => r.UpdatedDate)
-                        .ToListAsync();
+                            .OrderBy(r => r.UpdatedDate)
+                            .ToListAsync();
             }
             return Ok(matches);
         }
@@ -108,19 +110,14 @@ namespace SocialGamificationAsset.Controllers
                 return Helper.HttpBadRequest(ModelState);
             }
             var match =
-                await _context.Matches.Where(m => m.Id.Equals(id))
-                .Include(m => m.Tournament)
-                .FirstOrDefaultAsync();
+                await _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament).FirstOrDefaultAsync();
             if (match == null)
             {
                 return Helper.HttpNotFound($"No Match found with Id {id}.");
             }
             match.Actors =
                 await _context.MatchActors.Where(a => a.MatchId.Equals(id)).Include(a => a.Actor).ToListAsync();
-            IList<Guid> matchActorIds = match.Actors
-                .AsEnumerable()
-                .Select(a => a.Id)
-                .ToList();
+            IList<Guid> matchActorIds = match.Actors.AsEnumerable().Select(a => a.Id).ToList();
 
             match.Rounds =
                 await

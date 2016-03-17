@@ -100,7 +100,6 @@ namespace SocialGamificationAsset.Models
             IList<CustomDataBase> sourceData,
             CustomDataType objectType)
         {
-
             var query = db.CustomData.Where(c => c.ObjectType == objectType);
 
             if (sourceData == null || sourceData.Count <= 0)

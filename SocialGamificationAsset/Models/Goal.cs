@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
-using System.Runtime.Serialization;
-
-using Microsoft.AspNet.Mvc;
 using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Models
@@ -20,7 +17,7 @@ namespace SocialGamificationAsset.Models
             FeedbackId = Guid.Empty;
             IsDeleted = false;
         }
-        
+
         public virtual ICollection<Reward> Rewards { get; set; }
 
         public virtual ICollection<Target> Targets { get; set; }
@@ -34,13 +31,13 @@ namespace SocialGamificationAsset.Models
 
         [ForeignKey("RewardResourceId")]
         public virtual RewardResourceMatrix RewardResource { get; set; }
-        
+
         public virtual ICollection<Activity> Activities { get; set; }
-       
+
         public virtual ICollection<Action> Actions { get; set; }
 
         public string Description { get; set; }
-        
+
         public virtual ICollection<Role> Roles { get; set; }
 
         public Guid FeedbackId { get; set; }
@@ -52,17 +49,24 @@ namespace SocialGamificationAsset.Models
 
         public async Task<Reward> CalculateRewardFromAction(SocialGamificationAssetContext context, string actionVerb)
         {
-            Action actionMatch = this.Actions.Where(a => a.Verb.Equals(actionVerb)).FirstOrDefault();
+            var actionMatch = Actions.Where(a => a.Verb.Equals(actionVerb)).FirstOrDefault();
 
             if (actionMatch != null)
             {
-                actionMatch.Relations = await context.ActionRelations.Where(a => a.ActionId.Equals(actionMatch.Id)).Include(ar => ar.AttributeChanges.Select(ac => ac.AttributeType)).ToListAsync();
+                actionMatch.Relations =
+                    await
+                    context.ActionRelations.Where(a => a.ActionId.Equals(actionMatch.Id))
+                           .Include(ar => ar.AttributeChanges.Select(ac => ac.AttributeType))
+                           .ToListAsync();
 
-                foreach (ActionRelation ar in actionMatch.Relations)
+                foreach (var ar in actionMatch.Relations)
                 {
-                    foreach (Reward reward in ar.AttributeChanges)
+                    foreach (var reward in ar.AttributeChanges)
                     {
-                        Reward rewardMatch = this.Rewards.Where(r => r.TypeReward.Equals(RewardType.Store)).Where(r => r.AttributeType.Name.Equals(reward.AttributeType.Name)).FirstOrDefault();
+                        var rewardMatch =
+                            Rewards.Where(r => r.TypeReward.Equals(RewardType.Store))
+                                   .Where(r => r.AttributeType.Name.Equals(reward.AttributeType.Name))
+                                   .FirstOrDefault();
 
                         if (rewardMatch != null)
                         {
@@ -72,10 +76,9 @@ namespace SocialGamificationAsset.Models
                     }
                 }
             }
-            
+
             return null;
         }
-
     }
 
     public class GoalFeedback : DbEntity

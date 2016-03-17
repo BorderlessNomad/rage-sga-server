@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -6,41 +7,41 @@ using System.Threading.Tasks;
 using SocialGamificationAsset.Models;
 
 using Xunit;
-using System.Collections.Generic;
+
+using Action = SocialGamificationAsset.Models.Action;
 
 namespace SocialGamificationAsset.Tests.Controllers
 {
     public class ActionsControllerTest : ControllerTest
     {
-        protected async Task<Models.Action> CreateTestAction(string verb = "Created for test goal and activity")
+        protected async Task<Action> CreateTestAction(string verb = "Created for test goal and activity")
         {
-          var session = await Login();
+            var session = await Login();
 
-          using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
-          {
-            client.AcceptJson().AddSessionHeader(session.Id.ToString());
-            var action = new Models.Action
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-              Verb = verb,
-              Goal = new Goal
-              {
-                Concern = new ConcernMatrix { Coordinates = new Matrix { X = 1, Y = 1 }, Category = 0 },
-                RewardResource = new RewardResourceMatrix { Coordinates = new Matrix { X = 2, Y = 2 }, Category = 0 },
-                Feedback = new GoalFeedback { Threshold = 0, Target = 0, Direction = 0 },
-                Description = "Created for test cases"
-              },
-              Activity = new Activity
-              {
-                Name = "Testing"
-              }
-            };
-            var actionResponse = await client.PostAsJsonAsync("/api/actions", action);
-            Assert.Equal(HttpStatusCode.Created, actionResponse.StatusCode);
+                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+                var action = new Action
+                {
+                    Verb = verb,
+                    Goal =
+                        new Goal
+                        {
+                            Concern = new ConcernMatrix { Coordinates = new Matrix { X = 1, Y = 1 }, Category = 0 },
+                            RewardResource =
+                                new RewardResourceMatrix { Coordinates = new Matrix { X = 2, Y = 2 }, Category = 0 },
+                            Feedback = new GoalFeedback { Threshold = 0, Target = 0, Direction = 0 },
+                            Description = "Created for test cases"
+                        },
+                    Activity = new Activity { Name = "Testing" }
+                };
+                var actionResponse = await client.PostAsJsonAsync("/api/actions", action);
+                Assert.Equal(HttpStatusCode.Created, actionResponse.StatusCode);
 
-            var created = await actionResponse.Content.ReadAsJsonAsync<Models.Action>();
+                var created = await actionResponse.Content.ReadAsJsonAsync<Action>();
 
-            return created;
-          }
+                return created;
+            }
         }
 
         [Fact]
@@ -84,39 +85,39 @@ namespace SocialGamificationAsset.Tests.Controllers
         [Fact]
         public async Task GetInvalidActionRelationWithNonExistingSession()
         {
-          var sessionId = Guid.NewGuid();
-          var invalidId = Guid.NewGuid();
+            var sessionId = Guid.NewGuid();
+            var invalidId = Guid.NewGuid();
 
-          using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
-          {
-            client.AcceptJson().AddSessionHeader(sessionId.ToString());
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(sessionId.ToString());
 
-            // Get action with Invalid Id
-            var actionResponse = await client.GetAsync($"/api/actions/{invalidId}/relations");
-            Assert.Equal(HttpStatusCode.NotFound, actionResponse.StatusCode);
+                // Get action with Invalid Id
+                var actionResponse = await client.GetAsync($"/api/actions/{invalidId}/relations");
+                Assert.Equal(HttpStatusCode.NotFound, actionResponse.StatusCode);
 
-            var fetched = await actionResponse.Content.ReadAsJsonAsync<ApiError>();
-            Assert.Equal($"Session {sessionId} is Invalid.", fetched.Error);
-          }
+                var fetched = await actionResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal($"Session {sessionId} is Invalid.", fetched.Error);
+            }
         }
 
         [Fact]
         public async Task GetInvalidActionRelation()
         {
-          var session = await Login();
-          var invalidId = Guid.NewGuid();
+            var session = await Login();
+            var invalidId = Guid.NewGuid();
 
-          using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
-          {
-            client.AcceptJson().AddSessionHeader(session.Id.ToString());
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(session.Id.ToString());
 
-            // Get action with Invalid Id
-            var actionResponse = await client.GetAsync($"/api/actions/{invalidId}/relations");
-            Assert.Equal(HttpStatusCode.NotFound, actionResponse.StatusCode);
+                // Get action with Invalid Id
+                var actionResponse = await client.GetAsync($"/api/actions/{invalidId}/relations");
+                Assert.Equal(HttpStatusCode.NotFound, actionResponse.StatusCode);
 
-            var content = await actionResponse.Content.ReadAsJsonAsync<ApiError>();
-            Assert.Equal($"No ActionRelation found.", content.Error);
-          }
+                var content = await actionResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal($"No ActionRelation found.", content.Error);
+            }
         }
 
         [Fact]
@@ -150,8 +151,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var actionResponse = await client.GetAsync($"/api/actions");
                 Assert.Equal(HttpStatusCode.OK, actionResponse.StatusCode);
 
-                var actions = await actionResponse.Content.ReadAsJsonAsync<IList<Models.Action>>();
-                Assert.IsType(typeof(List<Models.Action>), actions);
+                var actions = await actionResponse.Content.ReadAsJsonAsync<IList<Action>>();
+                Assert.IsType(typeof(List<Action>), actions);
             }
         }
 
@@ -166,7 +167,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
                 var newAction = await CreateTestAction();
 
-                var actionForm = new Models.Action
+                var actionForm = new Action
                 {
                     Verb = "testerVerb",
                     ActivityId = newAction.ActivityId,
@@ -176,73 +177,64 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var actionResponse = await client.PostAsJsonAsync("/api/actions", actionForm);
                 Assert.Equal(HttpStatusCode.Created, actionResponse.StatusCode);
 
-                Models.Action action = await actionResponse.Content.ReadAsJsonAsync<Models.Action>();
-                Assert.IsType(typeof(Models.Action), action);
-
-
+                var action = await actionResponse.Content.ReadAsJsonAsync<Action>();
+                Assert.IsType(typeof(Action), action);
 
                 // Get actions
                 var actionResponse2 = await client.GetAsync($"/api/actions/{action.Id}");
                 Assert.Equal(HttpStatusCode.OK, actionResponse2.StatusCode);
 
-                var actions = await actionResponse2.Content.ReadAsJsonAsync<Models.Action>();
-                Assert.IsType(typeof(Models.Action), actions);
+                var actions = await actionResponse2.Content.ReadAsJsonAsync<Action>();
+                Assert.IsType(typeof(Action), actions);
             }
         }
 
         [Fact]
         public async Task GetValidActionRelation()
         {
-          var session = await Login();
-          var newAction = await CreateTestAction("Verb test" + Guid.NewGuid());
+            var session = await Login();
+            var newAction = await CreateTestAction("Verb test" + Guid.NewGuid());
 
-          using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
-          {
-            client.AcceptJson().AddSessionHeader(session.Id.ToString());
-
-            var newAT = new AttributeType { Name = "testAttribute", DefaultValue = 0f, Type = 0 };
-            var atResponse = await client.PostAsJsonAsync("/api/attributes/types", newAT);
-            Assert.Equal(HttpStatusCode.Created, atResponse.StatusCode);
-            var attribute = await atResponse.Content.ReadAsJsonAsync<AttributeType>();
-            var newAR = new ActionRelation
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
             {
-              ActionId = newAction.Id,
-              Relationship = 0,
-              ConcernChange = new Matrix
-              {
-                X = 0,
-                Y = 0
-              },
-              RewardResourceChange = new Matrix
-              {
-                X = 0,
-                Y = 0
-              },
-              AttributeChanges = new List<Reward>
-                      {
-                        new Reward
+                client.AcceptJson().AddSessionHeader(session.Id.ToString());
+
+                var newAT = new AttributeType { Name = "testAttribute", DefaultValue = 0f, Type = 0 };
+                var atResponse = await client.PostAsJsonAsync("/api/attributes/types", newAT);
+                Assert.Equal(HttpStatusCode.Created, atResponse.StatusCode);
+                var attribute = await atResponse.Content.ReadAsJsonAsync<AttributeType>();
+                var newAR = new ActionRelation
+                {
+                    ActionId = newAction.Id,
+                    Relationship = 0,
+                    ConcernChange = new Matrix { X = 0, Y = 0 },
+                    RewardResourceChange = new Matrix { X = 0, Y = 0 },
+                    AttributeChanges =
+                        new List<Reward>
                         {
-                          AttributeTypeId = attribute.Id,
-                          TypeReward = RewardType.Modify,
-                          Value = 1f,
-                          Status = 0,
-                          GoalId = newAction.GoalId
+                            new Reward
+                            {
+                                AttributeTypeId = attribute.Id,
+                                TypeReward = RewardType.Modify,
+                                Value = 1f,
+                                Status = 0,
+                                GoalId = newAction.GoalId
+                            }
                         }
-                      }
-            };
-            var arResponse = await client.PostAsJsonAsync("/api/actions/relations", newAR);
-            Assert.Equal(HttpStatusCode.Created, arResponse.StatusCode);
+                };
+                var arResponse = await client.PostAsJsonAsync("/api/actions/relations", newAR);
+                Assert.Equal(HttpStatusCode.Created, arResponse.StatusCode);
 
-            ActionRelation action = await arResponse.Content.ReadAsJsonAsync<ActionRelation>();
-            Assert.IsType(typeof(ActionRelation), action);
+                var action = await arResponse.Content.ReadAsJsonAsync<ActionRelation>();
+                Assert.IsType(typeof(ActionRelation), action);
 
-            // Get actions
-            var actionResponse2 = await client.GetAsync($"/api/actions/{action.Id}/relations");
-            Assert.Equal(HttpStatusCode.OK, actionResponse2.StatusCode);
+                // Get actions
+                var actionResponse2 = await client.GetAsync($"/api/actions/{action.Id}/relations");
+                Assert.Equal(HttpStatusCode.OK, actionResponse2.StatusCode);
 
-            var actions = await actionResponse2.Content.ReadAsJsonAsync<ActionRelation>();
-            Assert.IsType(typeof(ActionRelation), actions);
-          }
+                var actions = await actionResponse2.Content.ReadAsJsonAsync<ActionRelation>();
+                Assert.IsType(typeof(ActionRelation), actions);
+            }
         }
 
         [Fact]
@@ -257,7 +249,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
                 var newAction = await CreateTestAction();
 
-                var actionForm = new Models.Action
+                var actionForm = new Action
                 {
                     Verb = "testerVerb",
                     ActivityId = newAction.ActivityId,
@@ -287,7 +279,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
                 var newAction = await CreateTestAction();
 
-                var actionForm = new Models.Action
+                var actionForm = new Action
                 {
                     Verb = "testerVerb",
                     ActivityId = newAction.ActivityId,
@@ -297,20 +289,17 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var actionResponse = await client.PostAsJsonAsync("/api/actions", actionForm);
                 Assert.Equal(HttpStatusCode.Created, actionResponse.StatusCode);
 
-                Models.Action action = await actionResponse.Content.ReadAsJsonAsync<Models.Action>();
-                Assert.IsType(typeof(Models.Action), action);
+                var action = await actionResponse.Content.ReadAsJsonAsync<Action>();
+                Assert.IsType(typeof(Action), action);
 
-                var actionForm2 = new Models.Action
-                {
-                    Verb = "testerVerb2"
-                };
+                var actionForm2 = new Action { Verb = "testerVerb2" };
 
                 // Get actions
                 var actionResponse2 = await client.PutAsJsonAsync($"/api/actions/{action.Id}", actionForm2);
                 Assert.Equal(HttpStatusCode.OK, actionResponse2.StatusCode);
 
-                var actions = await actionResponse2.Content.ReadAsJsonAsync<Models.Action>();
-                Assert.IsType(typeof(Models.Action), actions);
+                var actions = await actionResponse2.Content.ReadAsJsonAsync<Action>();
+                Assert.IsType(typeof(Action), actions);
             }
         }
 
@@ -325,13 +314,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
                 var newAction = await CreateTestAction();
 
-                var actionForm = new Models.Action
-                {
-                    Verb = "testerVerb",
-                    ActivityId = new Guid(),
-                    GoalId = newAction.GoalId
-                };
-
+                var actionForm = new Action { Verb = "testerVerb", ActivityId = new Guid(), GoalId = newAction.GoalId };
 
                 var actionResponse = await client.PostAsJsonAsync("/api/actions", actionForm);
                 Assert.Equal(HttpStatusCode.NotFound, actionResponse.StatusCode);
@@ -339,7 +322,6 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var content = await actionResponse.Content.ReadAsJsonAsync<ApiError>();
                 Assert.Equal($"No Activity found", content.Error);
             }
-
         }
 
         [Fact]
@@ -353,13 +335,12 @@ namespace SocialGamificationAsset.Tests.Controllers
 
                 var newAction = await CreateTestAction();
 
-                var actionForm = new Models.Action
+                var actionForm = new Action
                 {
                     Verb = "testerVerb",
                     ActivityId = newAction.ActivityId,
                     GoalId = new Guid()
                 };
-
 
                 var actionResponse = await client.PostAsJsonAsync("/api/actions", actionForm);
                 Assert.Equal(HttpStatusCode.NotFound, actionResponse.StatusCode);
@@ -367,7 +348,6 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var content = await actionResponse.Content.ReadAsJsonAsync<ApiError>();
                 Assert.Equal($"No Goal found", content.Error);
             }
-
         }
 
         // invalid session
@@ -384,92 +364,72 @@ namespace SocialGamificationAsset.Tests.Controllers
 
                 var newAction = await CreateTestAction();
 
-                var actionForm = new Models.Action
+                var actionForm = new Action
                 {
                     Verb = "testerVerb",
                     ActivityId = newAction.ActivityId,
                     GoalId = newAction.GoalId
                 };
 
-
                 var actionResponse = await client.PostAsJsonAsync("/api/actions", actionForm);
                 Assert.Equal(HttpStatusCode.Created, actionResponse.StatusCode);
 
-                Models.Action action = await actionResponse.Content.ReadAsJsonAsync<Models.Action>();
-                Assert.IsType(typeof(Models.Action), action);
+                var action = await actionResponse.Content.ReadAsJsonAsync<Action>();
+                Assert.IsType(typeof(Action), action);
             }
-
         }
 
-    [Fact]
-    public async Task CreateActionRelationWithInvalidActionId()
-    {
-      var session = await Login();
-
-      using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
-      {
-        client.AcceptJson().AddSessionHeader(session.Id.ToString());
-
-        var newAR = new ActionRelation
+        [Fact]
+        public async Task CreateActionRelationWithInvalidActionId()
         {
-          ActionId = new Guid(),
-          Relationship = 0,
-          ConcernChange = new Matrix
-          {
-            X = 0,
-            Y = 0
-          },
-          RewardResourceChange = new Matrix
-          {
-            X = 0,
-            Y = 0
-          }
-        };
-        var arResponse = await client.PostAsJsonAsync("/api/actions/relations", newAR);
-        Assert.Equal(HttpStatusCode.NotFound, arResponse.StatusCode);
+            var session = await Login();
 
-        var content = await arResponse.Content.ReadAsJsonAsync<ApiError>();
-        Assert.Equal($"No Action found", content.Error);
-      }
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(session.Id.ToString());
 
-    }
+                var newAR = new ActionRelation
+                {
+                    ActionId = new Guid(),
+                    Relationship = 0,
+                    ConcernChange = new Matrix { X = 0, Y = 0 },
+                    RewardResourceChange = new Matrix { X = 0, Y = 0 }
+                };
+                var arResponse = await client.PostAsJsonAsync("/api/actions/relations", newAR);
+                Assert.Equal(HttpStatusCode.NotFound, arResponse.StatusCode);
 
-    [Fact]
-    public async Task CreateValidActionRelation()
-    {
-      var session = await Login();
+                var content = await arResponse.Content.ReadAsJsonAsync<ApiError>();
+                Assert.Equal($"No Action found", content.Error);
+            }
+        }
 
-      using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
-      {
-        client.AcceptJson().AddSessionHeader(session.Id.ToString());
-
-        var newAction = await CreateTestAction();
-
-        var newAR = new ActionRelation
+        [Fact]
+        public async Task CreateValidActionRelation()
         {
-          ActionId = newAction.Id,
-          Relationship = 0,
-          ConcernChange = new Matrix
-          {
-            X = 0,
-            Y = 0
-          },
-          RewardResourceChange = new Matrix
-          {
-            X = 0,
-            Y = 0
-          }
-        };
-        var arResponse = await client.PostAsJsonAsync("/api/actions/relations", newAR);
-        Assert.Equal(HttpStatusCode.Created, arResponse.StatusCode);
+            var session = await Login();
 
-        ActionRelation action = await arResponse.Content.ReadAsJsonAsync<ActionRelation>();
-        Assert.IsType(typeof(ActionRelation), action);
-      }
+            using (var client = new HttpClient { BaseAddress = new Uri(ServerUrl) })
+            {
+                client.AcceptJson().AddSessionHeader(session.Id.ToString());
 
-    }
+                var newAction = await CreateTestAction();
 
-    [Fact]
+                var newAR = new ActionRelation
+                {
+                    ActionId = newAction.Id,
+                    Relationship = 0,
+                    ConcernChange = new Matrix { X = 0, Y = 0 },
+                    RewardResourceChange = new Matrix { X = 0, Y = 0 }
+                };
+                var arResponse = await client.PostAsJsonAsync("/api/actions/relations", newAR);
+                Assert.Equal(HttpStatusCode.Created, arResponse.StatusCode);
+
+                var action = await arResponse.Content.ReadAsJsonAsync<ActionRelation>();
+                Assert.IsType(typeof(ActionRelation), action);
+            }
+        }
+
+        [Fact]
         public async Task UpdateRewardByInvalidAction()
         {
             var session = await Login();
@@ -478,11 +438,7 @@ namespace SocialGamificationAsset.Tests.Controllers
             {
                 client.AcceptJson().AddSessionHeader(session.Id.ToString());
 
-                var actionForm = new Models.Action
-                {
-                    Verb = "invalidVerb"
-                };
-
+                var actionForm = new Action { Verb = "invalidVerb" };
 
                 var actionResponse = await client.PostAsJsonAsync("/api/actions/send", actionForm);
                 Assert.Equal(HttpStatusCode.NotFound, actionResponse.StatusCode);
@@ -508,53 +464,42 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var attribute = await atResponse.Content.ReadAsJsonAsync<AttributeType>();
                 var newAR = new ActionRelation
                 {
-                  ActionId = newAction.Id,
-                  Relationship = 0,
-                  ConcernChange = new Matrix
-                  {
-                    X = 0,
-                    Y = 0
-                  },
-                  RewardResourceChange = new Matrix
-                  {
-                    X = 0,
-                    Y = 0
-                  },
-                  AttributeChanges = new List<Reward>
-                  {
-                    new Reward
-                    {
-                      AttributeTypeId = attribute.Id,
-                      TypeReward = RewardType.Modify,
-                      Value = 1f,
-                      Status = 0,
-                      GoalId = newAction.GoalId
-                    }
-                  }
+                    ActionId = newAction.Id,
+                    Relationship = 0,
+                    ConcernChange = new Matrix { X = 0, Y = 0 },
+                    RewardResourceChange = new Matrix { X = 0, Y = 0 },
+                    AttributeChanges =
+                        new List<Reward>
+                        {
+                            new Reward
+                            {
+                                AttributeTypeId = attribute.Id,
+                                TypeReward = RewardType.Modify,
+                                Value = 1f,
+                                Status = 0,
+                                GoalId = newAction.GoalId
+                            }
+                        }
                 };
                 var arResponse = await client.PostAsJsonAsync("/api/actions/relations", newAR);
                 Assert.Equal(HttpStatusCode.Created, arResponse.StatusCode);
                 var newReward = new Reward
                 {
-                  AttributeTypeId = attribute.Id,
-                  TypeReward = RewardType.Store,
-                  Value = 1.5f,
-                  Status = 0,
-                  GoalId = newAction.GoalId
+                    AttributeTypeId = attribute.Id,
+                    TypeReward = RewardType.Store,
+                    Value = 1.5f,
+                    Status = 0,
+                    GoalId = newAction.GoalId
                 };
                 var rewardResponse = await client.PostAsJsonAsync("/api/rewards", newReward);
                 Assert.Equal(HttpStatusCode.Created, rewardResponse.StatusCode);
 
-                var actionForm = new Models.Action
-                {
-                    Verb = newAction.Verb
-                };
-
+                var actionForm = new Action { Verb = newAction.Verb };
 
                 var actionResponse = await client.PostAsJsonAsync("/api/actions/send", actionForm);
                 Assert.Equal(HttpStatusCode.OK, actionResponse.StatusCode);
 
-                Reward rewardReturn = await actionResponse.Content.ReadAsJsonAsync<Reward>();
+                var rewardReturn = await actionResponse.Content.ReadAsJsonAsync<Reward>();
                 Assert.IsType(typeof(Reward), rewardReturn);
             }
         }
@@ -588,7 +533,7 @@ namespace SocialGamificationAsset.Tests.Controllers
 
                 var newAction = await CreateTestAction();
 
-                var actionForm = new Models.Action
+                var actionForm = new Action
                 {
                     Verb = "testerVerb",
                     ActivityId = newAction.ActivityId,
@@ -598,14 +543,14 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var actionResponse = await client.PostAsJsonAsync("/api/actions", actionForm);
                 Assert.Equal(HttpStatusCode.Created, actionResponse.StatusCode);
 
-                Models.Action action = await actionResponse.Content.ReadAsJsonAsync<Models.Action>();
-                Assert.IsType(typeof(Models.Action), action);
+                var action = await actionResponse.Content.ReadAsJsonAsync<Action>();
+                Assert.IsType(typeof(Action), action);
 
                 var actionResponse2 = await client.DeleteAsync($"/api/actions/{action.Id}");
                 Assert.Equal(HttpStatusCode.OK, actionResponse2.StatusCode);
 
-                var actions = await actionResponse2.Content.ReadAsJsonAsync<Models.Action>();
-                Assert.IsType(typeof(Models.Action), actions);
+                var actions = await actionResponse2.Content.ReadAsJsonAsync<Action>();
+                Assert.IsType(typeof(Action), actions);
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Description;
 
@@ -51,19 +51,19 @@ namespace SocialGamificationAsset.Controllers
         [HttpGet("{id}/relations", Name = "GetActionRelation")]
         public async Task<IActionResult> GetActionRelation([FromRoute] Guid id)
         {
-          if (!ModelState.IsValid)
-          {
-            return Helper.HttpBadRequest(ModelState);
-          }
+            if (!ModelState.IsValid)
+            {
+                return Helper.HttpBadRequest(ModelState);
+            }
 
-          var actionRelation = await _context.ActionRelations.FindAsync(id);
+            var actionRelation = await _context.ActionRelations.FindAsync(id);
 
-          if (actionRelation == null)
-          {
-            return Helper.HttpNotFound("No ActionRelation found.");
-          }
+            if (actionRelation == null)
+            {
+                return Helper.HttpNotFound("No ActionRelation found.");
+            }
 
-          return Ok(actionRelation);
+            return Ok(actionRelation);
         }
 
         // PUT: api/actions/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -80,7 +80,6 @@ namespace SocialGamificationAsset.Controllers
             {
                 return Helper.HttpNotFound("No such Action found.");
             }
-
 
             _context.Entry(actionMatch).State = EntityState.Modified;
 
@@ -103,16 +102,21 @@ namespace SocialGamificationAsset.Controllers
                 return Helper.HttpBadRequest(ModelState);
             }
 
-            Action actionMatch = await _context.Actions.Where(a => a.Verb.Equals(action.Verb)).FirstOrDefaultAsync();
+            var actionMatch = await _context.Actions.Where(a => a.Verb.Equals(action.Verb)).FirstOrDefaultAsync();
 
             if (actionMatch == null)
             {
-              return Helper.HttpNotFound("Invalid action verb.");
+                return Helper.HttpNotFound("Invalid action verb.");
             }
 
             Reward reward = null;
 
-            foreach (Goal goal in await _context.Goals.Include(g => g.Actions).Include(g => g.Rewards.Select(r => r.AttributeType)).ToListAsync())
+            foreach (
+                var goal in
+                    await
+                    _context.Goals.Include(g => g.Actions)
+                            .Include(g => g.Rewards.Select(r => r.AttributeType))
+                            .ToListAsync())
             {
                 reward = await goal.CalculateRewardFromAction(_context, action.Verb);
                 if (reward != null)
@@ -140,29 +144,29 @@ namespace SocialGamificationAsset.Controllers
             }
             if (action.ActivityId != Guid.Empty)
             {
-              var actTest = await _context.Activities.FindAsync(action.ActivityId);
+                var actTest = await _context.Activities.FindAsync(action.ActivityId);
 
-              if (actTest == null)
-              {
-                return Helper.HttpNotFound("Invalid ActivityId.");
-              }
+                if (actTest == null)
+                {
+                    return Helper.HttpNotFound("Invalid ActivityId.");
+                }
             }
             else if (action.Activity == null)
             {
-              return Helper.HttpNotFound("No Activity found");
+                return Helper.HttpNotFound("No Activity found");
             }
             if (action.GoalId != Guid.Empty)
             {
-              var goalTest = await _context.Goals.FindAsync(action.GoalId);
+                var goalTest = await _context.Goals.FindAsync(action.GoalId);
 
-              if (goalTest == null)
-              {
-                return Helper.HttpNotFound("Invalid GoalId.");
-              }
+                if (goalTest == null)
+                {
+                    return Helper.HttpNotFound("Invalid GoalId.");
+                }
             }
             else if (action.Goal == null)
             {
-              return Helper.HttpNotFound("No Goal found");
+                return Helper.HttpNotFound("No Goal found");
             }
 
             _context.Actions.Add(action);
@@ -181,38 +185,38 @@ namespace SocialGamificationAsset.Controllers
         [ResponseType(typeof(ActionRelation))]
         public async Task<IActionResult> PostActionRelation([FromBody] ActionRelation actionRelation)
         {
-          if (!ModelState.IsValid)
-          {
-            return Helper.HttpBadRequest(ModelState);
-          }
-          if (actionRelation.ActionId != Guid.Empty)
-          {
-            var actTest = await _context.Actions.FindAsync(actionRelation.ActionId);
-
-            if (actTest == null)
+            if (!ModelState.IsValid)
             {
-              return Helper.HttpNotFound("Invalid ActionId.");
+                return Helper.HttpBadRequest(ModelState);
             }
-            actionRelation.Action = actTest;
-          }
-          else if (actionRelation.Action == null)
-          {
-            return Helper.HttpNotFound("No Action found");
-          }
+            if (actionRelation.ActionId != Guid.Empty)
+            {
+                var actTest = await _context.Actions.FindAsync(actionRelation.ActionId);
 
-          _context.ActionRelations.Add(actionRelation);
+                if (actTest == null)
+                {
+                    return Helper.HttpNotFound("Invalid ActionId.");
+                }
+                actionRelation.Action = actTest;
+            }
+            else if (actionRelation.Action == null)
+            {
+                return Helper.HttpNotFound("No Action found");
+            }
 
-          var error = await SaveChangesAsync();
-          if (error != null)
-          {
-            return error;
-          }
+            _context.ActionRelations.Add(actionRelation);
 
-          return CreatedAtRoute("GetActionRelation", new { id = actionRelation.Id }, actionRelation);
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
+
+            return CreatedAtRoute("GetActionRelation", new { id = actionRelation.Id }, actionRelation);
         }
 
-    // DELETE: api/actions/936da01f-9abd-4d9d-80c7-02af85c822a8
-    [HttpDelete("{id}")]
+        // DELETE: api/actions/936da01f-9abd-4d9d-80c7-02af85c822a8
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAction([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)

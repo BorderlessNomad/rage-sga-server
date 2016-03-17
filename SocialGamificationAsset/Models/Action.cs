@@ -46,8 +46,6 @@ namespace SocialGamificationAsset.Models
 
         //[IgnoreDataMember]
         public virtual ICollection<Reward> AttributeChanges { get; set; }
-
-        
     }
 
     public class ActionHistory : DbEntity

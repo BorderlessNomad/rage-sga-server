@@ -15,6 +15,7 @@ namespace SocialGamificationAsset.Models
             ActivityId = Guid.Empty;
             RoleId = Guid.Empty;
         }
+
         public Guid ActorId { get; set; }
 
         [ForeignKey("ActorId")]
