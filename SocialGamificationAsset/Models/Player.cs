@@ -155,7 +155,8 @@ namespace SocialGamificationAsset.Models
         }
 
         /// <summary>
-        ///     Assign <see cref="Groups" /> to the Player.
+        ///     Assign <see cref="SocialGamificationAsset.Models.Player.Groups" />
+        ///     to the Player.
         /// </summary>
         public void AddGroups(SocialGamificationAssetContext db, ICollection<Player> groupsList)
         {

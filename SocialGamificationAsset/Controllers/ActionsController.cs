@@ -111,12 +111,11 @@ namespace SocialGamificationAsset.Controllers
 
             Reward reward = null;
 
-            foreach (
-                var goal in
-                    await
-                    _context.Goals.Include(g => g.Actions)
-                            .Include(g => g.Rewards.Select(r => r.AttributeType))
-                            .ToListAsync())
+            foreach (var goal in
+                await
+                _context.Goals.Include(g => g.Actions)
+                        .Include(g => g.Rewards.Select(r => r.AttributeType))
+                        .ToListAsync())
             {
                 reward = await goal.CalculateRewardFromAction(_context, action.Verb);
                 if (reward != null)

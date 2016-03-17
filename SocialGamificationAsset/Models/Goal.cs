@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
 using System.Runtime.Serialization;
-
 using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Models
@@ -22,6 +21,7 @@ namespace SocialGamificationAsset.Models
 
         [IgnoreDataMember]
         public virtual ICollection<Reward> Rewards { get; set; }
+
         [IgnoreDataMember]
         public virtual ICollection<Target> Targets { get; set; }
 
@@ -37,6 +37,7 @@ namespace SocialGamificationAsset.Models
 
         [IgnoreDataMember]
         public virtual ICollection<Activity> Activities { get; set; }
+
         [IgnoreDataMember]
         public virtual ICollection<Action> Actions { get; set; }
 

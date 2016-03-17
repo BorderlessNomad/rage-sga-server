@@ -18,6 +18,7 @@ namespace SocialGamificationAsset.Models
         }
 
         public Guid ActorId { get; set; }
+
         [IgnoreDataMember]
         [ForeignKey("ActorId")]
         public virtual Actor Actor { get; set; }
