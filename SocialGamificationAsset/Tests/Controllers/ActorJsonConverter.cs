@@ -20,18 +20,20 @@ namespace SocialGamificationAsset.Tests.Controllers
             JsonSerializer serializer)
         {
             var jo = JObject.Load(reader);
-
-            if (jo["class"].Value<string>() == "Player")
+            if (jo["class"] != null)
             {
+              if (jo["class"].Value<string>() == "Player")
+              {
                 return jo.ToObject<Player>(serializer);
-            }
+              }
 
-            if (jo["class"].Value<string>() == "Group")
-            {
+              if (jo["class"].Value<string>() == "Group")
+              {
                 return jo.ToObject<Group>(serializer);
+              }
             }
 
-            return null;
+          return null;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

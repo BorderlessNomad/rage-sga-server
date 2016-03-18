@@ -19,10 +19,8 @@ namespace SocialGamificationAsset.Models
             IsDeleted = false;
         }
 
-        [IgnoreDataMember]
         public virtual ICollection<Reward> Rewards { get; set; }
 
-        [IgnoreDataMember]
         public virtual ICollection<Target> Targets { get; set; }
 
         public Guid ConcernId { get; set; }
@@ -35,15 +33,12 @@ namespace SocialGamificationAsset.Models
         [ForeignKey("RewardResourceId")]
         public virtual RewardResourceMatrix RewardResource { get; set; }
 
-        [IgnoreDataMember]
         public virtual ICollection<Activity> Activities { get; set; }
 
-        [IgnoreDataMember]
         public virtual ICollection<Action> Actions { get; set; }
 
         public string Description { get; set; }
 
-        [IgnoreDataMember]
         public virtual ICollection<Role> Roles { get; set; }
 
         public Guid FeedbackId { get; set; }

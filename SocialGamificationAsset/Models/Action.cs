@@ -44,7 +44,6 @@ namespace SocialGamificationAsset.Models
         [ForeignKey("ActionId")]
         public virtual Action Action { get; set; }
 
-        [IgnoreDataMember]
         public virtual ICollection<Reward> AttributeChanges { get; set; }
     }
 
