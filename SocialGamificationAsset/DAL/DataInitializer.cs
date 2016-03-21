@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Newtonsoft.Json;
 
+using SocialGamificationAsset.Helpers;
 using SocialGamificationAsset.Tests.Controllers;
 
 namespace SocialGamificationAsset.Models
@@ -146,7 +147,7 @@ namespace SocialGamificationAsset.Models
                             new Player
                             {
                                 Username = "admin",
-                                Password = Helper.HashPassword("admin"),
+                                Password = PasswordHelper.HashPassword("admin"),
                                 Role = AccountType.Admin
                             }
                     },
@@ -156,7 +157,7 @@ namespace SocialGamificationAsset.Models
                             new Player
                             {
                                 Username = "playgen",
-                                Password = Helper.HashPassword("playgen"),
+                                Password = PasswordHelper.HashPassword("playgen"),
                                 Role = AccountType.Admin
                             }
                     },
@@ -167,7 +168,7 @@ namespace SocialGamificationAsset.Models
                             {
                                 Username = "mayur",
                                 Email = "mayur@playgen.com",
-                                Password = Helper.HashPassword("mayur"),
+                                Password = PasswordHelper.HashPassword("mayur"),
                                 Groups = new List<Group> { boardgame, gameideas, rage }
                             }
                     },
@@ -178,7 +179,7 @@ namespace SocialGamificationAsset.Models
                             {
                                 Username = "jack",
                                 Email = "jack@playgen.com",
-                                Password = Helper.HashPassword("jack"),
+                                Password = PasswordHelper.HashPassword("jack"),
                                 Groups = new List<Group> { gameideas, rage }
                             }
                     },
@@ -189,7 +190,7 @@ namespace SocialGamificationAsset.Models
                             {
                                 Username = "matt",
                                 Email = "matt@playgen.com",
-                                Password = Helper.HashPassword("matt"),
+                                Password = PasswordHelper.HashPassword("matt"),
                                 Groups = new List<Group> { boardgame, rage }
                             }
                     },
@@ -199,7 +200,7 @@ namespace SocialGamificationAsset.Models
                             new Player
                             {
                                 Username = "ben",
-                                Password = Helper.HashPassword("ben"),
+                                Password = PasswordHelper.HashPassword("ben"),
                                 Groups = new List<Group> { boardgame, gameideas }
                             }
                     },
@@ -209,7 +210,7 @@ namespace SocialGamificationAsset.Models
                             new Player
                             {
                                 Username = "kam",
-                                Password = Helper.HashPassword("kam"),
+                                Password = PasswordHelper.HashPassword("kam"),
                                 Groups = new List<Group> { gameideas }
                             }
                     }

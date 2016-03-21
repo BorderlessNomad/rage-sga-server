@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNet.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-using SocialGamificationAsset.Policies;
+using SocialGamificationAsset.Middlewares;
 
 namespace SocialGamificationAsset
 {

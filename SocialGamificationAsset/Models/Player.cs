@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNet.Mvc;
 
+using SocialGamificationAsset.Helpers;
+
 namespace SocialGamificationAsset.Models
 {
     [Table(SocialGamificationAssetContext.PlayersTableName)]
@@ -77,7 +79,7 @@ namespace SocialGamificationAsset.Models
 
             IList<Player> players = await query.ToListAsync();
 
-            return Helper.Shuffle(players, limit);
+            return GenericHelper.Shuffle(players, limit);
         }
 
         /**
@@ -155,8 +157,10 @@ namespace SocialGamificationAsset.Models
         }
 
         /// <summary>
-        ///     Assign <see cref="SocialGamificationAsset.Models.Player.Groups" />
-        ///     to the Player.
+        ///     <para>
+        ///         Assign <see cref="SocialGamificationAsset.Models.Player.Groups" />
+        ///     </para>
+        ///     <para>to the Player.</para>
         /// </summary>
         public void AddGroups(SocialGamificationAssetContext db, ICollection<Player> groupsList)
         {

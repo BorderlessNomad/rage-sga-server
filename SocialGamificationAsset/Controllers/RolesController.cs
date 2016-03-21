@@ -7,6 +7,7 @@ using System.Web.Http.Description;
 
 using Microsoft.AspNet.Mvc;
 
+using SocialGamificationAsset.Helpers;
 using SocialGamificationAsset.Models;
 
 namespace SocialGamificationAsset.Controllers
@@ -33,14 +34,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var role = await _context.Roles.Where(r => r.Name.Equals(name)).Include(g => g.Goal).FirstOrDefaultAsync();
 
             if (role == null)
             {
-                return Helper.HttpNotFound("No such Role found.");
+                return HttpResponseHelper.NotFound("No such Role found.");
             }
 
             return Ok(role);
@@ -52,14 +53,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var role = await _context.Roles.FindAsync(id);
 
             if (role == null)
             {
-                return Helper.HttpNotFound("No such Role found.");
+                return HttpResponseHelper.NotFound("No such Role found.");
             }
 
             return Ok(role);
@@ -72,13 +73,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var checkRole = await _context.Roles.Where(r => r.Name.Equals(role.Name)).FirstOrDefaultAsync();
             if (checkRole != null)
             {
-                return Helper.HttpBadRequest("Role '" + checkRole.Name + "' already exists.");
+                return HttpResponseHelper.BadRequest("Role '" + checkRole.Name + "' already exists.");
             }
 
             _context.Roles.Add(role);

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 
+using SocialGamificationAsset.Helpers;
 using SocialGamificationAsset.Models;
 
 namespace SocialGamificationAsset.Controllers
@@ -31,14 +32,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var inventory = await _context.Inventory.FindAsync(id);
 
             if (inventory == null)
             {
-                return Helper.HttpNotFound("No Inventory found.");
+                return HttpResponseHelper.NotFound("No Inventory found.");
             }
 
             return Ok(inventory);
@@ -50,12 +51,12 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             if (id != inventory.Id)
             {
-                return Helper.HttpBadRequest("Invalid Inventory Id.");
+                return HttpResponseHelper.BadRequest("Invalid Inventory Id.");
             }
 
             _context.Entry(inventory).State = EntityState.Modified;
@@ -75,7 +76,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             _context.Inventory.Add(inventory);
@@ -95,13 +96,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var inventory = await _context.Inventory.FindAsync(id);
             if (inventory == null)
             {
-                return Helper.HttpNotFound("No Inventory found.");
+                return HttpResponseHelper.NotFound("No Inventory found.");
             }
 
             _context.Inventory.Remove(inventory);

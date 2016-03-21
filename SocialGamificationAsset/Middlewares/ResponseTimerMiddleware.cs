@@ -21,7 +21,8 @@ namespace SocialGamificationAsset.Middlewares
         /// <summary>
         /// </summary>
         /// <param name="context"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// </returns>
         public async Task Invoke(HttpContext context)
         {
             var timer = Stopwatch.StartNew();

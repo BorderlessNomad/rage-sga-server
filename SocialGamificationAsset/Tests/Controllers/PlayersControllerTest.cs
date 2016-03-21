@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 using SocialGamificationAsset.Middlewares;
 using SocialGamificationAsset.Models;
-using SocialGamificationAsset.Policies;
 
 using Xunit;
 

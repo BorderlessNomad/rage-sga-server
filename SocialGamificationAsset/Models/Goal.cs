@@ -55,7 +55,7 @@ namespace SocialGamificationAsset.Models
 
         public async Task<Reward> CalculateRewardFromAction(SocialGamificationAssetContext context, string actionVerb)
         {
-            var actionMatch = Actions.Where(a => a.Verb.Equals(actionVerb)).FirstOrDefault();
+            var actionMatch = Actions.FirstOrDefault(a => a.Verb.Equals(actionVerb));
 
             if (actionMatch != null)
             {

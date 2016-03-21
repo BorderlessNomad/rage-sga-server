@@ -2,8 +2,6 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-using SocialGamificationAsset.Policies;
-
 namespace SocialGamificationAsset.Middlewares
 {
     public static class HttpClientExtensions

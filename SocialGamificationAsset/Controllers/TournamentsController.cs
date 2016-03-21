@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNet.Mvc;
 
+using SocialGamificationAsset.Helpers;
 using SocialGamificationAsset.Models;
 
 namespace SocialGamificationAsset.Controllers
@@ -33,7 +34,7 @@ namespace SocialGamificationAsset.Controllers
 
             if (tournaments == null || !tournaments.Any())
             {
-                return Helper.HttpNotFound("No Tournament found.");
+                return HttpResponseHelper.NotFound("No Tournament found.");
             }
 
             return Ok(tournaments);
@@ -50,7 +51,7 @@ namespace SocialGamificationAsset.Controllers
 
             if (tournaments == null || !tournaments.Any())
             {
-                return Helper.HttpNotFound("No Tournament found.");
+                return HttpResponseHelper.NotFound("No Tournament found.");
             }
 
             return Ok(tournaments);

@@ -7,6 +7,7 @@ using System.Web.Http.Description;
 
 using Microsoft.AspNet.Mvc;
 
+using SocialGamificationAsset.Helpers;
 using SocialGamificationAsset.Models;
 
 using Action = SocialGamificationAsset.Models.Action;
@@ -34,14 +35,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var action = await _context.Actions.FindAsync(id);
 
             if (action == null)
             {
-                return Helper.HttpNotFound("No Action found.");
+                return HttpResponseHelper.NotFound("No Action found.");
             }
 
             return Ok(action);
@@ -53,14 +54,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var actionRelation = await _context.ActionRelations.FindAsync(id);
 
             if (actionRelation == null)
             {
-                return Helper.HttpNotFound("No ActionRelation found.");
+                return HttpResponseHelper.NotFound("No ActionRelation found.");
             }
 
             return Ok(actionRelation);
@@ -72,13 +73,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var actionMatch = await _context.Actions.Where(g => g.Id.Equals(id)).FirstOrDefaultAsync();
             if (actionMatch == null)
             {
-                return Helper.HttpNotFound("No such Action found.");
+                return HttpResponseHelper.NotFound("No such Action found.");
             }
 
             _context.Entry(actionMatch).State = EntityState.Modified;
@@ -99,23 +100,25 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var actionMatch = await _context.Actions.Where(a => a.Verb.Equals(action.Verb)).FirstOrDefaultAsync();
 
             if (actionMatch == null)
             {
-                return Helper.HttpNotFound("Invalid action verb.");
+                return HttpResponseHelper.NotFound("Invalid action verb.");
             }
 
             Reward reward = null;
-
-            foreach (var goal in
+            var goals =
                 await
                 _context.Goals.Include(g => g.Actions)
+                        //.Where(g => g.Actions.Any(a => a.Verb.Equals(action.Verb)))
                         .Include(g => g.Rewards.Select(r => r.AttributeType))
-                        .ToListAsync())
+                        .ToListAsync();
+
+            foreach (var goal in goals)
             {
                 reward = await goal.CalculateRewardFromAction(_context, action.Verb);
                 if (reward != null)
@@ -129,6 +132,7 @@ namespace SocialGamificationAsset.Controllers
             {
                 return error;
             }
+
             return Ok(reward);
         }
 
@@ -139,7 +143,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
             if (action.ActivityId != Guid.Empty)
             {
@@ -147,12 +151,12 @@ namespace SocialGamificationAsset.Controllers
 
                 if (actTest == null)
                 {
-                    return Helper.HttpNotFound("Invalid ActivityId.");
+                    return HttpResponseHelper.NotFound("Invalid ActivityId.");
                 }
             }
             else if (action.Activity == null)
             {
-                return Helper.HttpNotFound("No Activity found");
+                return HttpResponseHelper.NotFound("No Activity found");
             }
             if (action.GoalId != Guid.Empty)
             {
@@ -160,12 +164,12 @@ namespace SocialGamificationAsset.Controllers
 
                 if (goalTest == null)
                 {
-                    return Helper.HttpNotFound("Invalid GoalId.");
+                    return HttpResponseHelper.NotFound("Invalid GoalId.");
                 }
             }
             else if (action.Goal == null)
             {
-                return Helper.HttpNotFound("No Goal found");
+                return HttpResponseHelper.NotFound("No Goal found");
             }
 
             _context.Actions.Add(action);
@@ -186,7 +190,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
             if (actionRelation.ActionId != Guid.Empty)
             {
@@ -194,13 +198,13 @@ namespace SocialGamificationAsset.Controllers
 
                 if (actTest == null)
                 {
-                    return Helper.HttpNotFound("Invalid ActionId.");
+                    return HttpResponseHelper.NotFound("Invalid ActionId.");
                 }
                 actionRelation.Action = actTest;
             }
             else if (actionRelation.Action == null)
             {
-                return Helper.HttpNotFound("No Action found");
+                return HttpResponseHelper.NotFound("No Action found");
             }
 
             _context.ActionRelations.Add(actionRelation);
@@ -220,13 +224,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var action = await _context.Actions.FindAsync(id);
             if (action == null)
             {
-                return Helper.HttpNotFound("No Action found.");
+                return HttpResponseHelper.NotFound("No Action found.");
             }
 
             _context.Actions.Remove(action);

@@ -7,6 +7,7 @@ using System.Web.Http.Description;
 
 using Microsoft.AspNet.Mvc;
 
+using SocialGamificationAsset.Helpers;
 using SocialGamificationAsset.Models;
 
 namespace SocialGamificationAsset.Controllers
@@ -88,7 +89,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var match =
@@ -96,7 +97,7 @@ namespace SocialGamificationAsset.Controllers
 
             if (match == null)
             {
-                return Helper.HttpNotFound($"No Match found with Id {id}.");
+                return HttpResponseHelper.NotFound($"No Match found with Id {id}.");
             }
 
             return Ok(match);
@@ -109,14 +110,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var match =
                 await _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Tournament).FirstOrDefaultAsync();
             if (match == null)
             {
-                return Helper.HttpNotFound($"No Match found with Id {id}.");
+                return HttpResponseHelper.NotFound($"No Match found with Id {id}.");
             }
 
             match.Actors =
@@ -139,7 +140,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var match =
@@ -148,7 +149,7 @@ namespace SocialGamificationAsset.Controllers
 
             if (match == null)
             {
-                return Helper.HttpNotFound($"No Match found for ID {id}.");
+                return HttpResponseHelper.NotFound($"No Match found for ID {id}.");
             }
 
             return Ok(match.Tournament.Owner);
@@ -161,13 +162,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var match = await _context.Matches.Where(m => m.Id.Equals(id)).FirstOrDefaultAsync();
             if (match == null)
             {
-                return Helper.HttpNotFound("No such Match found.");
+                return HttpResponseHelper.NotFound("No such Match found.");
             }
 
             IList<MatchActor> matchActors =
@@ -183,13 +184,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var match = await _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Actors).FirstOrDefaultAsync();
             if (match == null)
             {
-                return Helper.HttpNotFound("No such Match found.");
+                return HttpResponseHelper.NotFound("No such Match found.");
             }
 
             IList<Guid> matchActors = match.Actors.AsEnumerable().Select(a => a.Id).ToList();
@@ -245,18 +246,18 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var match = await _context.Matches.Where(m => m.Id.Equals(id)).Include(m => m.Actors).FirstOrDefaultAsync();
             if (match == null)
             {
-                return Helper.HttpNotFound("No such Match found.");
+                return HttpResponseHelper.NotFound("No such Match found.");
             }
 
             if (match.IsFinished)
             {
-                return Helper.HttpBadRequest("This match is already finished.");
+                return HttpResponseHelper.BadRequest("This match is already finished.");
             }
 
             foreach (var actor in match.Actors.Where(actor => actor.ActorId.Equals(form.ActorId)))
@@ -269,7 +270,7 @@ namespace SocialGamificationAsset.Controllers
 
                 if (round == null)
                 {
-                    return Helper.HttpNotFound($"No Round #{form.RoundNumber} found for Actor {form.ActorId}");
+                    return HttpResponseHelper.NotFound($"No Round #{form.RoundNumber} found for Actor {form.ActorId}");
                 }
 
                 _context.Entry(round).State = EntityState.Modified;
@@ -294,7 +295,7 @@ namespace SocialGamificationAsset.Controllers
                         });
             }
 
-            return Helper.HttpNotFound($"No Actor {form.ActorId} found for this Match.");
+            return HttpResponseHelper.NotFound($"No Actor {form.ActorId} found for this Match.");
         }
 
         // PUT: api/matches/936da01f-9abd-4d9d-80c7-02af85c822a8
@@ -304,13 +305,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var match = await _context.Matches.Where(m => m.Id.Equals(id)).FirstOrDefaultAsync();
             if (match == null)
             {
-                return Helper.HttpNotFound("No such Match found.");
+                return HttpResponseHelper.NotFound("No such Match found.");
             }
 
             _context.Entry(match).State = EntityState.Modified;
@@ -336,17 +337,17 @@ namespace SocialGamificationAsset.Controllers
         {
             if (session?.Player == null)
             {
-                return Helper.HttpNotFound("No Session/Player found.");
+                return HttpResponseHelper.NotFound("No Session/Player found.");
             }
 
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             if (quickMatch.Actors.Count < 2)
             {
-                return Helper.HttpBadRequest("Minimum 2 Actors are required for a Match");
+                return HttpResponseHelper.BadRequest("Minimum 2 Actors are required for a Match");
             }
 
             QuickMatchResult result;
@@ -361,7 +362,7 @@ namespace SocialGamificationAsset.Controllers
                     var player = await _context.Players.FindAsync(actorId);
                     if (player == null)
                     {
-                        return Helper.HttpNotFound($"No Player with Id {actorId} exists.");
+                        return HttpResponseHelper.NotFound($"No Player with Id {actorId} exists.");
                     }
 
                     players.Add(player);
@@ -376,7 +377,7 @@ namespace SocialGamificationAsset.Controllers
                     var group = await _context.Groups.FindAsync(actorId);
                     if (group == null)
                     {
-                        return Helper.HttpNotFound($"No Group with Id {actorId} exists.");
+                        return HttpResponseHelper.NotFound($"No Group with Id {actorId} exists.");
                     }
 
                     groups.Add(group);
@@ -401,12 +402,12 @@ namespace SocialGamificationAsset.Controllers
         {
             if (session?.Player == null)
             {
-                return Helper.HttpNotFound("No Session/Player found.");
+                return HttpResponseHelper.NotFound("No Session/Player found.");
             }
 
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var result = new QuickMatchResult();
@@ -428,7 +429,7 @@ namespace SocialGamificationAsset.Controllers
 
                 if (players.Count < quickMatch.Actors)
                 {
-                    return Helper.HttpNotFound("No Players available for match at this moment.");
+                    return HttpResponseHelper.NotFound("No Players available for match at this moment.");
                 }
 
                 result = await QuickMatch(quickMatch, players);
@@ -437,13 +438,13 @@ namespace SocialGamificationAsset.Controllers
             {
                 if (!quickMatch.ActorId.HasValue || quickMatch.ActorId == Guid.Empty)
                 {
-                    return Helper.HttpBadRequest("GroupId is required for Group Matches.");
+                    return HttpResponseHelper.BadRequest("GroupId is required for Group Matches.");
                 }
 
                 var group = session.Player.Groups.FirstOrDefault(g => g.Id.Equals(quickMatch.ActorId));
                 if (group == null)
                 {
-                    return Helper.HttpNotFound("No such Group found for Player.");
+                    return HttpResponseHelper.NotFound("No such Group found for Player.");
                 }
 
                 var groups =
@@ -452,7 +453,7 @@ namespace SocialGamificationAsset.Controllers
 
                 if (groups.Count < quickMatch.Actors)
                 {
-                    return Helper.HttpNotFound("No Groups available for match at this moment.");
+                    return HttpResponseHelper.NotFound("No Groups available for match at this moment.");
                 }
 
                 result = await QuickMatch(quickMatch, groups);
@@ -475,7 +476,11 @@ namespace SocialGamificationAsset.Controllers
                 tournament = await _context.Tournaments.FindAsync(quickMatch.Tournament);
                 if (tournament == null)
                 {
-                    return new QuickMatchResult { match = null, error = Helper.HttpBadRequest("Invalid Tournament.") };
+                    return new QuickMatchResult
+                    {
+                        match = null,
+                        error = HttpResponseHelper.BadRequest("Invalid Tournament.")
+                    };
                 }
             }
             else
@@ -494,9 +499,9 @@ namespace SocialGamificationAsset.Controllers
             // Create Match
             var match = new Match { TournamentId = tournament.Id, TotalRounds = quickMatch.Rounds };
 
-            if (!string.IsNullOrWhiteSpace(quickMatch.Title) && Helper.SanitizeString(quickMatch.Title).Length > 0)
+            if (!string.IsNullOrWhiteSpace(quickMatch.Title) && GenericHelper.SanitizeString(quickMatch.Title).Length > 0)
             {
-                match.Title = Helper.SanitizeString(quickMatch.Title);
+                match.Title = GenericHelper.SanitizeString(quickMatch.Title);
             }
 
             _context.Matches.Add(match);
@@ -528,7 +533,11 @@ namespace SocialGamificationAsset.Controllers
                 tournament = await _context.Tournaments.FindAsync(quickMatch.Tournament);
                 if (tournament == null)
                 {
-                    return new QuickMatchResult { match = null, error = Helper.HttpBadRequest("Invalid Tournament.") };
+                    return new QuickMatchResult
+                    {
+                        match = null,
+                        error = HttpResponseHelper.BadRequest("Invalid Tournament.")
+                    };
                 }
             }
             else
@@ -574,13 +583,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var match = await _context.Matches.FindAsync(id);
             if (match == null)
             {
-                return Helper.HttpNotFound("No Match found.");
+                return HttpResponseHelper.NotFound("No Match found.");
             }
 
             match.IsFinished = true;

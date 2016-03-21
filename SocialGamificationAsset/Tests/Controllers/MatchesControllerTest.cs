@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 
 using SocialGamificationAsset.Middlewares;
 using SocialGamificationAsset.Models;
-using SocialGamificationAsset.Policies;
 
 using Xunit;
 

@@ -6,6 +6,7 @@ using System.Web.Http.Description;
 
 using Microsoft.AspNet.Mvc;
 
+using SocialGamificationAsset.Helpers;
 using SocialGamificationAsset.Models;
 
 using Attribute = SocialGamificationAsset.Models.Attribute;
@@ -33,14 +34,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var attribute = await _context.Attributes.FindAsync(id);
 
             if (attribute == null)
             {
-                return Helper.HttpNotFound("No Attribute found.");
+                return HttpResponseHelper.NotFound("No Attribute found.");
             }
 
             return Ok(attribute);
@@ -52,12 +53,12 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             if (id != attribute.Id)
             {
-                return Helper.HttpBadRequest("Invalid Attribute Id.");
+                return HttpResponseHelper.BadRequest("Invalid Attribute Id.");
             }
 
             _context.Entry(attribute).State = EntityState.Modified;
@@ -78,7 +79,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             _context.Attributes.Add(attribute);
@@ -98,13 +99,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var attribute = await _context.Attributes.FindAsync(id);
             if (attribute == null)
             {
-                return Helper.HttpNotFound("No Attribute found.");
+                return HttpResponseHelper.NotFound("No Attribute found.");
             }
 
             _context.Attributes.Remove(attribute);

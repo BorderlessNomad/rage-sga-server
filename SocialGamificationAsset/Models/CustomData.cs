@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,7 +25,7 @@ namespace SocialGamificationAsset.Models
                 return customData;
             }
 
-            foreach (var data in sourceData.Where(data => Helper.AllowedOperators.Contains(data.Operator)))
+            foreach (var data in sourceData.Where(data => CustomData.AllowedOperators.Contains(data.Operator)))
             {
                 customData.Add(data);
             }
@@ -37,6 +36,9 @@ namespace SocialGamificationAsset.Models
 
     public class CustomData : DbEntity
     {
+        // public static List<string> allowedOperators = new List<string> { "=", "!", "%", ">", ">=", "<", "<=" };
+        public static List<string> AllowedOperators = new List<string> { "=", "!", "%" };
+
         public string Key { get; set; }
 
         public string Value { get; set; }
@@ -83,16 +85,7 @@ namespace SocialGamificationAsset.Models
                 }
             }
 
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateException e)
-            {
-                return Helper.JsonErrorContentResult(e.Message);
-            }
-
-            return null;
+            return await SaveChanges(db, true);
         }
 
         public static IQueryable<CustomData> ConditionBuilder(
@@ -111,7 +104,7 @@ namespace SocialGamificationAsset.Models
             {
                 query = query.Where(c => c.Key.Equals(data.Key));
 
-                if (!Helper.AllowedOperators.Contains(data.Operator))
+                if (!AllowedOperators.Contains(data.Operator))
                 {
                     continue;
                 }
