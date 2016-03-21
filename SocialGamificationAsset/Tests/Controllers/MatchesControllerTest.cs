@@ -146,7 +146,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchesResponse = await client.GetAsync("/api/matches/ongoing");
                 Assert.Equal(HttpStatusCode.OK, matchesResponse.StatusCode);
 
-                var matches = await matchesResponse.Content.ReadAsJsonAsync<IList<Match>>();
+                var matchRead = await matchesResponse.Content.ReadAsStringAsync();
+                var matches = JsonConvert.DeserializeObject<List<Match>>(matchRead, Actor.JsonSerializerSettings());
                 Assert.IsType(typeof(List<Match>), matches);
             }
         }
@@ -234,7 +235,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
                 Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
 
-                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                var matchGet = await matchResponse.Content.ReadAsStringAsync();
+                var match = JsonConvert.DeserializeObject<Match>(matchGet, Actor.JsonSerializerSettings());
                 Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
@@ -255,7 +257,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchResponse = await client.PostAsJsonAsync("/api/matches", quickMatch);
                 Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
 
-                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                var matchGet = await matchResponse.Content.ReadAsStringAsync();
+                var match = JsonConvert.DeserializeObject<Match>(matchGet, Actor.JsonSerializerSettings());
                 Assert.Equal(session.Player.Id, match.Tournament.OwnerId);
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
@@ -276,7 +279,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchResponse = await client.PostAsJsonAsync("/api/matches", quickMatch);
                 Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
 
-                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                var matchGet = await matchResponse.Content.ReadAsStringAsync();
+                var match = JsonConvert.DeserializeObject<Match>(matchGet, Actor.JsonSerializerSettings());
                 Assert.Equal(session.Player.Id, match.Tournament.OwnerId);
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
@@ -377,7 +381,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
                 Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
 
-                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                var matchReturn = await matchResponse.Content.ReadAsStringAsync();
+                var match = JsonConvert.DeserializeObject<Match>(matchReturn, Actor.JsonSerializerSettings());
                 Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
@@ -410,7 +415,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
                 Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
 
-                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                var matchReturn = await matchResponse.Content.ReadAsStringAsync();
+                var match = JsonConvert.DeserializeObject<Match>(matchReturn, Actor.JsonSerializerSettings());
                 Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
@@ -419,7 +425,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 matchResponse = await client.GetAsync($"/api/matches/{match.Id}");
                 Assert.Equal(HttpStatusCode.OK, matchResponse.StatusCode);
 
-                var matchGet = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                var matchRead = await matchResponse.Content.ReadAsStringAsync();
+                var matchGet = JsonConvert.DeserializeObject<Match>(matchRead, Actor.JsonSerializerSettings());
                 Assert.Equal(mayur.Player.Id, matchGet.Tournament.OwnerId);
                 Assert.Equal(match.Id, matchGet.Id);
             }
@@ -443,7 +450,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
                 Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
 
-                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                var matchReturn = await matchResponse.Content.ReadAsStringAsync();
+                var match = JsonConvert.DeserializeObject<Match>(matchReturn, Actor.JsonSerializerSettings());
                 Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
@@ -452,7 +460,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 matchResponse = await client.GetAsync($"/api/matches/{match.Id}/detailed");
                 Assert.Equal(HttpStatusCode.OK, matchResponse.StatusCode);
 
-                var matchGet = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                var matchRead = await matchResponse.Content.ReadAsStringAsync();
+                var matchGet = JsonConvert.DeserializeObject<Match>(matchRead, Actor.JsonSerializerSettings());
                 Assert.Equal(mayur.Player.Id, matchGet.Tournament.OwnerId);
                 Assert.Equal(match.Id, matchGet.Id);
             }
@@ -495,7 +504,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
                 Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
 
-                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                var matchReturn = await matchResponse.Content.ReadAsStringAsync();
+                var match = JsonConvert.DeserializeObject<Match>(matchReturn, Actor.JsonSerializerSettings());
                 Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
@@ -549,7 +559,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
                 Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
 
-                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                var matchReturn = await matchResponse.Content.ReadAsStringAsync();
+                var match = JsonConvert.DeserializeObject<Match>(matchReturn, Actor.JsonSerializerSettings());
                 Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
@@ -600,7 +611,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
                 Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
 
-                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                var matchReturn = await matchResponse.Content.ReadAsStringAsync();
+                var match = JsonConvert.DeserializeObject<Match>(matchReturn, Actor.JsonSerializerSettings());
                 Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
@@ -609,7 +621,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var response = await client.DeleteAsync($"/api/matches/{match.Id}");
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-                var finishedMatch = await response.Content.ReadAsJsonAsync<Match>();
+                var matchRead = await response.Content.ReadAsStringAsync();
+                var finishedMatch = JsonConvert.DeserializeObject<Match>(matchRead, Actor.JsonSerializerSettings());
                 Assert.True(finishedMatch.IsFinished);
             }
         }
@@ -654,7 +667,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
                 Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
 
-                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                var matchReturn = await matchResponse.Content.ReadAsStringAsync();
+                var match = JsonConvert.DeserializeObject<Match>(matchReturn, Actor.JsonSerializerSettings());
                 Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
@@ -694,7 +708,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
                 Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
 
-                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                var matchReturn = await matchResponse.Content.ReadAsStringAsync();
+                var match = JsonConvert.DeserializeObject<Match>(matchReturn, Actor.JsonSerializerSettings());
                 Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
@@ -729,7 +744,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
                 Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
 
-                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                var matchReturn = await matchResponse.Content.ReadAsStringAsync();
+                var match = JsonConvert.DeserializeObject<Match>(matchReturn, Actor.JsonSerializerSettings());
                 Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
@@ -763,7 +779,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
                 Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
 
-                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                var matchReturn = await matchResponse.Content.ReadAsStringAsync();
+                var match = JsonConvert.DeserializeObject<Match>(matchReturn, Actor.JsonSerializerSettings());
                 Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
@@ -805,7 +822,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
                 Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
 
-                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                var matchReturn = await matchResponse.Content.ReadAsStringAsync();
+                var match = JsonConvert.DeserializeObject<Match>(matchReturn, Actor.JsonSerializerSettings());
                 Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
@@ -839,7 +857,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchResponse = await client.PostAsJsonAsync("/api/matches/actors", quickMatch);
                 Assert.Equal(HttpStatusCode.Created, matchResponse.StatusCode);
 
-                var match = await matchResponse.Content.ReadAsJsonAsync<Match>();
+                var matchReturn = await matchResponse.Content.ReadAsStringAsync();
+                var match = JsonConvert.DeserializeObject<Match>(matchReturn, Actor.JsonSerializerSettings());
                 Assert.Equal(mayur.Player.Id, match.Tournament.OwnerId);
                 Assert.False(match.IsFinished);
                 Assert.False(match.IsDeleted);
@@ -849,7 +868,8 @@ namespace SocialGamificationAsset.Tests.Controllers
                 var matchUpdateResponse = await client.PutAsJsonAsync($"/api/matches/{match.Id}", matchForm);
                 Assert.Equal(HttpStatusCode.OK, matchUpdateResponse.StatusCode);
 
-                var content = await matchUpdateResponse.Content.ReadAsJsonAsync<Match>();
+                var matchGet = await matchUpdateResponse.Content.ReadAsStringAsync();
+                var content = JsonConvert.DeserializeObject<Match>(matchGet, Actor.JsonSerializerSettings());
                 Assert.Equal(match.Id, content.Id);
                 Assert.Equal(matchForm.Title, content.Title);
             }

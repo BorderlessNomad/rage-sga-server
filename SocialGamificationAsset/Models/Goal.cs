@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace SocialGamificationAsset.Models
@@ -19,39 +18,34 @@ namespace SocialGamificationAsset.Models
             IsDeleted = false;
         }
 
-        public string Description { get; set; }
+        public virtual ICollection<Reward> Rewards { get; set; }
 
-        public bool IsDeleted { get; set; }
+        public virtual ICollection<Target> Targets { get; set; }
 
-        public Guid? ConcernId { get; set; }
+        public Guid ConcernId { get; set; }
 
         [ForeignKey("ConcernId")]
         public virtual ConcernMatrix Concern { get; set; }
 
-        public Guid? RewardResourceId { get; set; }
+        public Guid RewardResourceId { get; set; }
 
         [ForeignKey("RewardResourceId")]
         public virtual RewardResourceMatrix RewardResource { get; set; }
 
-        public Guid? FeedbackId { get; set; }
+        public virtual ICollection<Activity> Activities { get; set; }
+
+        public virtual ICollection<Action> Actions { get; set; }
+
+        public string Description { get; set; }
+
+        public virtual ICollection<Role> Roles { get; set; }
+
+        public Guid FeedbackId { get; set; }
 
         [ForeignKey("FeedbackId")]
         public virtual GoalFeedback Feedback { get; set; }
 
-        [IgnoreDataMember]
-        public virtual ICollection<Activity> Activities { get; set; }
-
-        [IgnoreDataMember]
-        public virtual ICollection<Action> Actions { get; set; }
-
-        [IgnoreDataMember]
-        public virtual ICollection<Reward> Rewards { get; set; }
-
-        [IgnoreDataMember]
-        public virtual ICollection<Role> Roles { get; set; }
-
-        [IgnoreDataMember]
-        public virtual ICollection<Target> Targets { get; set; }
+        public bool IsDeleted { get; set; }
 
         public async Task<Reward> CalculateRewardFromAction(SocialGamificationAssetContext context, string actionVerb)
         {

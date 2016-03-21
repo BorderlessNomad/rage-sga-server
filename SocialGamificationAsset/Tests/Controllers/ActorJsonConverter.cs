@@ -20,15 +20,17 @@ namespace SocialGamificationAsset.Tests.Controllers
             JsonSerializer serializer)
         {
             var jo = JObject.Load(reader);
-
-            if (jo["class"].Value<string>() == "Player")
+            if (jo["class"] != null)
             {
-                return jo.ToObject<Player>(serializer);
-            }
+                if (jo["class"].Value<string>() == "Player")
+                {
+                    return jo.ToObject<Player>(serializer);
+                }
 
-            if (jo["class"].Value<string>() == "Group")
-            {
-                return jo.ToObject<Group>(serializer);
+                if (jo["class"].Value<string>() == "Group")
+                {
+                    return jo.ToObject<Group>(serializer);
+                }
             }
 
             return null;
