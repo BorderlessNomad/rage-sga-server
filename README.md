@@ -1,12 +1,13 @@
-# RAGE Social Gamification APIs a.k.a. *SGA*
+# SUGAR :: Makes Games Sweeter
+# RAGE Social Gamification APIs
 
 ## Overview
 This module allows to layer game mechanics affording game-inspired social relations and interactions on top a system to support engagement, collaboration, and learning. Two main forms of social interaction are supported: player-player interactions (such as matches) and group interactions (such as shared team goals or team vs. team competitions).
 
 ## Architecture
-SGA Server is built with `ASP.NET Core` and `MVC 7` which is an open-source and cross-platform framework for building modern cloud-based Web applications using ASP.NET 5. The aim is to provide an optimized development framework which can be deployed to the cloud or run on-premises. It consists of modular components with minimal overhead, to retain flexibility while constructing and extending more features. SGA’s ASP.NET 5 component is cross-platform which runs on Windows, Mac and Linux.
+SUGAR Server is built with `ASP.NET Core` and `MVC 7` which is an open-source and cross-platform framework for building modern cloud-based Web applications using ASP.NET 5. The aim is to provide an optimized development framework which can be deployed to the cloud or run on-premises. It consists of modular components with minimal overhead, to retain flexibility while constructing and extending more features. SGA’s ASP.NET 5 component is cross-platform which runs on Windows, Mac and Linux.
 
-SGA is capable to runs on top both `Internet Information Server (IIS)` (Windows only solution) & `Kestrel` web server (cross-platform).
+SUGAR is capable to runs on top both `Internet Information Server (IIS)` (Windows only solution) & `Kestrel` web server (cross-platform).
 
 `Entity Framework 6` is an object relational mapping (ORM) library, that is capable of mapping SGA classes to database entities (a.k.a tables). EF6 also eases the process of writing migrations when new features are introduced or changes have been made to existing schemas. Underlying layer of data storage uses `MySQL 5.6` or `MariaDB 10.1` database.
 
@@ -75,6 +76,8 @@ See [CHANGELOG](CHANGELOG.md)
 **APACHE LICENSE 2.0**
 
 **Copyright (C) 2016 PlayGen Ltd**
+
+Contact : contact@playgen.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
