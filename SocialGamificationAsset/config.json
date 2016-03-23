@@ -24,7 +24,7 @@
     },
     "Data": {
         "MySQLConnection": {
-            "ConnectionString": "Server=server.playgen.com;Port=32771;Database=SocialGamificationAsset-Staging;Uid=root;Pwd=MMhdHr2LKJb57QnS;Convert Zero Datetime=true;Allow Zero Datetime=true"
+        	"ConnectionString": "Server=localhost;Port=3306;Database=SocialGamificationAsset;Uid=root;Pwd=;Convert Zero Datetime=true;Allow Zero Datetime=true"
         }
     },
     "Logging": {
