@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Newtonsoft.Json;
 
+using SocialGamificationAsset.Helpers;
 using SocialGamificationAsset.Tests.Controllers;
 
 namespace SocialGamificationAsset.Models
@@ -31,6 +32,8 @@ namespace SocialGamificationAsset.Models
                 await SeedAlliances(_context, isAsync);
 
                 await SeedCustomData(_context, isAsync);
+
+                await SeedGoals(_context, isAsync);
             }
         }
 
@@ -144,7 +147,7 @@ namespace SocialGamificationAsset.Models
                             new Player
                             {
                                 Username = "admin",
-                                Password = Helper.HashPassword("admin"),
+                                Password = PasswordHelper.HashPassword("admin"),
                                 Role = AccountType.Admin
                             }
                     },
@@ -154,7 +157,7 @@ namespace SocialGamificationAsset.Models
                             new Player
                             {
                                 Username = "playgen",
-                                Password = Helper.HashPassword("playgen"),
+                                Password = PasswordHelper.HashPassword("playgen"),
                                 Role = AccountType.Admin
                             }
                     },
@@ -165,7 +168,7 @@ namespace SocialGamificationAsset.Models
                             {
                                 Username = "mayur",
                                 Email = "mayur@playgen.com",
-                                Password = Helper.HashPassword("mayur"),
+                                Password = PasswordHelper.HashPassword("mayur"),
                                 Groups = new List<Group> { boardgame, gameideas, rage }
                             }
                     },
@@ -176,7 +179,7 @@ namespace SocialGamificationAsset.Models
                             {
                                 Username = "jack",
                                 Email = "jack@playgen.com",
-                                Password = Helper.HashPassword("jack"),
+                                Password = PasswordHelper.HashPassword("jack"),
                                 Groups = new List<Group> { gameideas, rage }
                             }
                     },
@@ -187,7 +190,7 @@ namespace SocialGamificationAsset.Models
                             {
                                 Username = "matt",
                                 Email = "matt@playgen.com",
-                                Password = Helper.HashPassword("matt"),
+                                Password = PasswordHelper.HashPassword("matt"),
                                 Groups = new List<Group> { boardgame, rage }
                             }
                     },
@@ -197,7 +200,7 @@ namespace SocialGamificationAsset.Models
                             new Player
                             {
                                 Username = "ben",
-                                Password = Helper.HashPassword("ben"),
+                                Password = PasswordHelper.HashPassword("ben"),
                                 Groups = new List<Group> { boardgame, gameideas }
                             }
                     },
@@ -207,7 +210,7 @@ namespace SocialGamificationAsset.Models
                             new Player
                             {
                                 Username = "kam",
-                                Password = Helper.HashPassword("kam"),
+                                Password = PasswordHelper.HashPassword("kam"),
                                 Groups = new List<Group> { gameideas }
                             }
                     }
@@ -329,6 +332,75 @@ namespace SocialGamificationAsset.Models
                 await SaveChanges(_context, isAsync);
 
                 Debug.WriteLine("CustomData Seeded.");
+            }
+        }
+
+        protected static async Task SeedGoals(SocialGamificationAssetContext _context, bool isAsync = false)
+        {
+            if (!_context.ActorGoal.Any())
+            {
+                var mayur = await _context.Players.Where(a => a.Username.Equals("mayur")).FirstOrDefaultAsync();
+                var goal = new Goal
+                {
+                    Concern = new ConcernMatrix { Coordinates = new Matrix { X = 0, Y = 0 }, Category = 0 },
+                    RewardResource =
+                        new RewardResourceMatrix { Coordinates = new Matrix { X = 0, Y = 0 }, Category = 0 },
+                    Feedback = new GoalFeedback { Threshold = 0, Target = 0, Direction = 0 },
+                    Description = "Test"
+                };
+                var attributeType = new AttributeType { Name = "testAttribute", DefaultValue = 0f, Type = 0 };
+
+                var activity = new Activity { Name = "Testing" };
+
+                IList<ActorGoal> goals = new List<ActorGoal>
+                {
+                    new ActorGoal
+                    {
+                        Actor = mayur,
+                        Goal = goal,
+                        Status = 0,
+                        ConcernOutcome = new ConcernMatrix { Coordinates = new Matrix { X = 0, Y = 0 }, Category = 0 },
+                        RewardResourceOutcome =
+                            new RewardResourceMatrix { Coordinates = new Matrix { X = 0, Y = 0 }, Category = 0 },
+                        Activity = activity,
+                        Role = new Role { Name = "Testing", Goal = goal, Activity = activity }
+                    }
+                };
+
+                _context.ActorGoal.AddRange(goals);
+
+                IList<Reward> rewards = new List<Reward>
+                {
+                    new Reward
+                    {
+                        AttributeType = attributeType,
+                        TypeReward = RewardType.Store,
+                        Value = 1.5f,
+                        Status = 0,
+                        Goal = goal
+                    },
+                    new Reward
+                    {
+                        AttributeType = attributeType,
+                        Value = 3.5f,
+                        Status = 0,
+                        Goal = goal,
+                        TypeReward = RewardType.Modify,
+                        ActionRelation =
+                            new ActionRelation
+                            {
+                                Action = new Action { Verb = "testVerb", Activity = activity, Goal = goal },
+                                Relationship = 0,
+                                ConcernChange = new Matrix { X = 0, Y = 0 },
+                                RewardResourceChange = new Matrix { X = 0, Y = 0 }
+                            }
+                    }
+                };
+
+                _context.Rewards.AddRange(rewards);
+
+                await SaveChanges(_context, isAsync);
+                Debug.WriteLine("Goals & related Seeded.");
             }
         }
 

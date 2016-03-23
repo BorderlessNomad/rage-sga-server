@@ -15,5 +15,10 @@ namespace SocialGamificationAsset.Models
         public RewardStatus Status { get; set; }
 
         public Direction Operation { get; set; }
+
+        public Guid GoalId { get; set; }
+
+        [ForeignKey("GoalId")]
+        public virtual Goal Goal { get; set; }
     }
 }

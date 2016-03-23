@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNet.Mvc;
 
+using SocialGamificationAsset.Middlewares;
 using SocialGamificationAsset.Models;
-using SocialGamificationAsset.Policies;
 
 namespace SocialGamificationAsset.Controllers
 {
@@ -38,21 +38,12 @@ namespace SocialGamificationAsset.Controllers
         ///     Asynchronously save data
         /// </summary>
         /// <returns>
-        ///     JsonErrorContentResult if <see cref="DbUpdateException" /> exception
+        ///     ErrorContentResult if <see cref="DbUpdateException" /> exception
         ///     occurs
         /// </returns>
         protected async Task<ContentResult> SaveChangesAsync()
         {
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException e)
-            {
-                return Helper.JsonErrorContentResult(e.Message);
-            }
-
-            return null;
+            return await DbEntity.SaveChanges(_context, true);
         }
     }
 }

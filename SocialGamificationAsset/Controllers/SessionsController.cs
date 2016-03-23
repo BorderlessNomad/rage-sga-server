@@ -7,6 +7,7 @@ using System.Web.Http.Description;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
 
+using SocialGamificationAsset.Helpers;
 using SocialGamificationAsset.Models;
 
 namespace SocialGamificationAsset.Controllers
@@ -47,7 +48,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var playerSession =
@@ -55,7 +56,7 @@ namespace SocialGamificationAsset.Controllers
 
             if (playerSession == null)
             {
-                return Helper.HttpNotFound("No such Session found.");
+                return HttpResponseHelper.NotFound("No such Session found.");
             }
 
             return Ok(playerSession);
@@ -95,17 +96,17 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             if (string.IsNullOrWhiteSpace(login.Username) && string.IsNullOrWhiteSpace(login.Email))
             {
-                return Helper.HttpBadRequest("Either Username or Email is required.");
+                return HttpResponseHelper.BadRequest("Either Username or Email is required.");
             }
 
             if (string.IsNullOrWhiteSpace(login.Password))
             {
-                return Helper.HttpBadRequest("Password is required.");
+                return HttpResponseHelper.BadRequest("Password is required.");
             }
 
             IQueryable<Player> query = _context.Players;
@@ -124,12 +125,12 @@ namespace SocialGamificationAsset.Controllers
 
             if (player == null)
             {
-                return Helper.HttpNotFound("No such Player found.");
+                return HttpResponseHelper.NotFound("No such Player found.");
             }
 
-            if (!Helper.ValidatePassword(login.Password, player.Password))
+            if (!PasswordHelper.ValidatePassword(login.Password, player.Password))
             {
-                return Helper.HttpUnauthorized("Invalid Login Details.");
+                return HttpResponseHelper.Unauthorized("Invalid Login Details.");
             }
 
             var playerSession = new Session { Player = player };
@@ -177,13 +178,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var playerSession = await _context.Sessions.FindAsync(id);
             if (playerSession == null)
             {
-                return Helper.HttpNotFound("No such Session found.");
+                return HttpResponseHelper.NotFound("No such Session found.");
             }
 
             playerSession.IsExpired = true;

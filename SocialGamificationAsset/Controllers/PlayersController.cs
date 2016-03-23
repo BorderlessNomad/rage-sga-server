@@ -6,12 +6,11 @@ using System.Web.Http.Description;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
 
+using SocialGamificationAsset.Helpers;
 using SocialGamificationAsset.Models;
 
 namespace SocialGamificationAsset.Controllers
 {
-    /// <summary>
-    /// </summary>
     [Route("api/players")]
     public class PlayersController : ApiController
     {
@@ -48,13 +47,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var player = await _context.Players.FindAsync(id);
             if (player == null)
             {
-                return Helper.HttpNotFound("No such Player found.");
+                return HttpResponseHelper.NotFound("No such Player found.");
             }
 
             return Ok(player);
@@ -74,14 +73,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var player = await _context.Players.FindAsync(id);
 
             if (player == null)
             {
-                return Helper.HttpNotFound("No Player found.");
+                return HttpResponseHelper.NotFound("No such Player found.");
             }
 
             _context.Entry(player).State = EntityState.Modified;
@@ -90,7 +89,7 @@ namespace SocialGamificationAsset.Controllers
             {
                 if (await Player.ExistsUsername(_context, form.Username))
                 {
-                    return Helper.HttpBadRequest("Player with this Username already exists.");
+                    return HttpResponseHelper.BadRequest("Player with this Username already exists.");
                 }
 
                 player.Username = form.Username;
@@ -100,7 +99,7 @@ namespace SocialGamificationAsset.Controllers
             {
                 if (await Player.ExistsEmail(_context, form.Email))
                 {
-                    return Helper.HttpBadRequest("Player with this Email already exists.");
+                    return HttpResponseHelper.BadRequest("Player with this Email already exists.");
                 }
 
                 player.Email = form.Email;
@@ -108,7 +107,7 @@ namespace SocialGamificationAsset.Controllers
 
             if (!string.IsNullOrWhiteSpace(form.Password))
             {
-                player.Password = Helper.HashPassword(form.Password);
+                player.Password = PasswordHelper.HashPassword(form.Password);
             }
 
             var error = await SaveChangesAsync();
@@ -141,17 +140,17 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             if (string.IsNullOrWhiteSpace(register.Username) && string.IsNullOrWhiteSpace(register.Email))
             {
-                return Helper.HttpBadRequest("Either Username or Email is required.");
+                return HttpResponseHelper.BadRequest("Either Username or Email is required.");
             }
 
             if (string.IsNullOrWhiteSpace(register.Password))
             {
-                return Helper.HttpBadRequest("Password is required.");
+                return HttpResponseHelper.BadRequest("Password is required.");
             }
 
             var player = new Player();
@@ -160,7 +159,7 @@ namespace SocialGamificationAsset.Controllers
             {
                 if (await Player.ExistsUsername(_context, register.Username))
                 {
-                    return Helper.HttpBadRequest("Player with this Username already exists.");
+                    return HttpResponseHelper.BadRequest("Player with this Username already exists.");
                 }
 
                 player.Username = register.Username;
@@ -170,13 +169,13 @@ namespace SocialGamificationAsset.Controllers
             {
                 if (await Player.ExistsEmail(_context, register.Email))
                 {
-                    return Helper.HttpBadRequest("Player with this Email already exists.");
+                    return HttpResponseHelper.BadRequest("Player with this Email already exists.");
                 }
 
                 player.Email = register.Email;
             }
 
-            player.Password = Helper.HashPassword(register.Password);
+            player.Password = PasswordHelper.HashPassword(register.Password);
 
             _context.Players.Add(player);
 
@@ -209,13 +208,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var player = await _context.Players.FindAsync(id);
             if (player == null)
             {
-                return Helper.HttpNotFound("No Player found.");
+                return HttpResponseHelper.NotFound("No such Player found.");
             }
 
             player.IsEnabled = false;

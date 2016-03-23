@@ -6,6 +6,7 @@ using System.Web.Http.Description;
 
 using Microsoft.AspNet.Mvc;
 
+using SocialGamificationAsset.Helpers;
 using SocialGamificationAsset.Models;
 
 namespace SocialGamificationAsset.Controllers
@@ -31,14 +32,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var target = await _context.Targets.FindAsync(id);
 
             if (target == null)
             {
-                return Helper.HttpNotFound("No Target found.");
+                return HttpResponseHelper.NotFound("No Target found.");
             }
 
             return Ok(target);
@@ -50,12 +51,12 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             if (id != target.Id)
             {
-                return Helper.HttpBadRequest("Invalid Target Id.");
+                return HttpResponseHelper.BadRequest("Invalid Target Id.");
             }
 
             _context.Entry(target).State = EntityState.Modified;
@@ -76,7 +77,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             _context.Targets.Add(target);
@@ -96,13 +97,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var target = await _context.Targets.FindAsync(id);
             if (target == null)
             {
-                return Helper.HttpNotFound("No Target found.");
+                return HttpResponseHelper.NotFound("No Target found.");
             }
 
             _context.Targets.Remove(target);

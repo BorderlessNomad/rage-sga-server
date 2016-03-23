@@ -7,6 +7,7 @@ using System.Web.Http.Description;
 
 using Microsoft.AspNet.Mvc;
 
+using SocialGamificationAsset.Helpers;
 using SocialGamificationAsset.Models;
 
 namespace SocialGamificationAsset.Controllers
@@ -42,7 +43,7 @@ namespace SocialGamificationAsset.Controllers
             var player = await _context.Players.FindAsync(id);
             if (player == null)
             {
-                return Helper.HttpNotFound("No such Player found.");
+                return HttpResponseHelper.NotFound("No such Player found.");
             }
 
             var groups =
@@ -62,14 +63,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var group = await _context.Groups.Where(g => g.Id.Equals(id)).Include(g => g.Players).FirstOrDefaultAsync();
 
             if (group == null)
             {
-                return Helper.HttpNotFound("No Group found.");
+                return HttpResponseHelper.NotFound("No Group found.");
             }
 
             return Ok(group);
@@ -82,18 +83,18 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var group = await _context.Groups.Where(g => g.Id.Equals(id)).Include(g => g.Players).FirstOrDefaultAsync();
             if (group == null)
             {
-                return Helper.HttpNotFound("No Group found.");
+                return HttpResponseHelper.NotFound("No Group found.");
             }
 
             if (string.IsNullOrWhiteSpace(form.Name))
             {
-                return Helper.HttpBadRequest("Group name is required.");
+                return HttpResponseHelper.BadRequest("Group name is required.");
             }
 
             _context.Entry(group).State = EntityState.Modified;
@@ -102,7 +103,7 @@ namespace SocialGamificationAsset.Controllers
             {
                 if (await Group.ExistsUsername(_context, form.Name))
                 {
-                    return Helper.HttpBadRequest("Group with this name already exists.");
+                    return HttpResponseHelper.BadRequest("Group with this name already exists.");
                 }
 
                 group.Username = form.Name;
@@ -134,19 +135,19 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var group = await _context.Groups.Where(g => g.Id.Equals(id)).Include(g => g.Players).FirstOrDefaultAsync();
             if (group == null)
             {
-                return Helper.HttpNotFound("No Group found.");
+                return HttpResponseHelper.NotFound("No Group found.");
             }
 
             var player = await _context.Players.Where(p => p.Id.Equals(playerId)).FirstOrDefaultAsync();
             if (player == null)
             {
-                return Helper.HttpNotFound("No such Player found.");
+                return HttpResponseHelper.NotFound("No such Player found.");
             }
 
             _context.Entry(group).State = EntityState.Modified;
@@ -156,7 +157,7 @@ namespace SocialGamificationAsset.Controllers
                 case "add":
                     if (group.Players.Contains(player))
                     {
-                        return Helper.HttpBadRequest($"Player with Id {playerId} already exists in the Group.");
+                        return HttpResponseHelper.BadRequest($"Player with Id {playerId} already exists in the Group.");
                     }
 
                     // Add Player
@@ -166,7 +167,7 @@ namespace SocialGamificationAsset.Controllers
                 case "remove":
                     if (!group.Players.Contains(player))
                     {
-                        return Helper.HttpBadRequest($"No Player with Id {playerId} exists in the Group.");
+                        return HttpResponseHelper.BadRequest($"No Player with Id {playerId} exists in the Group.");
                     }
 
                     // Remove Player
@@ -176,25 +177,25 @@ namespace SocialGamificationAsset.Controllers
                 case "admin":
                     if (group.AdminId != session.Player.Id)
                     {
-                        return Helper.HttpUnauthorized($"You are not the Admin of this Group.");
+                        return HttpResponseHelper.Unauthorized($"You are not the Admin of this Group.");
                     }
 
                     if (!group.Players.Contains(player))
                     {
-                        return Helper.HttpBadRequest($"No Player with Id {playerId} exists in the Group.");
+                        return HttpResponseHelper.BadRequest($"No Player with Id {playerId} exists in the Group.");
                     }
 
                     // Make Admin
                     if (group.AdminId == player.Id)
                     {
-                        return Helper.HttpBadRequest($"You are already Admin of this Group.");
+                        return HttpResponseHelper.BadRequest($"You are already Admin of this Group.");
                     }
 
                     group.Admin = player;
 
                     break;
                 default:
-                    return Helper.HttpBadRequest($"'{target}' is not a valid Action.");
+                    return HttpResponseHelper.BadRequest($"'{target}' is not a valid Action.");
             }
 
             var error = await SaveChangesAsync();
@@ -213,24 +214,24 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             if (string.IsNullOrWhiteSpace(form.Name))
             {
-                return Helper.HttpBadRequest("Group name is required.");
+                return HttpResponseHelper.BadRequest("Group name is required.");
             }
 
             if (await Group.ExistsUsername(_context, form.Name))
             {
-                return Helper.HttpBadRequest("Group with this name already exists.");
+                return HttpResponseHelper.BadRequest("Group with this name already exists.");
             }
 
             var group = new Group { Username = form.Name, Type = form.Type, AdminId = session.Player.Id };
 
             if (form.Players == null || form.Players.Count < 1)
             {
-                return Helper.HttpBadRequest("Group requires minimum 1 Player.");
+                return HttpResponseHelper.BadRequest("Group requires minimum 1 Player.");
             }
 
             IList<Player> players = new List<Player>();
@@ -239,7 +240,7 @@ namespace SocialGamificationAsset.Controllers
                 var player = await _context.Players.FindAsync(playerId);
                 if (player == null)
                 {
-                    return Helper.HttpNotFound($"No Player with Id {playerId} exists.");
+                    return HttpResponseHelper.NotFound($"No Player with Id {playerId} exists.");
                 }
 
                 players.Add(player);
@@ -265,13 +266,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var group = await _context.Groups.FindAsync(id);
             if (group == null)
             {
-                return Helper.HttpNotFound("No Group found.");
+                return HttpResponseHelper.NotFound("No Group found.");
             }
 
             group.IsEnabled = false;

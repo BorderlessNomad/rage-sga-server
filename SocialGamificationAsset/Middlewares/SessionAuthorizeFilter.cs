@@ -11,9 +11,10 @@ using Microsoft.Extensions.Primitives;
 
 using Newtonsoft.Json;
 
+using SocialGamificationAsset.Helpers;
 using SocialGamificationAsset.Models;
 
-namespace SocialGamificationAsset.Policies
+namespace SocialGamificationAsset.Middlewares
 {
     public interface ISessionAuthorizeFilter
     {
@@ -51,7 +52,7 @@ namespace SocialGamificationAsset.Policies
                     return;
                 }
 
-                context.Result = Helper.HttpBadRequest($"Invalid value for {DocumentationApiKey}.");
+                context.Result = HttpResponseHelper.BadRequest($"Invalid value for {DocumentationApiKey}.");
 
                 return;
             }
@@ -62,7 +63,7 @@ namespace SocialGamificationAsset.Policies
             // Check if Session Header exists
             if (!headerExists)
             {
-                context.Result = Helper.HttpUnauthorized($"No {SessionHeaderName} Header found.");
+                context.Result = HttpResponseHelper.Unauthorized($"No {SessionHeaderName} Header found.");
 
                 return;
             }
@@ -73,12 +74,12 @@ namespace SocialGamificationAsset.Policies
             // Token value must be valid Guid
             if (!isValidGuid)
             {
-                context.Result = Helper.HttpUnauthorized($"Invalid {SessionHeaderName} Header.");
+                context.Result = HttpResponseHelper.Unauthorized($"Invalid {SessionHeaderName} Header.");
 
                 return;
             }
 
-            var localSession = httpContext.Session.GetObjectFromJson<Session>("__session");
+            var localSession = SessionExtensions.GetObjectFromJson<Session>(httpContext.Session, "__session");
 
             // If 'active' session already exists skip DB call
             if (localSession != null && localSession.Id.Equals(token) && localSession.Player != null)
@@ -86,12 +87,15 @@ namespace SocialGamificationAsset.Policies
                 return;
             }
 
-            var db = httpContext.RequestServices.GetRequiredService<SocialGamificationAssetContext>();
+            var db =
+                ServiceProviderExtensions.GetRequiredService<SocialGamificationAssetContext>(
+                    httpContext.RequestServices);
             if (db == null)
             {
-                context.Result = Helper.JsonErrorContentResult(
-                    "Unable to connect with requested Database service.",
-                    StatusCodes.Status503ServiceUnavailable);
+                context.Result =
+                    HttpResponseHelper.ErrorContentResult(
+                        "Unable to connect with requested Database service.",
+                        StatusCodes.Status503ServiceUnavailable);
 
                 return;
             }
@@ -101,13 +105,13 @@ namespace SocialGamificationAsset.Policies
             // Find Session
             if (session == null)
             {
-                context.Result = Helper.HttpNotFound($"Session {token} is Invalid.");
+                context.Result = HttpResponseHelper.NotFound($"Session {token} is Invalid.");
 
                 return;
             }
 
             // Set right Session
-            httpContext.Session.SetObjectAsJson("__session", session);
+            SessionExtensions.SetObjectAsJson(httpContext.Session, "__session", session);
         }
     }
 
@@ -115,7 +119,7 @@ namespace SocialGamificationAsset.Policies
     {
         public static void SetObjectAsJson(this ISession session, string key, object value)
         {
-            session.SetString(key, Helper.SerializeToJson(value));
+            session.SetString(key, HttpResponseHelper.SerializeToJson(value));
         }
 
         public static T GetObjectFromJson<T>(this ISession session, string key)

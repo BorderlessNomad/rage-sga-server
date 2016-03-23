@@ -1,8 +1,15 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.Infrastructure;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
+
+using Microsoft.AspNet.Http;
+using Microsoft.AspNet.Mvc;
 
 using Newtonsoft.Json;
+
+using SocialGamificationAsset.Helpers;
 
 namespace SocialGamificationAsset.Models
 {
@@ -43,7 +50,7 @@ namespace SocialGamificationAsset.Models
         public DateTime? UpdatedDate { get; set; }
 
         /// <summary>
-        ///     Set defauly Created Date field.
+        ///     Set default Created Date field.
         /// </summary>
         public DateTime CreatedDate { get; set; }
 
@@ -52,6 +59,51 @@ namespace SocialGamificationAsset.Models
         /// </summary>
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
+
+        /// <summary>
+        ///     Asynchronously save data
+        /// </summary>
+        /// <returns>
+        ///     <para>
+        ///         ErrorContentResult if
+        ///         <see cref="System.Data.Entity.Infrastructure.DbUpdateException" />
+        ///     </para>
+        ///     <para>exception occurs</para>
+        /// </returns>
+        public static async Task<ContentResult> SaveChanges(
+            SocialGamificationAssetContext _context,
+            bool isAsync = false)
+        {
+            try
+            {
+                if (isAsync)
+                {
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    _context.SaveChanges();
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                return HttpResponseHelper.ErrorContentResult(
+                    GetExceptionString(e),
+                    StatusCodes.Status500InternalServerError);
+            }
+
+            return null;
+        }
+
+        public static string GetExceptionString(Exception e)
+        {
+            if (e.Message == "An error occurred while updating the entries. See the inner exception for details.")
+            {
+                return GetExceptionString(e.InnerException);
+            }
+
+            return e.Message;
+        }
     }
 
     public struct ApiError

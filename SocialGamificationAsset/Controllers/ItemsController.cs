@@ -7,6 +7,7 @@ using System.Web.Http.Description;
 
 using Microsoft.AspNet.Mvc;
 
+using SocialGamificationAsset.Helpers;
 using SocialGamificationAsset.Models;
 
 namespace SocialGamificationAsset.Controllers
@@ -58,7 +59,7 @@ namespace SocialGamificationAsset.Controllers
             var type = await query.FirstOrDefaultAsync();
             if (type == null)
             {
-                return Helper.HttpBadRequest("Invalid Item Type");
+                return HttpResponseHelper.BadRequest("Invalid Item Type");
             }
 
             var total =
@@ -88,13 +89,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var item = await _context.Items.Where(i => i.Id.Equals(id)).Include(i => i.Type).FirstOrDefaultAsync();
             if (item == null)
             {
-                return Helper.HttpNotFound("No such Item found.");
+                return HttpResponseHelper.NotFound("No such Item found.");
             }
 
             return Ok(item);
@@ -107,14 +108,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var itemType = await _context.ItemTypes.FindAsync(id);
 
             if (itemType == null)
             {
-                return Helper.HttpNotFound("No such Item Type found.");
+                return HttpResponseHelper.NotFound("No such Item Type found.");
             }
 
             return Ok(itemType);
@@ -127,13 +128,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             if ((!form.ItemTypeId.HasValue || form.ItemTypeId == Guid.Empty)
                 && string.IsNullOrWhiteSpace(form.ItemTypeName))
             {
-                return Helper.HttpBadRequest("Either ItemTypeId or ItemTypeName is required.");
+                return HttpResponseHelper.BadRequest("Either ItemTypeId or ItemTypeName is required.");
             }
 
             var searchByName = true;
@@ -152,7 +153,7 @@ namespace SocialGamificationAsset.Controllers
             var itemType = await query.FirstOrDefaultAsync();
             if (itemType == null)
             {
-                return Helper.HttpBadRequest("Invalid Item Type.");
+                return HttpResponseHelper.BadRequest("Invalid Item Type.");
             }
 
             var item = new Item { ItemTypeId = itemType.Id };
@@ -194,13 +195,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var type = await _context.ItemTypes.Where(t => t.Name.Equals(itemType.Name)).FirstOrDefaultAsync();
             if (type != null)
             {
-                return Helper.HttpBadRequest("ItemType '" + itemType.Name + "' already exists.");
+                return HttpResponseHelper.BadRequest("ItemType '" + itemType.Name + "' already exists.");
             }
 
             _context.ItemTypes.Add(itemType);

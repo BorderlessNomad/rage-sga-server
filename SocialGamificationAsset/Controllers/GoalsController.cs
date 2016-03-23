@@ -7,6 +7,7 @@ using System.Web.Http.Description;
 
 using Microsoft.AspNet.Mvc;
 
+using SocialGamificationAsset.Helpers;
 using SocialGamificationAsset.Models;
 
 namespace SocialGamificationAsset.Controllers
@@ -38,6 +39,7 @@ namespace SocialGamificationAsset.Controllers
         /// <summary>
         ///     Get <see cref="Player" /> 's Goals
         /// </summary>
+        /// <param name="id">GUID of <see cref="Player" /></param>
         /// <returns>
         /// </returns>
         [HttpGet("actor", Name = "GetPlayerGoals")]
@@ -65,7 +67,7 @@ namespace SocialGamificationAsset.Controllers
             var actor = await _context.Actors.Where(p => p.Id.Equals(id)).FirstOrDefaultAsync();
             if (actor == null)
             {
-                return Helper.HttpNotFound("No such Actor found.");
+                return HttpResponseHelper.NotFound("No such Actor found.");
             }
 
             IList<ActorGoal> actorGoals =
@@ -74,41 +76,148 @@ namespace SocialGamificationAsset.Controllers
             return Ok(actorGoals);
         }
 
-        // GET: api/goals/936da01f-9abd-4d9d-80c7-02af85c822a8
-        [HttpGet("{id}", Name = "GetGoal")]
-        [ResponseType(typeof(Goal))]
-        public async Task<IActionResult> GetGoal([FromRoute] Guid id)
+        // GET: api/goals/936da01f-9abd-4d9d-80c7-02af85c822a8/role
+        [HttpGet("{name}/role", Name = "GetGoalsByRole")]
+        [ResponseType(typeof(IList<Goal>))]
+        public async Task<IActionResult> GetGoalsByRole([FromRoute] string name)
         {
-            if (!ModelState.IsValid)
+            if (string.IsNullOrEmpty(name))
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.NotFound("No Role found");
+            }
+            var roletest = await _context.Roles.Where(g => g.Name.Equals(name)).FirstOrDefaultAsync();
+            if (roletest == null)
+            {
+                return HttpResponseHelper.NotFound("No Role found for the passed name");
             }
 
-            var goal = await _context.Goals.FindAsync(id);
+            IList<Goal> goals =
+                await
+                _context.Roles.Where(g => g.Name.Equals(name))
+                        .Include(g => g.Goal)
+                        .Select(g => g.Goal)
+                        .Include(g => g.Concern)
+                        .Include(g => g.RewardResource)
+                        .Include(g => g.Feedback)
+                        .ToListAsync();
+
+            foreach (var g in goals)
+            {
+                g.Roles = await _context.Roles.Where(r => r.GoalId.Equals(g.Id)).ToListAsync();
+                g.Rewards = await _context.Rewards.Where(r => r.GoalId.Equals(g.Id)).ToListAsync();
+                g.Targets = await _context.Targets.Where(t => t.GoalId.Equals(g.Id)).ToListAsync();
+                g.Actions = await _context.Actions.Where(a => a.GoalId.Equals(g.Id)).ToListAsync();
+                IList<Guid> activitiesIDs = g.Roles.AsEnumerable().Select(r => r.ActivityId).ToList();
+                g.Activities =
+                    await
+                    _context.Activities.Where(a => activitiesIDs.Contains(a.Id)).OrderBy(a => a.Name).ToListAsync();
+            }
+
+            if (goals.Count == 0)
+            {
+                return HttpResponseHelper.NotFound("No Goals found.");
+            }
+
+            return Ok(goals);
+        }
+
+        // GET: api/goals/936da01f-9abd-4d9d-80c7-02af85c822a8/actor
+        [HttpGet("{id:Guid}/actor", Name = "GetActorGoal")]
+        [ResponseType(typeof(ActorGoal))]
+        public async Task<IActionResult> GetActorGoal([FromRoute] Guid id)
+        {
+            var goal =
+                await
+                _context.ActorGoal.Where(g => g.GoalId.Equals(id))
+                        .Where(g => g.ActorId.Equals(session.Player.Id))
+                        .Include(g => g.Actor)
+                        .Include(g => g.Goal)
+                        .Include(g => g.ConcernOutcome)
+                        .Include(g => g.RewardResourceOutcome)
+                        .Include(g => g.Activity)
+                        .Include(g => g.Role)
+                        .FirstOrDefaultAsync();
+
+            if (!ModelState.IsValid)
+            {
+                return HttpResponseHelper.BadRequest(ModelState);
+            }
+
             if (goal == null)
             {
-                return Helper.HttpNotFound("No Goal found.");
+                return HttpResponseHelper.NotFound("No ActorGoal found.");
             }
 
             return Ok(goal);
         }
 
-        // PUT: api/goals/936da01f-9abd-4d9d-80c7-02af85c822a8
-        [HttpPut("{id}")]
+        // GET: api/goals/936da01f-9abd-4d9d-80c7-02af85c822a8
+        [HttpGet("{id:Guid}", Name = "GetGoal")]
         [ResponseType(typeof(Goal))]
-        public async Task<IActionResult> PutGoal([FromRoute] Guid id, [FromBody] Goal goal)
+        public async Task<IActionResult> GetGoal([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
-            if (id != goal.Id)
+            var goal = await _context.Goals.FindAsync(id);
+            if (goal == null)
             {
-                return Helper.HttpBadRequest("Invalid Goal Id.");
+                return HttpResponseHelper.NotFound("No Goal found.");
+            }
+
+            return Ok(goal);
+        }
+
+        // GET: api/goals/936da01f-9abd-4d9d-80c7-02af85c822a8
+        [HttpGet("{id:Guid}/detailed", Name = "GetGoalDetailed")]
+        [ResponseType(typeof(Goal))]
+        public async Task<IActionResult> GetGoalDetailed([FromRoute] Guid id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return HttpResponseHelper.BadRequest(ModelState);
+            }
+
+            var goal = await _context.Goals.FindAsync(id);
+            if (goal == null)
+            {
+                return HttpResponseHelper.NotFound("No Goal found.");
+            }
+            goal.Concern = await _context.ConcernMatrix.FindAsync(goal.ConcernId);
+            goal.RewardResource = await _context.RewardResourceMatrix.FindAsync(goal.RewardResourceId);
+            goal.Feedback = await _context.GoalFeedback.FindAsync(goal.FeedbackId);
+            goal.Roles = await _context.Roles.Where(r => r.GoalId.Equals(goal.Id)).ToListAsync();
+
+            IList<Guid> activitiesIDs = goal.Roles.AsEnumerable().Select(r => r.ActivityId).ToList();
+            goal.Activities =
+                await _context.Activities.Where(a => activitiesIDs.Contains(a.Id)).OrderBy(a => a.Name).ToListAsync();
+            goal.Rewards = await _context.Rewards.Where(r => r.GoalId.Equals(goal.Id)).ToListAsync();
+            goal.Targets = await _context.Targets.Where(t => t.GoalId.Equals(goal.Id)).ToListAsync();
+            goal.Actions = await _context.Actions.Where(a => a.GoalId.Equals(goal.Id)).ToListAsync();
+
+            return Ok(goal);
+        }
+
+        // PUT: api/goals/936da01f-9abd-4d9d-80c7-02af85c822a8
+        [HttpPut("{id:Guid}")]
+        [ResponseType(typeof(Goal))]
+        public async Task<IActionResult> PutGoal([FromRoute] Guid id, [FromBody] Goal form)
+        {
+            if (!ModelState.IsValid)
+            {
+                return HttpResponseHelper.BadRequest(ModelState);
+            }
+
+            var goal = await _context.Goals.Where(g => g.Id.Equals(id)).FirstOrDefaultAsync();
+            if (goal == null)
+            {
+                return HttpResponseHelper.NotFound("No such Goal found.");
             }
 
             _context.Entry(goal).State = EntityState.Modified;
+            goal.Description = form.Description;
 
             var error = await SaveChangesAsync();
             if (error != null)
@@ -116,17 +225,56 @@ namespace SocialGamificationAsset.Controllers
                 return error;
             }
 
-            return CreatedAtRoute("GetGoal", new { id = goal.Id }, goal);
+            return Ok(goal);
         }
 
         // POST: api/goals
-        [HttpPost]
+        [HttpPost("", Name = "CreateGoal")]
         [ResponseType(typeof(Goal))]
-        public async Task<IActionResult> PostGoal([FromBody] Goal goal)
+        public async Task<IActionResult> CreateGoal([FromBody] Goal goal)
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
+            }
+
+            if (goal.ConcernId != Guid.Empty)
+            {
+                var concerntest = await _context.ConcernMatrix.FindAsync(goal.ConcernId);
+                if (concerntest == null)
+                {
+                    return HttpResponseHelper.NotFound("No Concern found for the passed ID");
+                }
+            }
+            else if (goal.Concern == null)
+            {
+                return HttpResponseHelper.NotFound("No Concern found");
+            }
+
+            if (goal.RewardResourceId != Guid.Empty)
+            {
+                var rrtest = await _context.RewardResourceMatrix.FindAsync(goal.RewardResourceId);
+                if (rrtest == null)
+                {
+                    return HttpResponseHelper.NotFound("No RewardResource found for the passed ID");
+                }
+            }
+            else if (goal.RewardResource == null)
+            {
+                return HttpResponseHelper.NotFound("No RewardResource found");
+            }
+
+            if (goal.FeedbackId != Guid.Empty)
+            {
+                var fbtest = await _context.GoalFeedback.FindAsync(goal.FeedbackId);
+                if (fbtest == null)
+                {
+                    return HttpResponseHelper.NotFound("No GoalFeedback found for the passed ID");
+                }
+            }
+            else if (goal.Feedback == null)
+            {
+                return HttpResponseHelper.NotFound("No GoalFeedback found");
             }
 
             _context.Goals.Add(goal);
@@ -137,26 +285,113 @@ namespace SocialGamificationAsset.Controllers
                 return error;
             }
 
-            return CreatedAtRoute("GetGoal", new { id = goal.Id }, goal);
+            return CreatedAtRoute("GetGoalDetailed", new { id = goal.Id }, goal);
+        }
+
+        // POST: api/goals/actors
+        [HttpPost("actors", Name = "CreateActorGoal")]
+        [ResponseType(typeof(ActorGoal))]
+        public async Task<IActionResult> CreateActorGoal([FromBody] ActorGoal goal)
+        {
+            if (!ModelState.IsValid)
+            {
+                return HttpResponseHelper.BadRequest(ModelState);
+            }
+
+            if (goal.ActivityId == Guid.Empty)
+            {
+                return HttpResponseHelper.NotFound("No Activity found");
+            }
+
+            var activitytest = await _context.Activities.FindAsync(goal.ActivityId);
+            if (activitytest == null)
+            {
+                return HttpResponseHelper.NotFound("No Activity found for the passed ID");
+            }
+
+            if (goal.ActorId == Guid.Empty)
+            {
+                return HttpResponseHelper.NotFound("No Actor found");
+            }
+
+            var actortest = await _context.Players.FindAsync(goal.ActorId);
+            if (actortest == null)
+            {
+                return HttpResponseHelper.NotFound("No Actor found for the passed ID");
+            }
+
+            if (goal.ConcernOutcomeId == Guid.Empty)
+            {
+                return HttpResponseHelper.NotFound("No ConcernOutcome found");
+            }
+
+            var concerntest = await _context.ConcernMatrix.FindAsync(goal.ConcernOutcomeId);
+            if (concerntest == null)
+            {
+                return HttpResponseHelper.NotFound("No ConcernOutcome found for the passed ID");
+            }
+
+            if (goal.GoalId == Guid.Empty)
+            {
+                return HttpResponseHelper.NotFound("No Goal found");
+            }
+
+            var goaltest = await _context.Goals.FindAsync(goal.GoalId);
+            if (goaltest == null)
+            {
+                return HttpResponseHelper.NotFound("No Goal found for the passed ID");
+            }
+
+            if (goal.RewardResourceOutcomeId == Guid.Empty)
+            {
+                return HttpResponseHelper.NotFound("No RewardResourceOutcome found");
+            }
+
+            var rrtest = await _context.RewardResourceMatrix.FindAsync(goal.RewardResourceOutcomeId);
+            if (rrtest == null)
+            {
+                return HttpResponseHelper.NotFound("No RewardResourceOutcome found for the passed ID");
+            }
+
+            if (goal.RoleId == Guid.Empty)
+            {
+                return HttpResponseHelper.NotFound("No Role found");
+            }
+
+            var roletest = await _context.Roles.FindAsync(goal.RoleId);
+            if (roletest == null)
+            {
+                return HttpResponseHelper.NotFound("No Role found for the passed ID");
+            }
+
+            _context.ActorGoal.Add(goal);
+
+            var error = await SaveChangesAsync();
+            if (error != null)
+            {
+                return error;
+            }
+
+            return CreatedAtRoute("GetActorGoal", new { id = goal.GoalId }, goal);
         }
 
         // DELETE: api/goals/936da01f-9abd-4d9d-80c7-02af85c822a8
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:Guid}")]
         [ResponseType(typeof(Goal))]
         public async Task<IActionResult> DeleteGoal([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var goal = await _context.Goals.FindAsync(id);
             if (goal == null)
             {
-                return Helper.HttpNotFound("No Goal found.");
+                return HttpResponseHelper.NotFound("No Goal found.");
             }
 
-            _context.Goals.Remove(goal);
+            goal.IsDeleted = true;
 
             var error = await SaveChangesAsync();
             if (error != null)

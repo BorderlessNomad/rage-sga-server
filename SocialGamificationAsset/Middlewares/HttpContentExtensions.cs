@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 
-namespace SocialGamificationAsset.Tests
+namespace SocialGamificationAsset.Middlewares
 {
     public static class HttpContentExtensions
     {

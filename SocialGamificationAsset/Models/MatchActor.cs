@@ -5,7 +5,10 @@ using System.Data.Entity.Validation;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
+using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
+
+using SocialGamificationAsset.Helpers;
 
 namespace SocialGamificationAsset.Models
 {
@@ -37,7 +40,7 @@ namespace SocialGamificationAsset.Models
             }
             catch (DbEntityValidationException e)
             {
-                return Helper.JsonErrorContentResult(e.Message);
+                return HttpResponseHelper.ErrorContentResult(e.Message, StatusCodes.Status500InternalServerError);
             }
 
             for (var i = 1; i <= match.TotalRounds; ++i)
@@ -53,7 +56,7 @@ namespace SocialGamificationAsset.Models
                 }
                 catch (DbEntityValidationException e)
                 {
-                    return Helper.JsonErrorContentResult(e.Message);
+                    return HttpResponseHelper.ErrorContentResult(e.Message, StatusCodes.Status500InternalServerError);
                 }
             }
 

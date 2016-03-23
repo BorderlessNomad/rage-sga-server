@@ -15,7 +15,8 @@
                 location.
             </summary>
             <param name="cacheProfiles">
-                The settings for the <see cref="T:Microsoft.AspNet.Mvc.ResponseCacheAttribute" /> 's.
+                The settings for the
+                <see cref="T:Microsoft.AspNet.Mvc.ResponseCacheAttribute" /> 's.
             </param>
             <param name="configuration">
                 Gets or sets the application configuration, where key value pair
@@ -225,7 +226,7 @@
                 settings are stored.
             </param>
         </member>
-        <member name="M:SocialGamificationAsset.Startup.ConfigureRouting(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.AspNet.Routing.RouteOptions)">
+        <member name="M:SocialGamificationAsset.Startup.ConfigureRouting(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
                 Improve SEO by stopping duplicate URL's due to case differences or
                 trailing slashes. See
@@ -233,11 +234,6 @@
             </summary>
             <param name="services"></param>
             <param name="routeOptions">The routing options.</param>
-        </member>
-        <member name="M:SocialGamificationAsset.XHttpHeaderOverride.Invoke(Microsoft.AspNet.Http.HttpContext)">
-            <exception cref="T:System.Exception">
-                A <see langword="delegate" /> callback throws an exception.
-            </exception>
         </member>
         <member name="T:SocialGamificationAsset.AppSettings">
             <summary>
@@ -265,13 +261,25 @@
                 Asynchronously save data
             </summary>
             <returns>
-                JsonErrorContentResult if <see cref="T:System.Data.Entity.Infrastructure.DbUpdateException" /> exception
+                ErrorContentResult if <see cref="T:System.Data.Entity.Infrastructure.DbUpdateException" /> exception
                 occurs
             </returns>
         </member>
-        <member name="T:SocialGamificationAsset.Controllers.PlayersController">
+        <member name="M:SocialGamificationAsset.Controllers.GoalsController.GetPlayerGoals">
             <summary>
+                Get <see cref="T:SocialGamificationAsset.Models.Player" /> 's Goals
             </summary>
+            <param name="id">GUID of <see cref="T:SocialGamificationAsset.Models.Player" /></param>
+            <returns>
+            </returns>
+        </member>
+        <member name="M:SocialGamificationAsset.Controllers.GoalsController.GetActorGoals(System.Guid)">
+            <summary>
+                Get <see cref="T:SocialGamificationAsset.Models.Actor" /> 's Goals
+            </summary>
+            <param name="id">GUID of <see cref="T:SocialGamificationAsset.Models.Player" /></param>
+            <returns>
+            </returns>
         </member>
         <member name="M:SocialGamificationAsset.Controllers.PlayersController.#ctor(SocialGamificationAsset.Models.SocialGamificationAssetContext)">
             <summary>
@@ -283,29 +291,12 @@
             <summary>
                 Get <see cref="T:SocialGamificationAsset.Models.Player" /> Details
             </summary>
-            <param name="id">GUID of <see cref="T:SocialGamificationAsset.Models.Player" /></param>
             <returns>
             </returns>
         </member>
         <member name="M:SocialGamificationAsset.Controllers.PlayersController.GetPlayer(System.Guid)">
             <summary>
                 Get <see cref="T:SocialGamificationAsset.Models.Player" /> Details
-            </summary>
-            <param name="id">GUID of <see cref="T:SocialGamificationAsset.Models.Player" /></param>
-            <returns>
-            </returns>
-        </member>
-        <member name="M:SocialGamificationAsset.Controllers.PlayersController.GetPlayerAchievements(System.Guid)">
-            <summary>
-                Get <see cref="T:SocialGamificationAsset.Models.Player" /> 's Achievements
-            </summary>
-            <param name="id">GUID of <see cref="T:SocialGamificationAsset.Models.Player" /></param>
-            <returns>
-            </returns>
-        </member>
-        <member name="M:SocialGamificationAsset.Controllers.PlayersController.GetPlayerGoals(System.Guid)">
-            <summary>
-                Get <see cref="T:SocialGamificationAsset.Models.Player" /> 's Goals
             </summary>
             <param name="id">GUID of <see cref="T:SocialGamificationAsset.Models.Player" /></param>
             <returns>
@@ -431,7 +422,7 @@
         </member>
         <member name="P:SocialGamificationAsset.Models.DbEntity.CreatedDate">
             <summary>
-                Set defauly Created Date field.
+                Set default Created Date field.
             </summary>
         </member>
         <member name="P:SocialGamificationAsset.Models.DbEntity.Id">
@@ -439,18 +430,30 @@
                 Custom Primary Key set to <see cref="T:System.Guid" /> .
             </summary>
         </member>
+        <member name="M:SocialGamificationAsset.Models.DbEntity.SaveChanges(SocialGamificationAsset.Models.SocialGamificationAssetContext,System.Boolean)">
+            <summary>
+                Asynchronously save data
+            </summary>
+            <returns>
+                <para>
+                    ErrorContentResult if
+                    <see cref="T:System.Data.Entity.Infrastructure.DbUpdateException" />
+                </para>
+                <para>exception occurs</para>
+            </returns>
+        </member>
         <member name="M:SocialGamificationAsset.Models.Group.AddPlayers(SocialGamificationAsset.Models.SocialGamificationAssetContext,System.Collections.Generic.ICollection{SocialGamificationAsset.Models.Player})">
             <summary>
-                Create the group for the first time. Needs to populate the fake
-                actor and get the list of player actors.
+                <para>
+                    Assign <see cref="P:SocialGamificationAsset.Models.Group.Players" />
+                </para>
+                <para>to the Group.</para>
             </summary>
         </member>
-        <member name="M:SocialGamificationAsset.Models.Helper.Shuffle``1(System.Collections.Generic.IList{``0},System.Int32)">
-             The modern version of the Fisher–Yates shuffle aka 'Algorithm P'
-             -- To shuffle an array a of n elements (indices 0..n-1):
-             for i from n−1 down to 1 do
-            		j ← random integer such that 0 ≤ j ≤ i
-            		exchange a[j] and a[i]
+        <member name="M:SocialGamificationAsset.Models.Group.ExistsUsername(SocialGamificationAsset.Models.SocialGamificationAssetContext,System.String)">
+            		 * Check if the current Username already exists
+                     *
+                     * @return boolean Returns TRUE if Username exists
         </member>
         <member name="M:SocialGamificationAsset.Models.Player.ExistsUsername(SocialGamificationAsset.Models.SocialGamificationAssetContext,System.String)">
             		 * Check if the current Username already exists
@@ -471,6 +474,76 @@
              Get the current session of Logged account
             
              @return Session
+        </member>
+        <member name="M:SocialGamificationAsset.Models.Player.AddGroups(SocialGamificationAsset.Models.SocialGamificationAssetContext,System.Collections.Generic.ICollection{SocialGamificationAsset.Models.Player})">
+            <summary>
+                <para>
+                    Assign <see cref="P:SocialGamificationAsset.Models.Player.Groups" />
+                </para>
+                <para>to the Player.</para>
+            </summary>
+        </member>
+        <member name="M:SocialGamificationAsset.Helpers.GenericHelper.Shuffle``1(System.Collections.Generic.IList{``0},System.Int32)">
+             The modern version of the Fisher–Yates shuffle aka 'Algorithm P'
+             -- To shuffle an array a of n elements (indices 0..n-1):
+             for i from n−1 down to 1 do
+            		j ← random integer such that 0 ≤ j ≤ i
+            		exchange a[j] and a[i]
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:SocialGamificationAsset.Helpers.HttpResponseHelper.ErrorContentResult(System.Object,System.Int32,System.String)" -->
+        <member name="T:SocialGamificationAsset.Middlewares.InternalServerErrorOnExceptionMiddleware">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:SocialGamificationAsset.Middlewares.InternalServerErrorOnExceptionMiddleware.#ctor(Microsoft.AspNet.Builder.RequestDelegate)">
+            <summary>
+            </summary>
+            <param name="next"></param>
+        </member>
+        <member name="M:SocialGamificationAsset.Middlewares.InternalServerErrorOnExceptionMiddleware.Invoke(Microsoft.AspNet.Http.HttpContext)">
+            <summary>
+            </summary>
+            <param name="context"></param>
+            <returns>
+            </returns>
+        </member>
+        <member name="T:SocialGamificationAsset.Middlewares.NoServerHttpHeaderMiddleware">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:SocialGamificationAsset.Middlewares.NoServerHttpHeaderMiddleware.#ctor(Microsoft.AspNet.Builder.RequestDelegate)">
+            <summary>
+            </summary>
+            <param name="next"></param>
+        </member>
+        <member name="M:SocialGamificationAsset.Middlewares.NoServerHttpHeaderMiddleware.Invoke(Microsoft.AspNet.Http.HttpContext)">
+            <summary>
+            </summary>
+            <param name="context"></param>
+            <returns>
+            </returns>
+        </member>
+        <member name="M:SocialGamificationAsset.Middlewares.ResponseTimerMiddleware.#ctor(Microsoft.AspNet.Builder.RequestDelegate)">
+            <summary>
+            </summary>
+            <param name="next"></param>
+        </member>
+        <member name="M:SocialGamificationAsset.Middlewares.ResponseTimerMiddleware.Invoke(Microsoft.AspNet.Http.HttpContext)">
+            <summary>
+            </summary>
+            <param name="context"></param>
+            <returns>
+            </returns>
+        </member>
+        <member name="M:SocialGamificationAsset.Middlewares.XHttpHeaderOverrideMiddleware.#ctor(Microsoft.AspNet.Builder.RequestDelegate)">
+            <summary>
+            </summary>
+            <param name="next"></param>
+        </member>
+        <member name="M:SocialGamificationAsset.Middlewares.XHttpHeaderOverrideMiddleware.Invoke(Microsoft.AspNet.Http.HttpContext)">
+            <exception cref="T:System.Exception">
+                A <see langword="delegate" /> callback throws an exception.
+            </exception>
         </member>
     </members>
 </doc>

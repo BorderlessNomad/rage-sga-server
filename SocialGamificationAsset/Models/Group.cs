@@ -4,10 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 using Microsoft.AspNet.Mvc;
+
+using SocialGamificationAsset.Helpers;
 
 namespace SocialGamificationAsset.Models
 {
@@ -61,11 +62,14 @@ namespace SocialGamificationAsset.Models
             // Check if Group satisfy CustomData constraints
             IList<Group> groups = await query.Where(g => similarGroups.Contains(g.Id)).ToListAsync();
 
-            return Helper.Shuffle(groups, limit);
+            return GenericHelper.Shuffle(groups, limit);
         }
 
         /// <summary>
-        ///     Assign Players to the Group.
+        ///     <para>
+        ///         Assign <see cref="SocialGamificationAsset.Models.Group.Players" />
+        ///     </para>
+        ///     <para>to the Group.</para>
         /// </summary>
         public void AddPlayers(SocialGamificationAssetContext db, ICollection<Player> playersList)
         {

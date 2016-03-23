@@ -1,41 +1,38 @@
 ﻿{
-	"site_name": "Social Gamification Asset",
-	"AppSettings": {
-		"SiteTitle": "Social Gamification Asset",
-		"SiteDescription": "A short description of the site",
-		"SiteTermsOfService": "The terms of service for the site",
-		"Contact": {
-			"Name": "PlayGen Ltd",
-			"Email": "contact@playgen.com",
-			"Url": "http://playgen.com"
-		},
-		"License": {
-			"Name": "GNU General Public License",
-			"Url": ""
-		}
-	},
-	"CacheProfileSettings": {
-		"CacheProfiles": {
-			"Error": {
-				"Duration": 86400,
-				"Location": "Any"
-			}
-		}
-	},
-	"Data": {
-		"DefaultConnection": {
-			"ConnectionString": "Server=(localdb)\\MSSQLLocalDB;Database=SocialGamificationAsset;Trusted_Connection=True;MultipleActiveResultSets=true"
-		},
-		"MySQLConnection": {
-			"ConnectionString": "Server=localhost;Port=3306;Database=SocialGamificationAsset;Uid=root;Pwd=;"
-		}
-	},
-	"Logging": {
-		"IncludeScopes": false,
-		"LogLevel": {
-			"Default": "Verbose",
-			"System": "Information",
-			"Microsoft": "Information"
-		}
-	}
+    "site_name": "Social Gamification Asset",
+    "AppSettings": {
+        "SiteTitle": "Social Gamification Asset",
+        "SiteDescription": "A short description of the site",
+        "SiteTermsOfService": "The terms of service for the site",
+        "Contact": {
+            "Name": "PlayGen Ltd",
+            "Email": "contact@playgen.com",
+            "Url": "http://playgen.com"
+        },
+        "License": {
+            "Name": "GNU General Public License",
+            "Url": ""
+        }
+    },
+    "CacheProfileSettings": {
+        "CacheProfiles": {
+            "Error": {
+                "Duration": 86400,
+                "Location": "Any"
+            }
+        }
+    },
+    "Data": {
+        "MySQLConnection": {
+            "ConnectionString": "Server=server.playgen.com;Port=32771;Database=SocialGamificationAsset-Staging;Uid=root;Pwd=MMhdHr2LKJb57QnS;Convert Zero Datetime=true;Allow Zero Datetime=true"
+        }
+    },
+    "Logging": {
+        "IncludeScopes": false,
+        "LogLevel": {
+            "Default": "Verbose",
+            "System": "Information",
+            "Microsoft": "Information"
+        }
+    }
 }

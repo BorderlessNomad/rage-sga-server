@@ -6,6 +6,7 @@ using System.Web.Http.Description;
 
 using Microsoft.AspNet.Mvc;
 
+using SocialGamificationAsset.Helpers;
 using SocialGamificationAsset.Models;
 
 namespace SocialGamificationAsset.Controllers
@@ -31,14 +32,14 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var reward = await _context.Rewards.FindAsync(id);
 
             if (reward == null)
             {
-                return Helper.HttpNotFound("No Reward found.");
+                return HttpResponseHelper.NotFound("No Reward found.");
             }
 
             return Ok(reward);
@@ -50,12 +51,12 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             if (id != reward.Id)
             {
-                return Helper.HttpBadRequest("Invalid Reward Id.");
+                return HttpResponseHelper.BadRequest("Invalid Reward Id.");
             }
 
             _context.Entry(reward).State = EntityState.Modified;
@@ -76,7 +77,7 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             _context.Rewards.Add(reward);
@@ -96,13 +97,13 @@ namespace SocialGamificationAsset.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Helper.HttpBadRequest(ModelState);
+                return HttpResponseHelper.BadRequest(ModelState);
             }
 
             var reward = await _context.Rewards.FindAsync(id);
             if (reward == null)
             {
-                return Helper.HttpNotFound("No Reward found.");
+                return HttpResponseHelper.NotFound("No Reward found.");
             }
 
             _context.Rewards.Remove(reward);

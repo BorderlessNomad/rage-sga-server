@@ -26,6 +26,8 @@ namespace SocialGamificationAsset.Models
 
     public enum ConcernCategories
     {
+        None = 0,
+
         Defeat,
 
         Collaborate,
@@ -39,6 +41,8 @@ namespace SocialGamificationAsset.Models
 
     public enum RewardResourceCategories
     {
+        None = 0,
+
         HyperCooperation,
 
         Pdc, // TODO
