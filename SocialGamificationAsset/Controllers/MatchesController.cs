@@ -499,7 +499,8 @@ namespace SocialGamificationAsset.Controllers
             // Create Match
             var match = new Match { TournamentId = tournament.Id, TotalRounds = quickMatch.Rounds };
 
-            if (!string.IsNullOrWhiteSpace(quickMatch.Title) && GenericHelper.SanitizeString(quickMatch.Title).Length > 0)
+            if (!string.IsNullOrWhiteSpace(quickMatch.Title)
+                && GenericHelper.SanitizeString(quickMatch.Title).Length > 0)
             {
                 match.Title = GenericHelper.SanitizeString(quickMatch.Title);
             }

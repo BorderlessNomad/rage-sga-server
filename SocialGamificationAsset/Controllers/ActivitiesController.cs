@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNet.Mvc;
-using SocialGamificationAsset.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Description;
+
+using Microsoft.AspNet.Mvc;
+
 using SocialGamificationAsset.Helpers;
+using SocialGamificationAsset.Models;
 
 namespace SocialGamificationAsset.Controllers
 {
@@ -25,15 +27,15 @@ namespace SocialGamificationAsset.Controllers
             return _context.Activities;
         }
 
-		// GET: api/activities/dropdown
-		[HttpGet("dropdown")]
-		public IEnumerable<ActivityDropdown> GetActivityDropdown()
-		{
-			return _context.Activities.Select(a => new ActivityDropdown { Id = a.Id.ToString(), Name = a.Name });
-		}
+        // GET: api/activities/dropdown
+        [HttpGet("dropdown")]
+        public IEnumerable<ActivityDropdown> GetActivityDropdown()
+        {
+            return _context.Activities.Select(a => new ActivityDropdown { Id = a.Id.ToString(), Name = a.Name });
+        }
 
-		// GET: api/activities/936da01f-9abd-4d9d-80c7-02af85c822a8
-		[HttpGet("{id:Guid}", Name = "GetActivity")]
+        // GET: api/activities/936da01f-9abd-4d9d-80c7-02af85c822a8
+        [HttpGet("{id:Guid}", Name = "GetActivity")]
         [ResponseType(typeof(Activity))]
         public async Task<IActionResult> GetActivity([FromRoute] Guid id)
         {

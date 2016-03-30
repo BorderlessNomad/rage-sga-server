@@ -64,10 +64,7 @@ namespace SocialGamificationAsset.Models
         ///     Asynchronously save data
         /// </summary>
         /// <returns>
-        ///     <para>
-        ///         ErrorContentResult if
-        ///         <see cref="System.Data.Entity.Infrastructure.DbUpdateException" />
-        ///     </para>
+        ///     <para>ErrorContentResult if <see cref="DbUpdateException" /></para>
         ///     <para>exception occurs</para>
         /// </returns>
         public static async Task<ContentResult> SaveChanges(
