@@ -11,18 +11,14 @@ namespace SocialGamificationAsset
 {
     public partial class Startup
     {
-        private static string GetXmlCommentsPath(IApplicationEnvironment applicationEnvironment)
-        {
-            return
-                $@"{applicationEnvironment.ApplicationBasePath}\..\artifacts\bin\SocialGamificationAsset\Debug\dnx451\SocialGamificationAsset.xml";
-        }
-
+        /// <summary>
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="applicationEnvironment"></param>
         private static void ConfigureDocumentationGeneratorServices(
             IServiceCollection services,
             IApplicationEnvironment applicationEnvironment)
         {
-            var pathToDoc = GetXmlCommentsPath(applicationEnvironment);
-
             // SWASHBUCKLE SWAGGER API Documentation Generator
             services.AddSwaggerGen();
 
@@ -65,6 +61,9 @@ namespace SocialGamificationAsset
                     });
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="application"></param>
         private static void ConfigureDocumentationGenerator(IApplicationBuilder application)
         {
             application.UseSwaggerGen();
@@ -72,8 +71,16 @@ namespace SocialGamificationAsset
         }
     }
 
+    /// <summary>
+    /// </summary>
     public class DescendingAlphabeticComparer : IComparer<string>
     {
+        /// <summary>
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns>
+        /// </returns>
         public int Compare(string x, string y)
         {
             return string.Compare(y, x, StringComparison.CurrentCultureIgnoreCase);

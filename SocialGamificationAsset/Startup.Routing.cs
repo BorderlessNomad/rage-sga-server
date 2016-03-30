@@ -11,7 +11,6 @@ namespace SocialGamificationAsset
         ///     http://googlewebmastercentral.blogspot.co.uk/2010/04/to-slash-or-not-to-slash.html
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="routeOptions">The routing options.</param>
         private static void ConfigureRouting(IServiceCollection services)
         {
             // Add CORS support to the service
@@ -19,6 +18,9 @@ namespace SocialGamificationAsset
                 options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="application"></param>
         private static void ConfigureCors(IApplicationBuilder application)
         {
             application.UseCors("AllowAll");
