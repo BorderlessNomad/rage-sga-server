@@ -29,19 +29,26 @@ namespace SocialGamificationAsset.Controllers
         /// </summary>
         /// <returns>
         /// </returns>
-        [HttpGet("")]
         [HttpGet("whoami", Name = "WhoAmI")]
         [ResponseType(typeof(Player))]
         public IActionResult WhoAmI() => Ok(session.Player);
 
-        // GET: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
-        /// <summary>
-        ///     Get <see cref="Player" /> Details
-        /// </summary>
-        /// <param name="id">GUID of <see cref="Player" /></param>
-        /// <returns>
-        /// </returns>
-        [HttpGet("{id:Guid}", Name = "GetPlayer")]
+		// GET: api/players
+		[HttpGet]
+		[ResponseType(typeof(Player))]
+		public async Task<IActionResult> GetPlayer()
+		{
+			return Ok(await _context.Players.ToListAsync());
+		}
+
+		// GET: api/players/936da01f-9abd-4d9d-80c7-02af85c822a8
+		/// <summary>
+		///     Get <see cref="Player" /> Details
+		/// </summary>
+		/// <param name="id">GUID of <see cref="Player" /></param>
+		/// <returns>
+		/// </returns>
+		[HttpGet("{id:Guid}", Name = "GetPlayer")]
         [ResponseType(typeof(Player))]
         public async Task<IActionResult> GetPlayer([FromRoute] Guid id)
         {
