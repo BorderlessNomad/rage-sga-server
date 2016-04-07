@@ -9,14 +9,26 @@
                 The main start-up class for the application.
             </summary>
         </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureApplicationServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            </summary>
+            <param name="services"></param>
+            <param name="configuration"></param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureDatabaseInitialization(Microsoft.AspNet.Builder.IApplicationBuilder,System.Boolean)">
+            <summary>
+            </summary>
+            <param name="application"></param>
+            <param name="loadAsync"></param>
+            <exception cref="T:System.Exception" />
+        </member>
         <member name="M:SocialGamificationAsset.Startup.ConfigureCacheProfiles(System.Collections.Generic.IDictionary{System.String,Microsoft.AspNet.Mvc.CacheProfile},Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
                 Controls how controller actions cache content in one central
                 location.
             </summary>
             <param name="cacheProfiles">
-                The settings for the
-                <see cref="T:Microsoft.AspNet.Mvc.ResponseCacheAttribute" /> 's.
+                The settings for the <see cref="T:Microsoft.AspNet.Mvc.ResponseCacheAttribute" /> 's.
             </param>
             <param name="configuration">
                 Gets or sets the application configuration, where key value pair
@@ -140,6 +152,23 @@
                 under. This can be Development, Staging or Production by default.
             </param>
         </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureDiagnosticInformation(Microsoft.AspNet.Builder.IApplicationBuilder)">
+            <summary>
+                Adds HTTP Header for Time take for request to execute on server.
+            </summary>
+            <param name="application">The application.</param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureDocumentationGeneratorServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.PlatformAbstractions.IApplicationEnvironment)">
+            <summary>
+            </summary>
+            <param name="services"></param>
+            <param name="applicationEnvironment"></param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureDocumentationGenerator(Microsoft.AspNet.Builder.IApplicationBuilder)">
+            <summary>
+            </summary>
+            <param name="application"></param>
+        </member>
         <member name="M:SocialGamificationAsset.Startup.ConfigureErrorPages(Microsoft.AspNet.Builder.IApplicationBuilder,Microsoft.AspNet.Hosting.IHostingEnvironment)">
             <summary>
                 Configures the error pages for the application.
@@ -191,6 +220,13 @@
                 Configures the input and output formatters.
             </summary>
         </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureHeadersOverride(Microsoft.AspNet.Builder.IApplicationBuilder)">
+            <summary>
+                Allow passing X-Http-Header-Override in Http Header for requests to
+                be treated as other than GET/DELETE.
+            </summary>
+            <param name="application">The application.</param>
+        </member>
         <member name="M:SocialGamificationAsset.Startup.ConfigureLogging(Microsoft.AspNet.Builder.IApplicationBuilder,Microsoft.AspNet.Hosting.IHostingEnvironment,Microsoft.Extensions.Logging.ILoggerFactory,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
                 Configure tools used to help with logging
@@ -233,7 +269,33 @@
                 http://googlewebmastercentral.blogspot.co.uk/2010/04/to-slash-or-not-to-slash.html
             </summary>
             <param name="services"></param>
-            <param name="routeOptions">The routing options.</param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureCors(Microsoft.AspNet.Builder.IApplicationBuilder)">
+            <summary>
+            </summary>
+            <param name="application"></param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureSessionServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="M:SocialGamificationAsset.Startup.ConfigureSession(Microsoft.AspNet.Builder.IApplicationBuilder)">
+            <summary>
+            </summary>
+            <param name="application"></param>
+        </member>
+        <member name="T:SocialGamificationAsset.DescendingAlphabeticComparer">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:SocialGamificationAsset.DescendingAlphabeticComparer.Compare(System.String,System.String)">
+            <summary>
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns>
+            </returns>
         </member>
         <member name="T:SocialGamificationAsset.AppSettings">
             <summary>
@@ -435,10 +497,7 @@
                 Asynchronously save data
             </summary>
             <returns>
-                <para>
-                    ErrorContentResult if
-                    <see cref="T:System.Data.Entity.Infrastructure.DbUpdateException" />
-                </para>
+                <para>ErrorContentResult if <see cref="T:System.Data.Entity.Infrastructure.DbUpdateException" /></para>
                 <para>exception occurs</para>
             </returns>
         </member>
