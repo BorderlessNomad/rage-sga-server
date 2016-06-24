@@ -1,5 +1,7 @@
-# SUGAR :: Makes Games Sweeter
+
 # RAGE Social Gamification APIs
+# This repository has been superceeded please go to SUGAR https://github.com/playgenhub/SUGAR-SocialGamification
+
 
 ## Overview
 This module allows to layer game mechanics affording game-inspired social relations and interactions on top a system to support engagement, collaboration, and learning. Two main forms of social interaction are supported: player-player interactions (such as matches) and group interactions (such as shared team goals or team vs. team competitions).
